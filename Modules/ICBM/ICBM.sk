@@ -24,6 +24,28 @@ on load:
     set {AB::VarList::ICBM::6} to "{icbmBaseClicked.*player*} - Type: Location" 
     if {ICBM::Counter} is not set:
         set {ICBM::Counter} to 0
+
+function shakeCamera(p: player, seconde: integer):
+	set {_loc} to {_p}'s location
+	loop {_seconde} * 20 times:
+		set {_axe} to a random integer between 1 and 2
+		set {_dir} to a random integer between 1 and 2
+		if {_axe} is 1: # YAW
+			if {_dir} is 1: # +
+				set yaw of {_loc} to {_p}'s yaw + random integer between 2 and 8
+				teleport {_p} to {_loc}
+			else if {_dir} is 2: # -
+				set yaw of {_loc} to {_p}'s yaw - random integer between 2 and 8
+				teleport {_p} to {_loc}
+		else if {_axe} is 2: #PITCH
+			if {_dir} is 1: # +
+				set pitch of {_loc} to {_p}'s pitch + random integer between 2 and 8
+				teleport {_p} to {_loc}
+			else if {_dir} is 2: # -
+				set pitch of {_loc} to {_p}'s pitch - random integer between 2 and 8
+				teleport {_p} to {_loc}
+		wait 1 ticks
+
 on right click on 147:
     set {_AS::CoreLoad::AdminPerm::permission} to (yaml value "AtomicBalistic.core.permissions.admin" of "AtomicBalistic-Config")
     if player has permission "%{_AS::CoreLoad::AdminPerm::permission}%":
@@ -178,6 +200,7 @@ on right click on 148:
                                                                                                 set {ICBM::ListOfSilo::MissileLaunched::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to {ICBM::ListOfSilo::SiloContent::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}
                                                                                                 set {ICBM::ListOfSilo::SiloContent::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to "Empty"
                                                                                                 make a gui slot 21 of player with redstone block named "&c&lLancer !" with lore "||&7Lancer le missile: &6%{ICBM::ListOfSilo::SiloContent::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to do nothing
+		                                                                                        shakeCamera(player, 5)
                                                                                                 loop 255 times:
                                                                                                     wait 0.25 ticks
                                                                                                     set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+4, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to cobblestone wall
