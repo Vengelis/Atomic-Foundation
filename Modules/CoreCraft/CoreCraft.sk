@@ -1,0 +1,98 @@
+on right click on crafting table:
+	set {_ok} to true
+	set {_block} to block above clicked block
+	loop 2 times:
+		if {_block} is not a black wool:
+			set {_ok} to false
+		loop all blocks in radius 1 around {_block}:
+			if y location of loop-block is y location of {_block}:
+				if loop-block is not {_block}:
+					if loop-block is not iron block:
+						set {_ok} to false
+		if block 1 west 1 south of {_block} is not iron block:
+			set {_ok} to false
+		if block 1 west 1 north of {_block} is not iron block:
+			set {_ok} to false
+		if block 1 east 1 south of {_block} is not iron block:
+			set {_ok} to false
+		if block 1 east 1 north of {_block} is not iron block:
+			set {_ok} to false
+		set {_block} to block under clicked block
+	if block 1 west 1 south of clicked block is not black glass block:
+		set {_ok} to false
+	if block 1 west 1 north of clicked block is not black glass block:
+		set {_ok} to false
+	if block 1 east 1 south of clicked block is not black glass block:
+		set {_ok} to false
+	if block 1 east 1 north of clicked block is not black glass block:
+		set {_ok} to false
+	if {_ok} is true:
+		cancel event
+		CoreCraft_GUI(player,1,"all")
+
+function CoreCraft_GUI(p: player,page: number,type: text):
+	set {_s} to 1
+	set {_i} to 1
+	if {_type} is "all":
+		set {_list::*} to {CoreCraft::IDrecipies::*}
+	else:
+		set {_list::*} to {CoreCraft::IDrecipies::%{_type}%::*}
+	loop {_list::*}:
+		if {_s} is 29:
+			add 1 to {_i}
+			set {_s} to 1
+		add loop-value to {_list.%{_i}%::*}
+		add 1 to {_s}
+	open virtual chest inventory with size 6 with name "&8Craftez un objet" to {_p}
+	make a gui slot 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 44, 45, 46, 48, 49, 50, 52 and 53 of {_p} with 1 gray stained glass pane named "&f"
+	if {_page} is not 1:
+		make a gui slot 47 of {_p} with skull of ("MHF_ArrowLeft" parsed as an offline player) named "Page précédante" to run:
+			set {_page2} to {_page} - 1
+			CoreCraft_GUI({_p},{_page2},{_type})
+	else:
+		make a gui slot 47 of {_p} with 1 gray stained glass pane named "&f"
+	set {_i2} to {_page} + 1
+	if {_player.%{_i2}%::*} is set:
+		make a gui slot 51 of {_p} with skull of ("MHF_ArrowRight" parsed as an offline player) named "Page suivante" to run:
+			CoreCraft_GUI({_p},{_i2},{_type})
+	else:
+		make a gui slot 51 of {_p} with 1 gray stained glass pane named "&f"
+	if {_type} is "all":
+		make a gui slot 49 of {_p} with 1 light green dye named "&aAll" with lore "||||&a>> &lCliquez pour changer" to run:
+			if {CoreCraft::order::ALL} is set:
+				CoreCraft_GUI({_p},{_i2},{CoreCraft::order::ALL})
+			else:
+				message "&8&l[&eAtomicFoundation&8-&6CoreCraft&8&l] &7Aucun module installé." to {_p}
+				close {_p}'s inventory
+	else:
+		make a gui slot 49 of {_p} with {CoreCraft::info::%{_type}%} to run:
+			CoreCraft_GUI({_p},{_i2},{CoreCraft::order::%{_type}%})
+
+	set {_s} to 10
+	loop {_list.%{_i}%::*}:
+		if {_s} is 16:
+			set {_s} to 19
+		else if {_s} is 25:
+			set {_s} to 28
+		else if {_s} is 34:
+			set {_s} to 37
+		else if {_s} is 43:
+			set {_s} to 46
+		set {_loopvalue} to loop-value
+		loop {CoreCraft::recipies::%{_loopvalue}%::need::*}:
+			if {_lore} is not set:
+				set {_lore} to "&7- %loop-value-2% ||"
+			else:
+				set {_lore} to "%{_lore}%&7- %loop-value-2% ||"
+		make a gui slot {_s} of {_p} with {CoreCraft::recipies::%{_loopvalue}%::result} with lore {_lore} to run:
+			set {_ok} to true
+			loop {CoreCraft::recipies::%{_loopvalue}%::need::*}:
+				if {_p} doesn't have loop-value-2:
+					set {_ok} to loop-value-2
+			if {_ok} is not true:
+				message "&8&l[&eAtomicFoundation&8-&6CoreCraft&8&l] &7Il vous manque : %{_ok}%" to {_p}
+				stop
+			loop {CoreCraft::recipies::%{_loopvalue}%::need::*}:
+				remove loop-value-2 from {_p}'s inventory
+			give {CoreCraft::recipies::%{_loopvalue}%::result} to {_p}
+			message "&7L'item a bien été crafté..." to {_p}
