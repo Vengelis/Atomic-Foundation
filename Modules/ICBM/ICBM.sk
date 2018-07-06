@@ -276,7 +276,7 @@ on right click on 148:
                                                                                                             if {_ICBM::MissileInConfigClasse} is "Sonic":
                                                                                                                 set {_postionY} to 0
                                                                                                                 set {_powerWave} to 15
-                                                                                                                loop (5*{_ICBM::MissileInConfigFrappe})times:
+                                                                                                                loop (5*{_ICBM::MissileInConfigFrappe}) times:
                                                                                                                     set {_location.%player%} to location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-3-{_postionY}, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
                                                                                                                     loop all blocks in radius {_powerWave} around {_location.%player%}:
                                                                                                                         if block above loop-block is air:
