@@ -579,5 +579,6 @@ on inventory close:
 on right click on 76:
 	message "&6[&cICBM&6] &7Marqueur d'explosion: &a%clicked block's location%"
 	set {icbmBaseClicked.%player%} to clicked block's location
+
 on load:
 	log "&f[%now% &aSUCESS&f] &7ICBM Chargé"
