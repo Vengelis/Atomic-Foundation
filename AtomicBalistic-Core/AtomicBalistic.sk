@@ -167,8 +167,38 @@ command /AtomicBalisticAdmin [<text>] [<text>] [<text>] [<text>]:
                         else if arg-2 is "giveMissile":
                             if arg-3 is "list":
                                 load yaml "plugins/AtomicBalistic/ICBM.yml"
+                                if arg-4 is not set:
+                                    set {_p} to 1
+                                else:
+                                    set {_p} to arg-4 parsed as integer
+                                    if {_p} is not an integer:
+                                        set {_p} to 1
                                 loop yaml nodes "ICBM.Missile" of "ICBM":
-                                    message "&7Missile: &e%loop-value-1%"
+                                    add loop-value to {_missiles::*}
+                                set {_mp} to ceil((size of {_missiles::*} / 36))
+                                if {_p} > {_mp}:
+                                    make player execute command "/aba icbm givemissile list %{_mp}%"
+                                    stop
+                                else if {_p} < 1:
+                                    make player execute command "/aba icbm givemissile list 1"
+                                    stop
+                                open virtual chest inventory with size 6 named "Missiles" to player
+                                set {_i} to 0
+                                loop {_missiles::*}:
+                                    if {_i} >= {_p} * 36 - 36:
+                                        if {_i} < {_p} * 36:
+                                            set {_mis} to loop-value
+                                            format gui slot {_i} - 36 * ({_p} - 1) of player with lever named "&7Missile &e%loop-value%" to run:
+                                                add a arrow named "&6%{_mis}%" to the player's inventory
+                                                message "%{_AS::CoreLoad::Logo}% &7Don du missile &e%{_mis}%"
+                                    add 1 to {_i}
+                                if {_p} != {_mp}:
+                                    format gui slot 50 of player with an arrow named "&ePage suivante" to run player command "/aba icbm givemissile list %({_p} + 1)%"
+                                if {_p} != 1:
+                                    format gui slot 48 of player with an arrow named "&ePage précédente" to run player command "/aba icbm givemissile list %({_p} - 1)%"
+                                format gui slot 49 of player with sign item named "&ePage Actuelle: &f%{_p}%" with lore "&eNombre de pages: &f%{_mp}%" to do nothing
+                                format gui slot 36, 37, 38, 39, 40, 41, 42, 43 and 44 of player with gray glass pane named "&r" to do nothing
+                                format gui slot 53 of player with a barrier named "&cFermer" to close
                                 stop
                             else if arg-3 is set:
                                 add a arrow named "&6%arg-3%" to the player's inventory
