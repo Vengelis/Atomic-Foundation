@@ -361,12 +361,13 @@ on right click on iron pressure plate:
 																						make a gui slot 23 of player with name tag named "&2Fréquence" with lore "||   &e- &7Fréquence: &a%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%||   &e- &7Mot de passe d'accès: &a%{ICBM::ListOfSilo::FrequencyPassword::%{_icbmBaseClicked.%player%}%}%" to do nothing
 																						make a gui slot 25 of player with dispenser named "&6Retirer le missile" with lore "|| &7Sortir le missile du silo et le récupérer" to run:
 																							if {ICBM::ListOfSilo::SiloContent::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} is not "Empty":
-                                                                                                set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate, {_icbmBaseClicked.%player%}'s z-coordinate to air
+																						        set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate, {_icbmBaseClicked.%player%}'s z-coordinate to air
 																					    		set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+1, {_icbmBaseClicked.%player%}'s z-coordinate to air
 																					    		set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+2, {_icbmBaseClicked.%player%}'s z-coordinate to air
 																					    		set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+3, {_icbmBaseClicked.%player%}'s z-coordinate to air
 																								add a arrow named "&6VARIABLE_NOM_TECH_MISSILE" to the player's inventory
-                                                                                        make a gui slot 21 of player with redstone block named "&c&lLancer !" with lore "||&7Lancer le missile: &6%{ICBM::ListOfSilo::SiloContent::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to run:
+																								set {ICBM::ListOfSilo::SiloContent::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to "Empty"
+																						make a gui slot 21 of player with redstone block named "&c&lLancer !" with lore "||&7Lancer le missile: &6%{ICBM::ListOfSilo::SiloContent::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to run:
 																							set {_ICBM::MissileInConfigType} to (yaml value "ICBM.Missile.%{ICBM::ListOfSilo::SiloContent::LaunchMissileType::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}%.Type" of "ICBM")
 																							set {_ICBM::MissileInConfigTypeICBM} to (yaml value "ICBM.Configuration.Missile.ICBM.Distance" of "ICBM")
 																							set {_ICBM::MissileInConfigTypeIRBM} to (yaml value "ICBM.Configuration.Missile.IRBM.Distance" of "ICBM")
