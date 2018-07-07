@@ -1,15 +1,15 @@
 #===================================================================================================================================#
-#	 ___	____   ____	__  __ 
-#	|_ _|  / ___| | __ )  |  \/  |
-#	 | |  | |	 |  _ \  | |\/| |
-#	 | |  | |___  | |_) | | |  | |
-#	|___|  \____| |____/  |_|  |_|						 By Vengelis_
+#     ___    ____   ____    __  __ 
+#    |_ _|  / ___| | __ )  |  \/  |
+#     | |  | |     |  _ \  | |\/| |
+#     | |  | |___  | |_) | | |  | |
+#    |___|  \____| |____/  |_|  |_|                         By Vengelis_
 #
 #===================================================================================================================================# 
 
 #===================================================================================================================================#
 #   Necessite AtomicBalisitc pour le chargement des configurations !
-#===================================================================================================================================#							  
+#===================================================================================================================================#                              
 
 
 
@@ -368,9 +368,9 @@ on right click on iron pressure plate:
 												add a arrow named "&6VARIABLE_NOM_TECH_MISSILE" to the player's inventory
 											make a gui slot 21 of player with redstone block named "&c&lLancer !" with lore "||&7Lancer le missile: &6%{ICBM::ListOfSilo::SiloContent::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to run:
                                                                                             set {_ICBM::MissileInConfigType} to (yaml value "ICBM.Missile.%{ICBM::ListOfSilo::SiloContent::LaunchMissileType::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}%.Type" of "ICBM")
-                                                                                            set {_ICBM::MissileInConfigTypeICBM} to (yaml value "ICBM.Configuration.Missile.ICBM.Protee" of "ICBM")
-                                                                                            set {_ICBM::MissileInConfigTypeIRBM} to (yaml value "ICBM.Configuration.Missile.IRBM.Protee" of "ICBM")
-                                                                                            set {_ICBM::MissileInConfigTypeRoquette} to (yaml value "ICBM.Configuration.Missile.Roquette.Protee" of "ICBM")
+                                                                                            set {_ICBM::MissileInConfigTypeICBM} to (yaml value "ICBM.Configuration.Missile.ICBM.Distance" of "ICBM")
+                                                                                            set {_ICBM::MissileInConfigTypeIRBM} to (yaml value "ICBM.Configuration.Missile.IRBM.Distance" of "ICBM")
+                                                                                            set {_ICBM::MissileInConfigTypeRoquette} to (yaml value "ICBM.Configuration.Missile.Roquette.Distance" of "ICBM")
                                                                                             set {_messageDistanceBetweenMissile.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to distance between {_icbmLocationSilo.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} and {_ICBM::LastPosition.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} 
                                                                                             if {_ICBM::MissileInConfigType} is "ICBM":
                                                                                                 if {_messageDistanceBetweenMissile.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} > {_ICBM::MissileInConfigTypeICBM}:
@@ -401,7 +401,10 @@ on right click on iron pressure plate:
                                                                                                     set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to air
                                                                                                     set {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
                                                                                                     set {_icbmMissilePosition.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
+
+
                                                                                                     set {_icbmMissilePlaceExplode.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+5, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
+
                                                                                                     if {_icbmMissilePlaceExplode.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} is not air:
                                                                                                         set {_ICBM::MissileInConfig} to (yaml value "ICBM.Missile.%{ICBM::ListOfSilo::SiloContent::LaunchMissileType::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}%.Name" of "ICBM")
                                                                                                         set {_ICBM::MissileInConfigForce} to (yaml value "ICBM.Missile.%{ICBM::ListOfSilo::SiloContent::LaunchMissileType::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}%.Force" of "ICBM")
@@ -474,21 +477,7 @@ on right click on iron pressure plate:
                                                                                                         make a gui slot 19 of player with nether star named "&4&o&lProcessus" with lore "||   &e- &7Traceur missile: &2%{_icbmMissilePosition.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}%||   &e- &7Distance du point d'impacte: &a%{_messageDistanceBetweenMissile.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}% blocs||   &e- &7Etat: &aAscention||   &e- &7Nom du missile: &6%{ICBM::ListOfSilo::MissileLaunched::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}%||   &e- &7Marqueur d'explosion: &c%{_ICBM::LastPosition.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to do nothing
                                                                                                 set {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to block at location {_ICBM::LastPosition.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_ICBM::LastPosition.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+255, {_ICBM::LastPosition.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
                                                                                                 set {_icbmMissilePlaceExplode.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-5, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-                                                                                                
-												 
-												set {_coef} to 1
-												if weather in player's world is rainy:
-													set {_coef} to a random number between -1.25 and 1.25
-												else if weather in player's world is thundering:
-													set {_coef} to a random number between -1.5 and 1.5
-												set {_missileLocX} to (random integer between -10 and 10) * {_coef}
-												set {_missileLocZ} to (random integer between -10 and 10) * {_coef}
-												add {_missileLocX} to {_ICBM::LastPosition.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate
-												add {_missileLocZ} to  {_ICBM::LastPosition.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-												set {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to block at location {_ICBM::LastPosition.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_ICBM::LastPosition.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+255, {_ICBM::LastPosition.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-												set {_icbmMissilePlaceExplode.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-5, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-												set {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to block at location {_ICBM::LastPosition.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_ICBM::LastPosition.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+255, {_ICBM::LastPosition.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-                                                                                                set {_icbmMissilePlaceExplode.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-5, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
+
                                                                                                 loop 500 times:
                                                                                                     if {ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%} is not set:
                                                                                                         if {_icbmMissilePlaceExplode.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} is air:
@@ -578,6 +567,8 @@ on right click on iron pressure plate:
                                                                                             else:
                                                                                                 message "&cSilo vide !"
 
+
+
 on inventory close:
 	if {ICBM::siloOpen.%player%::*} is set:
 		delete {ICBM::siloOpen.%player%::*}
@@ -586,5 +577,6 @@ on right click on redstone torch on:
 	message "&6[&cICBM&6] &7Marqueur d'explosion: &a%clicked block's location%"
 	set {icbmBaseClicked.%player%} to clicked block's location
 	
+
 on load:
-	log "&f[%now% &aSUCESS&f] &7ICBM Chargé"
+    log "&f[%now% &aSUCESS&f] &7ICBM Chargé"
