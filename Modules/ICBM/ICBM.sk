@@ -142,193 +142,121 @@ on right click on golden pressure plate:
 																																		add 1 to {_line.1}
 																																		make a gui slot {_line.1} of player with stained glass pane:15 named "&9" to do nothing
 																																	make a gui slot 18 of player with stained glass pane:7 named "" to do nothing
-																																	make a gui slot 19 of player with redstone block named "&6Propulseur" with lore "|| &e- &7Etat du propulseur: &6%{ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Vitesse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to run:
+																																	make a gui slot 19 of player with redstone block named "&6Propulseur" with lore "|| &e- &7Etat du propulseur: &6%{ICBM::ListOfAssembler::AssemblerContent::Propulseur::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to run:
 																																		
 																																		#   Upgrade Module
 																																		
 																																		if player has 1 redstone block named "&fUpgrade Propulseur &7(&aTier I&7)":
 																																			message "&fUpgrade Propulseur &7(&aTier I&7)"
 																																			remove redstone block named "&fUpgrade Propulseur &7(&aTier I&7)" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Vitesse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to (4 - {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Masse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%})
 																																		if player has 1 redstone block named "&fUpgrade Propulseur &7(&eTier II&7)":
 																																			message "&fUpgrade Propulseur &7(&eTier II&7)"
 																																			remove redstone block named "&fUpgrade Propulseur &7(&eTier II&7)" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Vitesse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to (5 - {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Masse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%})
 																																		if player has 1 redstone block named "&fUpgrade Propulseur &7(&6Tier III&7)":
 																																			message "&fUpgrade Propulseur &7(&6Tier III&7)"
 																																			remove redstone block named "&fUpgrade Propulseur &7(&6Tier III&7)" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Vitesse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to (6 - {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Masse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%})
-																																	make a gui slot 20 of player with iron block named "&fCarcasse" with lore "|| &e- &7Etat de la carcasse: &f%{ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Masse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to run:
+																																			
+																																	make a gui slot 20 of player with iron block named "&fCarcasse" with lore "|| &e- &7Etat de la carcasse: &f%{ICBM::ListOfAssembler::AssemblerContent::Carcasse1::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to run:
 																																		
 																																		#   Upgrade Module
 																																		
 																																		if player has 1 iron block named "&fUpgrade Carcasse &7(&aTier I&7)":
 																																			message "&fUpgrade Carcasse &7(&aTier I&7)"
 																																			remove iron block named "&fUpgrade Carcasse &7(&aTier I&7)" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Masse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to 3
 																																		if player has 1 iron block named "&fUpgrade Carcasse &7(&eTier II&7)":
 																																			message "&fUpgrade Carcasse &7(&eTier II&7)"
 																																			remove iron block named "&fUpgrade Carcasse &7(&eTier II&7)" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Masse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to 2
 																																		if player has 1 iron block named "&fUpgrade Carcasse &7(&6Tier III&7)":
 																																			message "&fUpgrade Carcasse &7(&6Tier III&7)"
 																																			remove iron block named "&fUpgrade Carcasse &7(&6Tier III&7)" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Masse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to 1
-																																	make a gui slot 21 of player with tnt named "&cExplosif" with lore "|| &e- &7Etat de l'explosif: &c%{ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::ExplosionPower::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}%|| &e- &6Upgrade d'addition !" to run:
+																																			
+																																	make a gui slot 21 of player with tnt named "&cExplosif" with lore "|| &e- &7Etat de l'explosif: &c%{ICBM::ListOfAssembler::AssemblerContent::Explosif::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to run:
 																																		
 																																		#   Upgrade Module
 																																		
 																																		if player has 1 tnt block named "&fUpgrade Explosif &7(&aTier I&7)":
 																																			message "&fUpgrade Explosif &7(&aTier I&7)"
 																																			remove tnt named "&fUpgrade Explosif &7(&aTier I&7)" named "&fUpgrade Explosif &7(&aTier I&7)" from player's inventory
-																																			add 1 to {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::ExplosionPower::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}
 																																		if player has 1 tnt block named "&fUpgrade Explosif &7(&eTier II&7)":
 																																			message "&fUpgrade Explosif &7(&eTier II&7)"
 																																			remove tnt named "&fUpgrade Explosif &7(&eTier II&7)" from player's inventory
-																																			add 5 to {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::ExplosionPower::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}
 																																		if player has 1 tnt block named "&fUpgrade Explosif &7(&6Tier III&7)":
 																																			message "&fUpgrade Explosif &7(&6Tier III&7)"
 																																			remove tnt named "&fUpgrade Explosif &7(&6Tier III&7)" from player's inventory
-																																			add 10 to {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::ExplosionPower::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}
 																																		if player has 1 tnt block named "&fUpgrade Explosif &7(&cTier IV&7)":
 																																			message "&fUpgrade Explosif &7(&cTier IV&7)"
 																																			remove tnt named "&fUpgrade Explosif &7(&cTier IV&7)" from player's inventory
-																																			add 15 to {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::ExplosionPower::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}
 																																		if player has 1 tnt block named "&fUpgrade Explosif &7(&4Tier V&7)":
 																																			message "&fUpgrade Explosif &7(&4Tier V&7)"
 																																			remove tnt named "&fUpgrade Explosif &7(&4Tier V&7)" from player's inventory
-																																			add 20 to {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::ExplosionPower::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}
 																																		if player has 1 tnt block named "&fUpgrade Explosif &7(&5Tier VI&7)":
 																																			message "&fUpgrade Explosif &7(&5Tier VI&7)"
 																																			remove tnt named "&fUpgrade Explosif &7(&5Tier VI&7)" from player's inventory
-																																			add 25 to {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::ExplosionPower::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}
 																																		if player has 1 tnt block named "&fUpgrade Explosif &7(&0Tier VII&7)":
 																																			message "&fUpgrade Explosif &7(&0Tier VII&7)"
 																																			remove tnt named "&fUpgrade Explosif &7(&0Tier VII&7)" from player's inventory
-																																			add 30 to {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::ExplosionPower::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}
 																																			
-																																	make a gui slot 22 of player with note block named "&2Coordinateur" with lore "|| &e- &7Etat de l'ordinateur: &5%{ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::LvCoordinator::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to run:
+																																	make a gui slot 22 of player with note block named "&2Coordinateur" with lore "|| &e- &7Etat de l'ordinateur: &5%{ICBM::ListOfAssembler::AssemblerContent::Coordinateur::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to run:
 																																		
 																																		#   Upgrade Module
 																																		
 																																		if player has 1 note block named "&fUpgrade Coordinateur &7(&aTier I&7)":
 																																			message "&fUpgrade Coordinateur &7(&aTier I&7)"
 																																			remove note block named "&fUpgrade Coordinateur &7(&aTier I&7)" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::LvCoordinator::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to 1
 																																		if player has 1 note block named "&fUpgrade Coordinateur &7(&eTier II&7)":
 																																			message "&fUpgrade Coordinateur &7(&eTier II&7)"
 																																			remove note block named "&fUpgrade Coordinateur &7(&eTier II&7)" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::LvCoordinator::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to 2
 																																		if player has 1 note block named "&fUpgrade Coordinateur &7(&6Tier III&7)":
 																																			message "&fUpgrade Coordinateur &7(&6Tier III&7)"
 																																			remove note block named "&fUpgrade Coordinateur &7(&6Tier III&7)" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::LvCoordinator::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to 3
 																																		
-																																	make a gui slot 23 of player with iron block named "&fCarcasse" with lore "|| &e- &7Etat de la carcasse: &f%{ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Masse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to run:
-																																		
-																																		#   Upgrade Module
-																																		
-																																		if player has 1 iron block named "&fUpgrade Carcasse &7(&aTier I&7)":
-																																			message "&fUpgrade Carcasse &7(&aTier I&7)"
-																																			remove iron block named "&fUpgrade Carcasse &7(&aTier I&7)" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Masse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to 50
-																																		if player has 1 iron block named "&fUpgrade Carcasse &7(&eTier II&7)":
-																																			message "&fUpgrade Carcasse &7(&eTier II&7)"
-																																			remove iron block named "&fUpgrade Carcasse &7(&eTier II&7)" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Masse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to 25
-																																		if player has 1 iron block named "&fUpgrade Carcasse &7(&6Tier III&7)":
-																																			message "&fUpgrade Carcasse &7(&6Tier III&7)"
-																																			remove iron block named "&fUpgrade Carcasse &7(&6Tier III&7)" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Masse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to 10
+																																	make a gui slot 23 of player with iron block named "&fCarcasse" with lore "|| &e- &7Etat de la carcasse: &f%{ICBM::ListOfAssembler::AssemblerContent::Carcasse1::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to do nothing
 																																		
 																																		
-																																	make a gui slot 24 of player with iron block named "&fCarcasse" with lore "|| &e- &7Etat de la carcasse: &f%{ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Masse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to run:
 																																		
-																																		#   Upgrade Module
+																																	make a gui slot 24 of player with iron block named "&fCarcasse" with lore "|| &e- &7Etat de la carcasse: &f%{ICBM::ListOfAssembler::AssemblerContent::Carcasse1::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to do nothing
 																																		
-																																		if player has 1 iron block named "&fUpgrade Carcasse &7(&aTier I&7)":
-																																			message "&fUpgrade Carcasse &7(&aTier I&7)"
-																																			remove iron block named "&fUpgrade Carcasse &7(&aTier I&7)" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Masse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to 50
-																																		if player has 1 iron block named "&fUpgrade Carcasse &7(&eTier II&7)":
-																																			message "&fUpgrade Carcasse &7(&eTier II&7)"
-																																			remove iron block named "&fUpgrade Carcasse &7(&eTier II&7)" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Masse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to 25
-																																		if player has 1 iron block named "&fUpgrade Carcasse &7(&6Tier III&7)":
-																																			message "&fUpgrade Carcasse &7(&6Tier III&7)"
-																																			remove iron block named "&fUpgrade Carcasse &7(&6Tier III&7)" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Masse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to 10
 																																		
 																																	
-																																	make a gui slot 25 of player with dispenser named "&eTête" with lore "|| &e- &7Etat de la tête: &a%{ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::NbHead::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}%|| &e- &6Upgrade d'addition !" to run:
+																																	make a gui slot 25 of player with dispenser named "&eTête" with lore "|| &e- &7Etat de la tête: &a%{ICBM::ListOfAssembler::AssemblerContent::Tête::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to run:
 																																		
 																																		#   Upgrade Module
 																																		
 																																		if player has 1 dispenser named "&fUpgrade Tête &7(&aTier I&7)":
 																																			message "&fUpgrade Tête &7(&aTier I&7)"
-																																			remove dispenser named "&fUpgrade Tête &7(&aTier I&7)" from player's inventory
-																																			add 1 to {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::NbHead::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}
 																																		if player has 1 dispenser named "&fUpgrade Tête &7(&eTier II&7)":
 																																			message "&fUpgrade Tête &7(&eTier II&7)"
-																																			remove dispenser named "&fUpgrade Tête &7(&eTier II&7)" from player's inventory
-																																			add 5 to {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::NbHead::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}
 																																		if player has 1 dispenser named "&fUpgrade Tête &7(&6Tier III&7)":
 																																			message "&fUpgrade Tête &7(&6Tier III&7)"
-																																			remove dispenser named "&fUpgrade Tête &7(&6Tier III&7)" from player's inventory
-																																			add 10 to {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::NbHead::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}
 																																		if player has 1 dispenser named "&fUpgrade Tête &7(&cTier IV&7)":
 																																			message "&fUpgrade Tête &7(&cTier IV&7)"
-																																			remove dispenser named "&fUpgrade Tête &7(&cTier IV&7)" from player's inventory
-																																			add 15 to {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::NbHead::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}
 																																		if player has 1 dispenser named "&fUpgrade Tête &7(&4Tier V&7)":
 																																			message "&fUpgrade Tête &7(&4Tier V&7)"
-																																			remove dispenser named "&fUpgrade Tête &7(&4Tier V&7)" from player's inventory
-																																			add 20 to {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::NbHead::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}
 																																		if player has 1 dispenser named "&fUpgrade Tête &7(&5Tier VI&7)":
 																																			message "&fUpgrade Tête &7(&5Tier VI&7)"
-																																			remove dispenser named "&fUpgrade Tête &7(&5Tier VI&7)" from player's inventory
-																																			add 25 to {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::NbHead::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}
 																																		if player has 1 dispenser named "&fUpgrade Tête &7(&0Tier VII&7)":
 																																			message "&fUpgrade Tête &7(&0Tier VII&7)"
-																																			remove dispenser named "&fUpgrade Tête &7(&0Tier VII&7)" from player's inventory
-																																			add 30 to {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::NbHead::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}
 																																		
-																																	make a gui slot 26 of player with gunpowder named "&dType" with lore "|| &e- &7Type: &d%{ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Type::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to run:
+																																	make a gui slot 26 of player with redstone named "&dType" with lore "|| &e- &7Type: &d%{ICBM::ListOfAssembler::AssemblerContent::Type::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to run:
 																																		
 																																		#   Upgrade Module
 																																		
 																																		if player has 1 redstone named "&fUpgrade Conventionnel":
 																																			message "&fUpgrade Conventionnel"
-																																			remove gunpowder named "&fUpgrade Conventionnel" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Type::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to "Conventionnel"
 																																		if player has 1 redstone named "&fUpgrade Incendiaire":
 																																			message "&fUpgrade Incendiaire"
-																																			remove gunpowder named "&fUpgrade Incendiaire" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Type::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to "Incendiaire"
 																																		if player has 1 redstone named "&fUpgrade Breche":
 																																			message "&fUpgrade Breche"
-																																			remove gunpowder named "&fUpgrade Breche" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Type::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to "Breche"
 																																		if player has 1 redstone named "&fUpgrade Sonic":
 																																			message "&fUpgrade Sonic"
-																																			remove gunpowder named "&fUpgrade Sonic" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Type::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to "Sonic"
 																																		if player has 1 redstone named "&fUpgrade Cluster":
 																																			message "&fUpgrade Cluster"
-																																			remove gunpowder named "&fUpgrade Cluster" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Type::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to "Cluster"
 																																		if player has 1 redstone named "&fUpgrade Thermobarique":
 																																			message "&fUpgrade Thermobarique"
-																																			remove gunpowder named "&fUpgrade Thermobarique" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Type::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to "Thermobarique"
 																																		if player has 1 redstone named "&fUpgrade Nucleaire":
 																																			message "&fUpgrade Nucleaire"
-																																			remove gunpowder named "&fUpgrade Nucleaire" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Type::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to "Nucleaire"
 																																		if player has 1 redstone named "&fUpgrade Anti-matière":
 																																			message "&fUpgrade Anti-matière"
-																																			remove gunpowder named "&fUpgrade Anti-matière" from player's inventory
-																																			set {ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Type::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%} to "Anti-matière"
 																																	
 																																	make a gui slot 39 of player with red wool named "&cAnnuler" with lore "|| &e- &7Reprendre de 0" to do nothing
 																																	make a gui slot 40 of player with paper named "&fEtat du missile" with lore "|| &e- &7Type: &6%{ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Type::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}%|| &e- &7Vitesse: &a%{ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Vitesse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}% || &e- &7Masse: &a%{ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::Masse::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}% || &e- &7Niveau du coordinateur: &a%{ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::LvCoordinator::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}% || &e- &7Nombre de tête: &a%{ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::NbHead::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}% || &e- &7Puissance de frappe: &a%{ICBM::ListOfAssembler::AssemblerContent::Caracteristiques::ExplosionPower::%{ICBM::ListOfAssembler::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to do nothing
@@ -434,11 +362,11 @@ on right click on iron pressure plate:
 																						make a gui slot 25 of player with dispenser named "&6Retirer le missile" with lore "|| &7Sortir le missile du silo et le récupérer" to run:
 																							if {ICBM::ListOfSilo::SiloContent::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} is not "Empty":
 
-																						        set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate, {_icbmBaseClicked.%player%}'s z-coordinate to air
+																								set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate, {_icbmBaseClicked.%player%}'s z-coordinate to air
 
-																					    		set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+1, {_icbmBaseClicked.%player%}'s z-coordinate to air
-																					    		set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+2, {_icbmBaseClicked.%player%}'s z-coordinate to air
-																					    		set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+3, {_icbmBaseClicked.%player%}'s z-coordinate to air
+																								set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+1, {_icbmBaseClicked.%player%}'s z-coordinate to air
+																								set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+2, {_icbmBaseClicked.%player%}'s z-coordinate to air
+																								set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+3, {_icbmBaseClicked.%player%}'s z-coordinate to air
 																							add a arrow named "&6VARIABLE_NOM_TECH_MISSILE" to the player's inventory
 																							set {ICBM::ListOfSilo::SiloContent::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to "Empty"
 
@@ -471,7 +399,7 @@ on right click on iron pressure plate:
 																								set {ICBM::ListOfSilo::SiloContent::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to "Empty"
 																								make a gui slot 21 of player with redstone block named "&c&lLancer !" with lore "||&7Lancer le missile: &6%{ICBM::ListOfSilo::SiloContent::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}%" to do nothing
 																								loop 255 times:
-																									wait 0.25 ticks
+																									wait 1 ticks
 																									set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+4, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to cobblestone wall
 																									set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to air
 																									set {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
@@ -561,7 +489,7 @@ on right click on iron pressure plate:
 																								loop 500 times:
 																									if {_stopLaunche.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} is not set:
 																										if {_icbmMissilePlaceExplode.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} is air:
-																											wait 0.25 ticks
+																											wait 1 ticks
 																											set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-4, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to cobblestone wall
 																											set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to air
 																											set {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
@@ -579,8 +507,8 @@ on right click on iron pressure plate:
 																											set {_ICBM::MissileInConfigClasse} to (yaml value "ICBM.Missile.%{ICBM::ListOfSilo::SiloContent::LaunchMissileType::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}%.Classe" of "ICBM")
 																											set {_count} to -5
 																											loop integers between 0 and 4:
-																											    set {_co} to location at {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate - loop-value-2	, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-																											    set block at {_co} to air
+																												set {_co} to location at {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate - loop-value-2	, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
+																												set block at {_co} to air
 																											loop {_ICBM::MissileInConfigFrappe} times:
 																												if {_ICBM::MissileInConfigClasse} is "Nucleaire":
 																													create an explosion of force ({_ICBM::MissileInConfigForce} + 75) at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate - {_count}, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
@@ -652,7 +580,7 @@ on right click on iron pressure plate:
 on inventory close:
 	if {ICBM::siloOpen.%player%::*} is set:
 		delete {ICBM::siloOpen.%player%::*}
-on right click on 76:
+on right click on redstone torch on:
 	message "&6[&cICBM&6] &7Marqueur d'explosion: &a%clicked block's location%"
 	set {icbmBaseClicked.%player%} to clicked block's location
 
@@ -660,9 +588,11 @@ on load:
 	log "&f[%now% &aSUCESS&f] &7ICBM Chargé"
 
 on command "/aba help":
+	wait 10 ticks
 	message "&a/AtomicBalisticAdmin ICBM reset <all/silo/frequences> &7Reset le module ICBM suivant les paramètres"
 	message "&a/AtomicBalisticAdmin ICBM giveMissile <list/nom du missile> &7Give un missile"
-command /icbm [<text]:
+
+command /icbm [<text>] [<text>] [<text>] [<text>]:
 	trigger:
 		set {_AS::CoreLoad::Logo} to (yaml value "AtomicBalistic.core.general.prefix" of "AtomicBalistic-Config")
 		set {_AS::CoreLoad::EnabledIcbm} to (yaml value "AtomicBalistic.Modules.ICBM.enable" of "AtomicBalistic-Config")
@@ -670,6 +600,58 @@ command /icbm [<text]:
 		set {_AS::CoreLoad::AdminPerm::permission} to (yaml value "AtomicBalistic.core.permissions.admin" of "AtomicBalistic-Config")
 		set {_AS::CoreLoad::AdminPerm::denyMessage} to (yaml value "AtomicBalistic.core.permissions.deny" of "AtomicBalistic-Config")
 		if player has permission "%{_AS::CoreLoad::AdminPerm::permission}%":
-			message "ok"
+			message "%{_AS::CoreLoad::Logo}%"
+			message "%{_AS::CoreLoad::EnabledIcbm}%"
+			message "%{_AS::CoreLoad::EnabledPA}%"
+			message "%{_AS::CoreLoad::AdminPerm::permission}%"
+			message "%{_AS::CoreLoad::AdminPerm::denyMessage}%"
+			if {AS::Core::Modules::%arg-1%} is set:
+				if arg-2 is "reset":
+					if arg-3 is "all":
+						message "%{_AS::CoreLoad::Logo}% &7Reset total d'ICBM en cours..."
+						ICBMreset("all")
+						message "%{_AS::CoreLoad::Logo}% &7Reset terminé !"
+						stop
+					else if arg-3 is "silo":
+						message "%{_AS::CoreLoad::Logo}% &7Reset des silos en cours..."
+						ICBMreset("silo")
+						message "%{_AS::CoreLoad::Logo}% &7Reset terminé !"
+						stop
+					else if arg-3 is "frequences":
+						message "%{_AS::CoreLoad::Logo}% &7Reset des fréquences en cours..."
+						ICBMreset("frequency")
+						message "%{_AS::CoreLoad::Logo}% &7Reset terminé !"
+						stop
+					else:
+						message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cAction impossible ! &7-> /AtomicBalisticAdmin help"
+						stop
+				else if arg-2 is "giveMissile":
+					if arg-3 is "list":
+						load yaml "plugins/AtomicBalistic/ICBM.yml"
+						loop yaml nodes "ICBM.Missile" of "ICBM":
+							message "&7Missile: &e%loop-value-1%"
+						stop
+					else if arg-3 is set:
+						add a arrow named "&6%arg-3%" to the player's inventory
+						message "%{_AS::CoreLoad::Logo}% &7Don du missile &e%arg-3%"
+						stop
+					else:
+						message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cAction impossible ! &7-> /AtomicBalisticAdmin help"
+						stop
+				else if arg-2 is "Config":
+					if arg-3 is "Download":
+						if arg-4 is "Vengelis":
+							delete file "plugins/AtomicBalistic/ICBM.yml"
+							create file "plugins/AtomicBalistic/ICBM.yml"
+							download from "https://pastebin.com/raw/3wqfzx2M" to "plugins/AtomicBalistic/ICBM.yml"
+						if arg-4 is "Exemple":
+							delete file "plugins/AtomicBalistic/ICBM.yml"
+							create file "plugins/AtomicBalistic/ICBM.yml"
+							download from "https://pastebin.com/raw/1h3Ufdwc" to "plugins/AtomicBalistic/ICBM.yml"
+						message "%{_AS::CoreLoad::Logo}% &7Configuration ICBM de &e%arg-4% &7téléchargée !"
+						stop
+			else:
+				message "%{_AS::CoreLoad::Logo}% &4Erreur ! Module pas intégré !"
+				stop
 
 
