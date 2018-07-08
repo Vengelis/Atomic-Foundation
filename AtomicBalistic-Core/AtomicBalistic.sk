@@ -76,8 +76,6 @@ command /AtomicBalisticAdmin [<text>] [<text>] [<text>] [<text>]:
                 message "&a/AtomicBalisticAdmin modules remove <nom du module> &7Retirer un module"
                 message "&a/AtomicBalisticAdmin modules reload <nom du module> &7Recharger un module"
                 message "&a/AtomicBalisticAdmin modules list &7liste des modules"
-                message "&a/AtomicBalisticAdmin ICBM reset <all/silo/frequences> &7Reset le module ICBM suivant les paramètres"
-                message "&a/AtomicBalisticAdmin ICBM giveMissile <list/nom du missile> &7Give un missile"
             if arg-1 is "modules":
                 if arg-2 is "add":
                     if {AS::Core::Modules::%arg-3%} is set:
@@ -119,16 +117,6 @@ command /AtomicBalisticAdmin [<text>] [<text>] [<text>] [<text>]:
                     else:
                         message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cModule non trouvé !"
                         stop
-                else if arg-2 is "reload":
-                    if {AS::Core::Modules::%arg-3%} is set:
-                        message "%{_AS::CoreLoad::Logo}% &7Rechargement du module..."
-                        wait 1 ticks
-                        make console execute command "sk reload AtomicBalistic/%arg-3%"
-                        message "%{_AS::CoreLoad::Logo}% &7Module &e%arg-3% &7rechargé !"
-                        stop
-                    else:
-                        message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cModule non trouvé !"
-                        stop
                 else if arg-2 is "list":
                     message "%{_AS::CoreLoad::Logo}% &7Liste des modules ajoutés:"
                     message "&a%{AS::Core::Modules::*}%"
@@ -142,68 +130,32 @@ command /AtomicBalisticAdmin [<text>] [<text>] [<text>] [<text>]:
                 else:
                     message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cAction impossible ! &7-> /AtomicBalisticAdmin help"
                     stop
-            if arg-1 is "ICBM":
-                if {_AS::CoreLoad::EnabledIcbm} is "true":
-                    if {AS::Core::Modules::%arg-1%} is set:
-                        if arg-2 is "reset":
-                            if arg-3 is "all":
-                                message "%{_AS::CoreLoad::Logo}% &7Reset total d'ICBM en cours..."
-                                ICBMreset("all")
-                                message "%{_AS::CoreLoad::Logo}% &7Reset terminé !"
-                                stop
-                            else if arg-3 is "silo":
-                                message "%{_AS::CoreLoad::Logo}% &7Reset des silos en cours..."
-                                ICBMreset("silo")
-                                message "%{_AS::CoreLoad::Logo}% &7Reset terminé !"
-                                stop
-                            else if arg-3 is "frequences":
-                                message "%{_AS::CoreLoad::Logo}% &7Reset des fréquences en cours..."
-                                ICBMreset("frequency")
-                                message "%{_AS::CoreLoad::Logo}% &7Reset terminé !"
-                                stop
-                            else:
-                                message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cAction impossible ! &7-> /AtomicBalisticAdmin help"
-                                stop
-                        else if arg-2 is "giveMissile":
-                            if arg-3 is "list":
-                                load yaml "plugins/AtomicBalistic/ICBM.yml"
-                                loop yaml nodes "ICBM.Missile" of "ICBM":
-                                    message "&7Missile: &e%loop-value-1%"
-                                stop
-                            else if arg-3 is set:
-                                add a arrow named "&6%arg-3%" to the player's inventory
-                                message "%{_AS::CoreLoad::Logo}% &7Don du missile &e%arg-3%"
-                                stop
-                            else:
-                                message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cAction impossible ! &7-> /AtomicBalisticAdmin help"
-                                stop
-                        else if arg-2 is "Config":
-                            if arg-3 is "Download":
-                                if arg-4 is "Vengelis":
-                                    delete file "plugins/AtomicBalistic/ICBM.yml"
-                                    create file "plugins/AtomicBalistic/ICBM.yml"
-                                    download from "https://pastebin.com/raw/3wqfzx2M" to "plugins/AtomicBalistic/ICBM.yml"
-                                if arg-4 is "Exemple":
-                                    delete file "plugins/AtomicBalistic/ICBM.yml"
-                                    create file "plugins/AtomicBalistic/ICBM.yml"
-                                    download from "https://pastebin.com/raw/1h3Ufdwc" to "plugins/AtomicBalistic/ICBM.yml"
-                                message "%{_AS::CoreLoad::Logo}% &7Configuration ICBM de &e%arg-4% &7téléchargée !"
-                                stop
+            else if arg-1 is "reload" or "relaod":
+                if arg-2 is "aba":
+                    if arg-3 is "viewLog":
+                        message "%{_AS::CoreLoad::Logo}% &7Rechargement d'AtomicBalistic en cours..."
+                        make player execute command "sk reload AtomicBalistic"
+                        message "%{_AS::CoreLoad::Logo}% &7Rechargement terminé !"
                     else:
-                        message "%{_AS::CoreLoad::Logo}% &4Erreur ! Module pas intégré !"
+                        message "%{_AS::CoreLoad::Logo}% &7Rechargement d'AtomicBalistic en cours..."
+                        make console execute command "sk reload AtomicBalistic"
+                        message "%{_AS::CoreLoad::Logo}% &7Rechargement terminé !"
+                else if {AS::Core::Modules::%arg-3%} is set:
+                    if arg-3 is "viewLog":
+                        message "%{_AS::CoreLoad::Logo}% &7Rechargement du module..."
+                        wait 1 ticks
+                        make player execute command "sk reload AtomicBalistic/%arg-3%"
+                        message "%{_AS::CoreLoad::Logo}% &7Module &e%arg-3% &7rechargé !"
+                        stop
+                    else:
+                        message "%{_AS::CoreLoad::Logo}% &7Rechargement du module..."
+                        wait 1 ticks
+                        make console execute command "sk reload AtomicBalistic/%arg-3%"
+                        message "%{_AS::CoreLoad::Logo}% &7Module &e%arg-3% &7rechargé !"
                         stop
                 else:
-                    message "%{_AS::CoreLoad::Logo}% &4Erreur ! Module désactivé !"
+                    message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cModule non trouvé !"
                     stop
-            if arg-1 is "reload" or "relaod":
-                if arg-2 is "viewLog":
-                    message "%{_AS::CoreLoad::Logo}% &7Rechargement d'AtomicBalistic en cours..."
-                    make player execute command "sk reload AtomicBalistic"
-                    message "%{_AS::CoreLoad::Logo}% &7Rechargement terminé !"
-                else:
-                    message "%{_AS::CoreLoad::Logo}% &7Rechargement d'AtomicBalistic en cours..."
-                    make console execute command "sk reload AtomicBalistic"
-                    message "%{_AS::CoreLoad::Logo}% &7Rechargement terminé !"
             else:
                 message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cAction impossible ! &7-> /AtomicBalisticAdmin help"
                 stop
