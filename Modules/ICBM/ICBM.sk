@@ -586,3 +586,18 @@ on right click on 76:
 
 on load:
 	log "&f[%now% &aSUCESS&f] &7ICBM Chargé"
+
+on command "/aba help":
+	message "&a/AtomicBalisticAdmin ICBM reset <all/silo/frequences> &7Reset le module ICBM suivant les paramètres"
+	message "&a/AtomicBalisticAdmin ICBM giveMissile <list/nom du missile> &7Give un missile"
+command /icbm [<text]:
+	trigger:
+		set {_AS::CoreLoad::Logo} to (yaml value "AtomicBalistic.core.general.prefix" of "AtomicBalistic-Config")
+		set {_AS::CoreLoad::EnabledIcbm} to (yaml value "AtomicBalistic.Modules.ICBM.enable" of "AtomicBalistic-Config")
+		set {_AS::CoreLoad::EnabledPA} to (yaml value "AtomicBalistic.Modules.ParticulesAccelerator.enable" of "AtomicBalistic-Config")
+		set {_AS::CoreLoad::AdminPerm::permission} to (yaml value "AtomicBalistic.core.permissions.admin" of "AtomicBalistic-Config")
+		set {_AS::CoreLoad::AdminPerm::denyMessage} to (yaml value "AtomicBalistic.core.permissions.deny" of "AtomicBalistic-Config")
+		if player has permission "%{_AS::CoreLoad::AdminPerm::permission}%":
+			message "ok"
+
+
