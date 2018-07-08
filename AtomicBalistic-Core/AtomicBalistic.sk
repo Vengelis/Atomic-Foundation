@@ -131,7 +131,25 @@ command /AtomicBalisticAdmin [<text>] [<text>] [<text>] [<text>]:
                     message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cAction impossible ! &7-> /AtomicBalisticAdmin help"
                     stop
             else if arg-1 is "reload" or "relaod":
-                if arg-2 is "aba":
+                if {AS::Core::Modules::%arg-2%} is set:
+                    if arg-3 is "viewLog":
+                        message "%{_AS::CoreLoad::Logo}% &7Rechargement du module..."
+                        wait 1 ticks
+                        make player execute command "sk reload AtomicBalistic/%arg-2%"
+                        message "%{_AS::CoreLoad::Logo}% &7Module &e%arg-2% &7rechargé !"
+                        stop
+                    else:
+                        message "%{_AS::CoreLoad::Logo}% &7Rechargement du module..."
+                        wait 1 ticks
+                        make console execute command "sk reload AtomicBalistic/%arg-2%"
+                        message "%{_AS::CoreLoad::Logo}% &7Module &e%arg-2% &7rechargé !"
+                        stop
+                else if arg-2 is "all":
+                    loop {AS::Core::Modules::*}:
+                        make player execute command "sk reload AtomicBalistic/%loop-value%"
+                        wait 8 seconds
+                    make player execute command "sk reload %script's name%"
+                else:
                     if arg-3 is "viewLog":
                         message "%{_AS::CoreLoad::Logo}% &7Rechargement d'AtomicBalistic en cours..."
                         make player execute command "sk reload AtomicBalistic"
@@ -140,22 +158,6 @@ command /AtomicBalisticAdmin [<text>] [<text>] [<text>] [<text>]:
                         message "%{_AS::CoreLoad::Logo}% &7Rechargement d'AtomicBalistic en cours..."
                         make console execute command "sk reload AtomicBalistic"
                         message "%{_AS::CoreLoad::Logo}% &7Rechargement terminé !"
-                else if {AS::Core::Modules::%arg-3%} is set:
-                    if arg-3 is "viewLog":
-                        message "%{_AS::CoreLoad::Logo}% &7Rechargement du module..."
-                        wait 1 ticks
-                        make player execute command "sk reload AtomicBalistic/%arg-3%"
-                        message "%{_AS::CoreLoad::Logo}% &7Module &e%arg-3% &7rechargé !"
-                        stop
-                    else:
-                        message "%{_AS::CoreLoad::Logo}% &7Rechargement du module..."
-                        wait 1 ticks
-                        make console execute command "sk reload AtomicBalistic/%arg-3%"
-                        message "%{_AS::CoreLoad::Logo}% &7Module &e%arg-3% &7rechargé !"
-                        stop
-                else:
-                    message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cModule non trouvé !"
-                    stop
             else:
                 message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cAction impossible ! &7-> /AtomicBalisticAdmin help"
                 stop
