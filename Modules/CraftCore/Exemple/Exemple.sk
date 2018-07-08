@@ -1,0 +1,21 @@
+on load:
+	if file "plugins/AtomicBalistic/CraftCore/Exemple.yml" doesn't exist:
+		create file "plugins/AtomicBalistic/CraftCore/Exemple.yml"
+		download from "https://raw.githubusercontent.com/Gaby2907/AtomicBalistic/master/Modules/Exemple/Exemple.yml" to "plugins/AtomicBalistic/CraftCore/Exemple.yml"
+
+	if script "AtomicBalistic/CraftCore.sk" is not loaded:
+		reload script "CraftCore.sk"
+	set {_s} to 0
+	while {_ok} is not set:
+		if script "CraftCore.sk" is loaded:
+			set {_ok} to true
+		else:
+			wait 10 seconds
+		if script "CraftCore.sk" is not loaded:
+			message "tentaive échoué" to all players
+		if {_s} is 10:
+			set {_ok} to "error"
+			message "&8&l[&eAtomicFoundation&8-&6Exemple&8&l] &cCraftCore n'a pas pu être chargé." to all players
+		add 1 to {_s}
+	if {_ok} is true:
+		CraftCore_generate("exemple","plugins/AtomicBalistic/CraftCore/Exemple.yml")
