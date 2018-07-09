@@ -95,6 +95,7 @@ function CraftCore_GUI(p: player,page: number,type: text):
 		else if {_s} is 43:
 			set {_s} to 46
 		set {_loopvalue} to loop-value
+		delete {_lore}
 		loop {CraftCore::recipies::%{_loopvalue}%::need::*}:
 			if {_lore} is not set:
 				set {_lore} to "&7- %CraftCore_getName(loop-value-2)% ||"
@@ -114,11 +115,13 @@ function CraftCore_GUI(p: player,page: number,type: text):
 				set {_i} to CraftCore_autoconverter(loop-value-2)
 				remove {_i} from {_p}'s inventory
 			give CraftCore_autoconverter({CraftCore::recipies::%{_loopvalue}%::result}) to {_p}
-			message "&7L'item a bien été crafté..." to {_p} 
+			message "&7L'item a bien été crafté..." to {_p}
+		add 1 to {_s}
+
 
 function CraftCore_generate(m: text,path: text):
 	if file "%{_path}%" exists:
-		set {_m2} to "AtomicFoundation-%{_m}%"
+		set {_m2} to "CoreCraft-%{_m}%"
 		load yaml {_path} as {_m2}
 		delete {CraftCore::info::%{_m}%}
 		set {CraftCore::info::%{_m}%} to (yaml value "CraftCore.item" of {_m2})
@@ -136,7 +139,6 @@ function CraftCore_generate(m: text,path: text):
 			set {_id} to "%{_m}%-%loop-value%"
 			set {CraftCore::IDrecipies::%{_m}%::%loop-value%} to {_id}
 			set {CraftCore::recipies::%{_id}%::result} to skript-yaml value "CraftCore.Recipies.%loop-value%.result" from {_m2}
-			set {CraftCore::recipies::%{_id}%::result} to {CraftCore::recipies::%{_id}%::result} parsed as item
 			set {CraftCore::recipies::%{_id}%::need::*} to yaml list "CraftCore.Recipies.%loop-value%.resources" from {_m2}
 	else:
 		message "&8&l[&eAtomicFoundation&8-&6%{_m}%&8&l] &cLe fichier &7%{_path}% &c n'as pas pu être chargé." to all players
@@ -155,7 +157,7 @@ function CraftCore_autoconverter(t: text) :: item:
 			set lore of {_item} to colored {_v}
 	if {_ok} is true:
 		return {_item}
-	message "&8&l[&eAtomicFoundation&8-&6CraftCore&8&l] &7%{_t}% &c n'est pas un item valide." to all players
+	message "&8&l[&eAtomicFoundation&8-&6CraftCore&8&l] &7%{_t}% &c n'est pas un item valide. autoconverter" to all players
 	stop
 function CraftCore_getName(t: text) :: text:
 	set {_text::*} to {_t} split at " -"
@@ -164,12 +166,18 @@ function CraftCore_getName(t: text) :: text:
 		if {_t} contains "--name":
 			if loop-value contains "-name":
 				set {_r} to colored {_data::2}
-				return {_r}
+			if loop-value contains "-item":
+				set {_item} to {_data::2} parsed as item
+				set {_n} to item amount of {_item}
 		else:
 			if loop-value contains "-item":
 				set {_r} to colored {_data::2}
 				return {_r}
-	message "&8&l[&eAtomicFoundation&8-&6CraftCore&8&l] &7%{_t}% &c n'est pas un item valide." to all players
+	if {_r} is set:
+		if {_n} is set:
+			set {_f} to "%{_n}% %{_r}%"
+			return {_f}
+	message "&8&l[&eAtomicFoundation&8-&6CraftCore&8&l] &7%{_t}% &c n'est pas un item valide. getNAME" to all players
 	stop
 function CraftCore_hasItem(i: item,p: player) :: boolean:
 	set {_ok} to false
