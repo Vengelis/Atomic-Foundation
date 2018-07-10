@@ -27,4 +27,4 @@ Si possible, mettez des screenshots
 - Script: version du script
 
 **Autre**
-Donnez d'autres précisions
+Donnez d'autres précisionssi possible. Cela permettera une résolution plus rapide du problème.
