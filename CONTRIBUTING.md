@@ -16,7 +16,7 @@ de bug ne sera pas pris en compte.
 
 Avant de rapporter un bug, vérifiez qu'il n'a pas encore été rapporté.
 
-Pour rapporter un bug, lisez le "ISSUE_TEMPLATE.md" (https://github.com/Gaby2907/AtomicBalistic/tree/master/.github/ISSUE_TEMPLATE)
+Pour rapporter un bug, lisez le "ISSUE_TEMPLATE.md" (https://github.com/Gaby2907/Atomic-Foundation/blob/master/.github/ISSUE_TEMPLATE/rapport-de-bug.md)
 
 Restez poli et patient :)
 
