@@ -4,8 +4,8 @@ CraftCore:
   item: --item:1 crafting table --name:&eExemple --lore:&7Ceci est juste un exemple ^^
 
   Recipies:
-    iron gear:
-      result: --item:1 iron ingot --name:&ciron gear --lore:&7Un iron gear
+    irongear:
+      result: --item:1 iron ingot --name:&eiron gear --lore:&7Un iron gear
       resources:
         - --item:4 iron ingot
 

@@ -86,13 +86,13 @@ function CraftCore_GUI(p: player,page: number,type: text):
 
 	set {_s} to 10
 	loop {_list.%{_i}%::*}:
-		if {_s} is 16:
+		if {_s} is 17:
 			set {_s} to 19
-		else if {_s} is 25:
+		else if {_s} is 26:
 			set {_s} to 28
-		else if {_s} is 34:
+		else if {_s} is 35:
 			set {_s} to 37
-		else if {_s} is 43:
+		else if {_s} is 44:
 			set {_s} to 46
 		set {_loopvalue} to loop-value
 		delete {_lore}
@@ -121,7 +121,7 @@ function CraftCore_GUI(p: player,page: number,type: text):
 
 function CraftCore_generate(m: text,path: text):
 	if file "%{_path}%" exists:
-		set {_m2} to "CoreCraft-%{_m}%"
+		set {_m2} to "CraftCore-%{_m}%"
 		load yaml {_path} as {_m2}
 		delete {CraftCore::info::%{_m}%}
 		set {CraftCore::info::%{_m}%} to (yaml value "CraftCore.item" of {_m2})
@@ -134,14 +134,14 @@ function CraftCore_generate(m: text,path: text):
 				set {CraftCore::order::%{_test}%} to loop-index
 			set {_test} to loop-index
 		delete {CraftCore::IDrecipies::%{_m}%::*}
-		loop yaml nodes "CraftCore.Recipies" of {_m2}:
+		loop yaml node list "CraftCore.Recipies" of {_m2}:
 #		set {_list::*} to skript-yml nodes "CraftCore.Recipies" from "%{_m2}%"
 			set {_id} to "%{_m}%-%loop-value%"
 			set {CraftCore::IDrecipies::%{_m}%::%loop-value%} to {_id}
-			set {CraftCore::recipies::%{_id}%::result} to skript-yaml value "CraftCore.Recipies.%loop-value%.result" from {_m2}
-			set {CraftCore::recipies::%{_id}%::need::*} to yaml list "CraftCore.Recipies.%loop-value%.resources" from {_m2}
+			set {CraftCore::recipies::%{_id}%::result} to skript-yaml value "%loop-value%.result" from {_m2}
+			set {CraftCore::recipies::%{_id}%::need::*} to yaml list "%loop-value%.resources" from {_m2}
 	else:
-		message "&8&l[&eAtomicFoundation&8-&6%{_m}%&8&l] &cLe fichier &7%{_path}% &c n'as pas pu être chargé." to all players
+		message "&8&l[&eAtomicFoundation&8-&6%{_m}%&8&l] &cLe fichier &7%{_path}% &c n'as pas pu être chargé. ->Generate" to all players
 
 function CraftCore_autoconverter(t: text) :: item:
 	set {_text::*} to {_t} split at " -"
@@ -157,7 +157,7 @@ function CraftCore_autoconverter(t: text) :: item:
 			set lore of {_item} to colored {_v}
 	if {_ok} is true:
 		return {_item}
-	message "&8&l[&eAtomicFoundation&8-&6CraftCore&8&l] &7%{_t}% &c n'est pas un item valide. autoconverter" to all players
+	message "&8&l[&eAtomicFoundation&8-&6CraftCore&8&l] &7%{_t}% &c n'est pas un item valide. -> autoconverter" to all players
 	stop
 function CraftCore_getName(t: text) :: text:
 	set {_text::*} to {_t} split at " -"
@@ -177,7 +177,7 @@ function CraftCore_getName(t: text) :: text:
 		if {_n} is set:
 			set {_f} to "%{_n}% %{_r}%"
 			return {_f}
-	message "&8&l[&eAtomicFoundation&8-&6CraftCore&8&l] &7%{_t}% &c n'est pas un item valide. getNAME" to all players
+	message "&8&l[&eAtomicFoundation&8-&6CraftCore&8&l] &7%{_t}% &c n'est pas un item valide. ->NAME" to all players
 	stop
 function CraftCore_hasItem(i: item,p: player) :: boolean:
 	set {_ok} to false
