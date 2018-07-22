@@ -46,7 +46,7 @@
 #   | Thermobarique     |   Missile eignant un boost d'explosion de +25 en force. La force du missile sera donc de  |
 #   |                   |   la force renseignée dans le fichier de configuration +10.                               |
 #   #-------------------#-------------------------------------------------------------------------------------------#
-#   | Nucleraire        |   Comme pour le thermobarique mais avec un boost de +75                                   |
+#   | Nucleaire         |   Comme pour le thermobarique mais avec un boost de +75                                   |
 #   #-------------------#-------------------------------------------------------------------------------------------#
 #   | Anti-matière      |   Necéssite le module Accélérateur de particules ! Le rayon de déintégration est défini   |
 #   |                   |   par la force du missile. Le nombre de frappe est ignorée.                               |
@@ -201,7 +201,7 @@ ICBM:
             # Type de missile
             Type: ICBM
             
-        # Nucleraire
+        # Nucleaire
         
         RD-B-Musudan:
             # Nom du missile
@@ -211,7 +211,7 @@ ICBM:
             # Nombre de frappe du missile
             Frappe: 5
             # Classe du missile
-            Classe: Nucleraire
+            Classe: Nucleaire
             # Type de missile
             Type: IRBM
         R-36:
@@ -222,7 +222,7 @@ ICBM:
             # Nombre de frappe du missile
             Frappe: 7
             # Classe du missile
-            Classe: Nucleraire
+            Classe: Nucleaire
             # Type de missile
             Type: ICBM
         
@@ -240,15 +240,150 @@ ICBM:
             # Type de missile
             Type: ICBM
             
-            
     Configuration:
         Missile:
             Roquette:
-                # Portée maximale en blocs des missiles Roquette
-                Protee: 500
+                Distance: 500
             IRBM:
-                # Portée maximale en blocs des missiles IRBM
-                Portee: 1000
+                Distance: 1000
             ICBM:
-                # Portée maximale en blocs des missiles IRBM
-                Portee: 10000
+                Distance: 10000
+    Recipe:
+        item: --item:1 tnt --name:&cICBM Missiles --lore:&7Craftez les missiles d'ICBM
+        Missile:
+            missileModule:
+              desc: §3Module
+              result: --item:1 spectral arrow --name:&6Missile Module
+              resources:
+                  - --item:3 blocks disc --name:&eAdvance Printed Circuit
+                  - --item:1 wait disc --name:&eElite Printed Circuit
+                  - --item:10 redstone
+                  - --item:5 redstone repeater
+                  - --item:1 observer
+            FIM-92-Stinger:
+              desc: Roquette - &aConventionnel
+              result: --item:1 arrow --name:&6ICBM|FIM-92-Stinger
+              resources:
+                  - --item:1 spectral arrow --name:&6Missile Module
+                  - --item:5 tnt
+                  - --item:1 arrow 
+            MIM-3-Nike-Ajax:
+              desc: Roquette - &aConventionnel
+              result: --item:1 arrow --name:&6ICBM|MIM-3-Nike-Ajax
+              resources:
+                  - --item:1 spectral arrow --name:&6Missile Module
+                  - --item:7 tnt
+                  - --item:1 arrow 
+            PGM-17-Thor:
+              desc: IRBM - &aConventionnel
+              result: --item:1 arrow --name:&6ICBM|PGM-17-Thor
+              resources:
+                  - --item:1 spectral arrow --name:&6Missile Module
+                  - --item:12 tnt
+                  - --item:3 arrow
+            Minuteman-III:
+              desc: ICBM - &aConventionnel
+              result: --item:1 arrow --name:&6ICBM|Minuteman-III
+              resources:
+                  - --item:1 spectral arrow --name:&6Missile Module
+                  - --item:12 tnt
+                  - --item:5 arrow
+                  
+            TOS-1:
+              desc: Roquette - &6Incendiaire
+              result: --item:1 arrow --name:&6ICBM|TOS-1
+              resources:
+                  - --item:1 spectral arrow --name:&6Missile Module
+                  - --item:10 tnt
+                  - --item:2 lava buckket
+                  - --item:1 flint and steel
+                  - --item:1 arrow
+            Missile-S3:
+              desc: IRBM - &6Incendiaire
+              result: --item:1 arrow --name:&6ICBM|Missile-S3
+              resources:
+                  - --item:1 spectral arrow --name:&6Missile Module
+                  - --item:15 tnt
+                  - --item:2 lava buckket
+                  - --item:1 flint and steel
+                  - --item:1 arrow
+            RT-21:
+              desc: ICBM - &6Incendiaire
+              result: --item:1 arrow --name:&6ICBM|RT-21
+              resources:
+                  - --item:1 spectral arrow --name:&6Missile Module
+                  - --item:15 tnt
+                  - --item:2 lava buckket
+                  - --item:1 flint and steel
+                  - --item:1 arrow
+            
+            V-2:
+              desc: IRBM - &9Breche
+              result: --item:1 arrow --name:&6ICBM|V-2
+              resources:
+                  - --item:1 spectral arrow --name:&6Missile Module
+                  - --item:5 tnt
+                  - --item:4 arrow
+                  - --item:1 chest
+            
+            Agni-IV:
+              desc: IRBM - &5Sonic
+              result: --item:1 arrow --name:&6ICBM|Agni-IV
+              resources:
+                  - --item:1 spectral arrow --name:&6Missile Module
+                  - --item:12 tnt
+                  - --item:5 arrow
+                  - --item:10 dispenser
+                  - --item:2 redstone block
+                  
+            DF-3A:
+              desc: IRBM - &cThermobarique
+              result: --item:1 arrow --name:&6ICBM|DF-3A
+              resources:
+                  - --item:1 spectral arrow --name:&6Missile Module
+                  - --item:1 arrow --name:&6ICBM|MIM-3-Nike-Ajax
+                  - --item:30 tnt
+                  - --item:3 arrow
+                  - --item:5 chest
+                  - --item:10 redstone block
+            UR-100:
+              desc: ICBM - &cThermobarique
+              result: --item:1 arrow --name:&6ICBM|UR-100
+              resources:
+                  - --item:1 spectral arrow --name:&6Missile Module
+                  - --item:1 arrow --name:&6ICBM|DF-3A
+                  - --item:10 tnt
+                  - --item:5 arrow
+                  - --item:2 redstone block
+            
+            RD-B-Musudan:
+              desc: IRBM - &2Nucleaire
+              result: --item:1 arrow --name:&6ICBM|RD-B-Musudan
+              resources:
+                  - --item:1 spectral arrow --name:&6Missile Module
+                  - --item:1 arrow --name:&6ICBM|UR-100
+                  - --item:20 tnt
+                  - --item:5 arrow
+                  - --item:2 redstone block
+            R-36:
+              desc: ICBM - &2Nucleaire
+              result: --item:1 arrow --name:&6ICBM|R-36
+              resources:
+                  - --item:1 spectral arrow --name:&6Missile Module
+                  - --item:1 arrow --name:&6ICBM|RD-B-Musudan
+                  - --item:7 arrow
+                  - --item:10 redstone block
+            
+            RS-20:
+              desc: ICBM - &4Anti-Matière
+              result: --item:1 arrow --name:&6ICBM|RS-20
+              resources:
+                  - --item:1 spectral arrow --name:&6Missile Module
+                  - --item:1 arrow --name:&6ICBM|R-36
+                  - --item:9 nether star
+                  - --item:10 iron block
+                  - --item:1 arrow
+                  - --item:25 redstone block
+            
+            
+            
