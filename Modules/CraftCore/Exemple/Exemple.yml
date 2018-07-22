@@ -5,7 +5,7 @@ CraftCore:
 
   Recipies:
     irongear:
-      result: --item:1 iron ingot --name:&ciron gear --lore:&7Un iron gear
+      result: --item:1 iron ingot --name:&eiron gear --lore:&7Un iron gear
       resources:
         - --item:4 iron ingot
 
