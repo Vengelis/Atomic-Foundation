@@ -1,13 +1,13 @@
 on load:
-	if file "plugins/AtomicBalistic/CraftCore/Exemple.yml" doesn't exist: 
-		create file "plugins/AtomicBalistic/CraftCore/Exemple.yml"
+	if file "plugins/AtomicFoundation/CraftCore/Exemple.yml" doesn't exist: 
+		create file "plugins/AtomicFoundation/CraftCore/Exemple.yml"
 		download from "https://raw.githubusercontent.com/Gaby2907/AtomicBalistic/master/Modules/Exemple/Exemple.yml" to "plugins/AtomicBalistic/CraftCore/Exemple.yml"
 
-	if script "AtomicBalistic/CraftCore.sk" is not loaded:
-		reload script "AtomicBalistic/CraftCore.sk"
+	if script "AtomicFoundation/CraftCore.sk" is not loaded:
+		reload script "AtomicFoundation/CraftCore.sk"
 	set {_s} to 0
 	while {_ok} is not set:
-		if script "AtomicBalistic/CraftCore.sk" is loaded:
+		if script "AtomicFoundation/CraftCore.sk" is loaded:
 			set {_ok} to true
 		else:
 			wait 10 seconds
@@ -16,4 +16,4 @@ on load:
 			message "&8&l[&eAtomicFoundation&8-&6Exemple&8&l] &cCraftCore n'a pas pu être chargé." to all players
 		add 1 to {_s}
 	if {_ok} is true:
-		CraftCore_generate("exemple","plugins/AtomicBalistic/CraftCore/Exemple.yml")
+		CraftCore_generate("exemple","plugins/AtomicFoundation/CraftCore/Exemple.yml")
