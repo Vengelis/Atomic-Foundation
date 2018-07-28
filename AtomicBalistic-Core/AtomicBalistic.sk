@@ -145,12 +145,19 @@ command /AtomicBalisticAdmin [<text>] [<text>] [<text>] [<text>]:
 						message "%{_AS::CoreLoad::Logo}% &7Module &e%arg-2% &7rechargé !"
 						stop
 				else if arg-2 is "all":
-					loop {AS::Core::Modules::*}:
-						make player execute command "sk reload AtomicBalistic/%uncolored loop-value%"
-						message "reload de %uncolored loop-value%"
-						wait 8 seconds
-						message "fin du reload"
-					make player execute command "sk reload %script's name%"
+					if arg-3 is "viewLog":
+						loop {AS::Core::Modules::*}:
+							make player execute command "sk reload AtomicBalistic/%uncolored loop-value%"
+							message "&aReload de &a&b%uncolored loop-value%"
+							wait 8 seconds
+							message "&aFin du reload de &a&b%uncolored loop-value%"
+						make player execute command "sk reload %script's name%"
+					else:
+						loop {AS::Core::Modules::*}:
+							make console execute command "sk reload AtomicBalistic/%uncolored loop-value%"
+							wait 8 seconds
+						make console execute command "sk reload %script's name%"
+						message "&aFin du reload."
 				else:
 					if arg-3 is "viewLog":
 						message "%{_AS::CoreLoad::Logo}% &7Rechargement d'AtomicBalistic en cours..."
