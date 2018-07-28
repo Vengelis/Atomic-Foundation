@@ -169,6 +169,6 @@ command /AtomicBalisticAdmin [<text>] [<text>] [<text>] [<text>]:
 						message "%{_AS::CoreLoad::Logo}% &7Rechargement terminé !"
 			else:
 				message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cAction impossible ! &7-> /AtomicBalisticAdmin help"
-				stop
+				
 on load:
 	log "&a[%now% SUCESS] &7AtomicBalistic full chargé"
