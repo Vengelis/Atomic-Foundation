@@ -8,7 +8,7 @@
 #===================================================================================================================================# 
 
 options:
-	version: 1.1.0a-build
+	version: 1.1.0b-build
 
 #===================================================================================================================================#
 #   Necessite AtomicBalisitc pour le chargement des configurations !
@@ -1072,6 +1072,7 @@ on right click on iron pressure plate:
 																												loop {_ICBM::MissileInConfigForce} times:
 																													loop {_ICBM::MissileInConfigForce} times:
 																														set block at location {_ploc}'s x-coordinate+loop-value-3, {_ploc}'s y-coordinate-3+2, {_ploc}'s z-coordinate+loop-value-4 to lava		
+																											
 																											if {_ICBM::MissileInConfigClasse} is "Breche":
 																												create an explosion of force {_ICBM::MissileInConfigForce} at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-{_count}, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
 																												loop 30 times:
@@ -1157,10 +1158,30 @@ on right click on iron pressure plate:
 																											loop {_ICBM::MissileInConfigFrappe} times:
 																												if {_ICBM::MissileInConfigClasse} is "Nucleaire":
 																													create an explosion of force ({_ICBM::MissileInConfigForce} + 75) at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate - {_count}, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
+																													loop 12 times:
+																														set {_num} to loop-value
+																														if mod({_num}, 2) is 1:
+																															loop blocks in radius {_num} of {_loc}:
+																																if distance between loop-value-2 and {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} is greater than {_num} - 0.5:
+																																	if y-coord of loop-value-2 is less than or equal to {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coord:
+																																		create explosion with force 8 at loop-value-2
+																															wait 1 tick
+																															loop 30 times:
+																																loop all living entities in radius 20 of {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}:
+																																	apply wither 1 to loop-entity for 60 seconds
+																																wait 1 second
+																												
 																												if {_ICBM::MissileInConfigClasse} is "Conventionnel":
 																													create an explosion of force ({_ICBM::MissileInConfigForce} + 5) at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate - 3, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
 																													create an explosion of force ({_ICBM::MissileInConfigForce} + 5) at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate + 3, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
 																												if {_ICBM::MissileInConfigClasse} is "Incendiaire":
+																												create an explosion of force 5 at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate - {_count}, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
+																												set {_location.%player%} to location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
+																												loop 15 times:
+																													loop blocks in radius loop-value of {_location.%player%} where [block input is air]:
+																														set block at loop-value-2 to fire
+																													wait 1 tick
+																												if {_ICBM::MissileInConfigClasse} is "Nova":
 																													create an explosion of force 5 at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate - {_count}, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
 																													set {_ICBM::MissileInConfigForceReduc} to ({_ICBM::MissileInConfigForce} / 2)
 																													set {_ploc} to block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate-{_ICBM::MissileInConfigForceReduc}, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate-{_ICBM::MissileInConfigForceReduc}
@@ -1174,8 +1195,7 @@ on right click on iron pressure plate:
 																													loop {_ICBM::MissileInConfigForce} times:
 																														loop {_ICBM::MissileInConfigForce} times:
 																															if {_getWhere} is "E":
-																																if {_getWhere} is "E":
-																																	set block at location {_ploc}'s x-coordinate+loop-value-3, {_ploc}'s y-coordinate-3-1, {_ploc}'s z-coordinate+loop-value-4 to lava
+																																set block at location {_ploc}'s x-coordinate+loop-value-3, {_ploc}'s y-coordinate-3-1, {_ploc}'s z-coordinate+loop-value-4 to lava
 																													loop {_ICBM::MissileInConfigForce} times:
 																														loop {_ICBM::MissileInConfigForce} times:
 																															if {_getWhere} is "E":
@@ -1186,8 +1206,8 @@ on right click on iron pressure plate:
 																																set block at location {_ploc}'s x-coordinate+loop-value-3, {_ploc}'s y-coordinate-3+1, {_ploc}'s z-coordinate+loop-value-4 to lava
 																													loop {_ICBM::MissileInConfigForce} times:
 																														loop {_ICBM::MissileInConfigForce} times:
-																															if {_getWhere} is "E":
-																																set block at location {_ploc}'s x-coordinate+loop-value-3, {_ploc}'s y-coordinate-3+2, {_ploc}'s z-coordinate+loop-value-4 to lava		
+																															set block at location {_ploc}'s x-coordinate+loop-value-3, {_ploc}'s y-coordinate-3+2, {_ploc}'s z-coordinate+loop-value-4 to lava		
+																												
 																												if {_ICBM::MissileInConfigClasse} is "Breche":
 																													create an explosion of force {_ICBM::MissileInConfigForce} at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-{_count}, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
 																													add 5 to {_count}
