@@ -8,7 +8,7 @@
 #===================================================================================================================================# 
 
 options:
-	version: 1.1.0d-build
+	version: 1.1.0e-build
 
 #===================================================================================================================================#
 #   Necessite AtomicBalisitc pour le chargement des configurations !
@@ -1175,8 +1175,8 @@ on right click on iron pressure plate:
 																													create an explosion of force ({_ICBM::MissileInConfigForce} + 5) at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate - 3, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
 																													create an explosion of force ({_ICBM::MissileInConfigForce} + 5) at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate + 3, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
 																												if {_ICBM::MissileInConfigClasse} is "Incendiaire":
-																													create an explosion of force 5 at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-																													set {_location.%player%} to location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
+																													create an explosion of force 5 at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}
+																													set {_location.%player%} to location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}
 																													loop 15 times:
 																														loop blocks in radius loop-value of {_location.%player%} where [block input is air]:
 																															set block at loop-value-2 to fire
