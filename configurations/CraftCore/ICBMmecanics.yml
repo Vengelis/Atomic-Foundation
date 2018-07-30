@@ -1,0 +1,33 @@
+CraftCore:
+  version: 0.1
+  name: ICBM
+  item: --item:1 tnt --name:&cICBM Mecanics --lore:&7Craftez les objets et machines d'ICBM
+
+  Recipies:
+    siloRemote:
+      result: --item:1 redstone repeater --name:&cRemote Silo Controler
+      resources:
+          - --item:3 blocks disc --name:&eAdvance Printed Circuit
+          - --item:1 wait disc --name:&eElite Printed Circuit
+          - --item:1 heavy pressure plate
+          - --item:5 redstone repeater
+    basicCircuit:
+      result: --item:1 green disc --name:&eBasic Printed Circuit
+      resources:
+          - --item:3 redstone
+          - --item:1 heavy pressure plate
+          - --item:1 redstone repeater
+    advancedCircuit:
+      result: --item:1 blocks disc --name:&eAdvance Printed Circuit
+      resources:
+          - --item:3 --item:1 green disc --name:&eBasic Printed Circuit
+          - --item:1 heavy pressure plate
+          - --item:3 redstone
+          - --item:1 diamond
+    eliteCircuit:
+      result: --item:1 wait disc --name:&eElite Printed Circuit
+      resources:
+          - --item:3 blocks disc --name:&eAdvance Printed Circuit
+          - --item:1 heavy pressure plate
+          - --item:3 redstone
+          - --item:1 diamond

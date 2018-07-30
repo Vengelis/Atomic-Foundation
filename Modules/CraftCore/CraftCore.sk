@@ -1,0 +1,195 @@
+#
+#    .------..------..------..------..------..------..------..------..------.
+#    |C.--. ||R.--. ||A.--. ||F.--. ||T.--. ||C.--. ||O.--. ||R.--. ||E.--. |
+#    | :/\: || :(): || (\/) || :(): || :/\: || :/\: || :/\: || :(): || (\/) |
+#    | :\/: || ()() || :\/: || ()() || (__) || :\/: || :\/: || ()() || :\/: |
+#    | '--'C|| '--'R|| '--'A|| '--'F|| '--'T|| '--'C|| '--'O|| '--'R|| '--'E|
+#    `------'`------'`------'`------'`------'`------'`------'`------'`------'
+#
+#									By uiytt
+#
+on right click on crafting table:
+	set {_ok} to true
+	set {_block} to block above clicked block
+	loop 2 times:
+		if {_block} is not a black wool:
+			set {_ok} to false
+		loop all blocks in radius 1 around {_block}:
+			if y location of loop-block is y location of {_block}:
+				if loop-block is not {_block}:
+					if loop-block is not iron block:
+						set {_ok} to false
+		if block 1 west 1 south of {_block} is not iron block:
+			set {_ok} to false
+		if block 1 west 1 north of {_block} is not iron block:
+			set {_ok} to false
+		if block 1 east 1 south of {_block} is not iron block:
+			set {_ok} to false
+		if block 1 east 1 north of {_block} is not iron block:
+			set {_ok} to false
+		set {_block} to block under clicked block
+	if block 1 west 1 south of clicked block is not black glass block:
+		set {_ok} to false
+	if block 1 west 1 north of clicked block is not black glass block:
+		set {_ok} to false
+	if block 1 east 1 south of clicked block is not black glass block:
+		set {_ok} to false
+	if block 1 east 1 north of clicked block is not black glass block:
+		set {_ok} to false
+	if {_ok} is true:
+		cancel event
+		CraftCore_GUI(player,1,"all")
+
+function CraftCore_GUI(p: player,page: number,type: text):
+	set {_s} to 1
+	set {_i} to 1
+	if {_type} is "all":
+		loop {CraftCore::info::*}:
+			loop {CraftCore::IDrecipies::%loop-index%::*}:
+				add loop-value-2 to {_list::*}
+	else:
+		set {_list::*} to {CraftCore::IDrecipies::%{_type}%::*}
+	loop {_list::*}:
+		if {_s} is 29:
+			add 1 to {_i}
+			set {_s} to 1
+		add loop-value to {_list.%{_i}%::*}
+		add 1 to {_s}
+	open virtual chest inventory with size 6 with name "&8Craftez un objet" to {_p}
+	make a gui slot 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 44, 45, 46, 48, 50, 52 and 53 of {_p} with 1 gray stained glass pane named "&f"
+	if {_page} is not 1:
+		make a gui slot 47 of {_p} with skull of ("MHF_ArrowLeft" parsed as an offline player) named "Page précédante" to run:
+			set {_page2} to {_page} - 1
+			CraftCore_GUI({_p},{_page2},{_type})
+	else:
+		make a gui slot 47 of {_p} with 1 gray stained glass pane named "&f"
+	set {_i2} to {_page} + 1
+	if {_player.%{_i2}%::*} is set:
+		make a gui slot 51 of {_p} with skull of ("MHF_ArrowRight" parsed as an offline player) named "Page suivante" to run:
+			CraftCore_GUI({_p},{_i2},{_type})
+	else:
+		make a gui slot 51 of {_p} with 1 gray stained glass pane named "&f"
+	if {_type} is "all":
+		make a gui slot 49 of {_p} with 1 light green dye named "&aAll" with lore "||||&a>> &lCliquez pour changer" to run:
+			if {CraftCore::order::ALL} is set:
+				CraftCore_GUI({_p},1,{CraftCore::order::ALL})
+			else:
+				message "&8&l[&eAtomicFoundation&8-&6CraftCore&8&l] &7Aucun module installé." to {_p}
+				close {_p}'s inventory
+	else:
+		if {CraftCore::order::%{_type}%} is set:
+			make a gui slot 49 of {_p} with {CraftCore::info::%{_type}%} to run:
+				CraftCore_GUI({_p},1,{CraftCore::order::%{_type}%})
+		else:
+			make a gui slot 49 of {_p} with {CraftCore::info::%{_type}%} to run:
+				CraftCore_GUI({_p},1,"all")
+
+	set {_s} to 10
+	loop {_list.%{_i}%::*}:
+		if {_s} is 17:
+			set {_s} to 19
+		else if {_s} is 26:
+			set {_s} to 28
+		else if {_s} is 35:
+			set {_s} to 37
+		else if {_s} is 44:
+			set {_s} to 46
+		set {_loopvalue} to loop-value
+		delete {_lore}
+		loop {CraftCore::recipies::%{_loopvalue}%::need::*}:
+			if {_lore} is not set:
+				set {_lore} to "&7- %CraftCore_getName(loop-value-2)% ||"
+			else:
+				set {_lore} to "%{_lore}%&7- %CraftCore_getName(loop-value-2)% ||"
+		set {_item} to CraftCore_autoconverter({CraftCore::recipies::%{_loopvalue}%::result})
+		make a gui slot {_s} of {_p} with {_item} with lore {_lore} to run:
+			set {_ok} to true
+			loop {CraftCore::recipies::%{_loopvalue}%::need::*}:
+				set {_i} to CraftCore_autoconverter(loop-value-2)
+				if CraftCore_hasItem({_i},{_p}) is false:
+					set {_ok} to CraftCore_getName(loop-value-2)
+			if {_ok} is not true:
+				message "&8&l[&eAtomicFoundation&8-&6CraftCore&8&l] &7Il vous manque : %{_ok}%" to {_p}
+				stop
+			loop {CraftCore::recipies::%{_loopvalue}%::need::*}:
+				set {_i} to CraftCore_autoconverter(loop-value-2)
+				remove {_i} from {_p}'s inventory
+			give CraftCore_autoconverter({CraftCore::recipies::%{_loopvalue}%::result}) to {_p}
+			message "&7L'item a bien été crafté..." to {_p}
+		add 1 to {_s}
+
+
+function CraftCore_generate(m: text,path: text):
+	if file "%{_path}%" exists:
+		set {_m2} to "CraftCore-%{_m}%"
+		load yaml {_path} as {_m2}
+		delete {CraftCore::info::%{_m}%}
+		set {CraftCore::info::%{_m}%} to (yaml value "CraftCore.item" of {_m2})
+		set {CraftCore::info::%{_m}%} to CraftCore_autoconverter({CraftCore::info::%{_m}%})
+		delete {CraftCore::order::*}
+		loop {CraftCore::info::*}:
+			if {_test} is not set:
+				set {CraftCore::order::ALL} to loop-index
+			else:
+				set {CraftCore::order::%{_test}%} to loop-index
+			set {_test} to loop-index
+		delete {CraftCore::IDrecipies::%{_m}%::*}
+		loop yaml node list "CraftCore.Recipies" of {_m2}:
+#		set {_list::*} to skript-yml nodes "CraftCore.Recipies" from "%{_m2}%"
+			set {_id} to "%{_m}%-%loop-value%"
+			set {CraftCore::IDrecipies::%{_m}%::%loop-value%} to {_id}
+			set {CraftCore::recipies::%{_id}%::result} to skript-yaml value "%loop-value%.result" from {_m2}
+			set {CraftCore::recipies::%{_id}%::need::*} to yaml list "%loop-value%.resources" from {_m2}
+	else:
+		message "&8&l[&eAtomicFoundation&8-&6%{_m}%&8&l] &cLe fichier &7%{_path}% &c n'as pas pu être chargé. ->Generate" to all players
+
+function CraftCore_autoconverter(t: text) :: item:
+	set {_text::*} to {_t} split at " -"
+	loop {_text::*}:
+		set {_data::*} to loop-value split at ":"
+		set {_v} to "%{_data::2}%"
+		if loop-value contains "-item":
+			set {_ok} to true
+			set {_item} to {_v} parsed as item
+		if loop-value contains "-name":
+			set name of {_item} to colored {_v}
+		if loop-value contains "-lore":
+			set lore of {_item} to colored {_v}
+	if {_ok} is true:
+		return {_item}
+	message "&8&l[&eAtomicFoundation&8-&6CraftCore&8&l] &7%{_t}% &c n'est pas un item valide. -> autoconverter" to all players
+	stop
+function CraftCore_getName(t: text) :: text:
+	set {_text::*} to {_t} split at " -"
+	loop {_text::*}:
+		set {_data::*} to loop-value split at ":"
+		if {_t} contains "--name":
+			if loop-value contains "-name":
+				set {_r} to colored {_data::2}
+			if loop-value contains "-item":
+				set {_item} to {_data::2} parsed as item
+				set {_n} to item amount of {_item}
+		else:
+			if loop-value contains "-item":
+				set {_r} to colored {_data::2}
+				return {_r}
+	if {_r} is set:
+		if {_n} is set:
+			set {_f} to "%{_n}% %{_r}%"
+			return {_f}
+	message "&8&l[&eAtomicFoundation&8-&6CraftCore&8&l] &7%{_t}% &c n'est pas un item valide. ->NAME" to all players
+	stop
+function CraftCore_hasItem(i: item,p: player) :: boolean:
+	set {_ok} to false
+	loop all items in {_p}'s inventory:
+		if loop-item is {_i}:
+			set {_ok} to true
+	return {_ok}
+
+
+
+
+
+
+
+

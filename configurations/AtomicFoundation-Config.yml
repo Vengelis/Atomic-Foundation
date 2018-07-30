@@ -1,0 +1,18 @@
+AtomicFoundation:
+  core:
+    general:
+      prefix: §7§l[§c§lAtomic§6Balistic§7§l] §8>
+      name: AtomicFoundation
+    permissions:
+      admin: AtomicFoundation.admin
+      mod: AtomicFoundation.mod
+      player: AtomicFoundation.player
+      deny: §4Erreur ! §cVous n'avez pas la permission d'executer cette commande !
+    autoUpdater:
+      enable: 'true'
+      forcoming: 'true'
+  Modules:
+    ICBM:
+      enable: 'true'
+    ParticulesAccelerator:
+      enable: 'false'

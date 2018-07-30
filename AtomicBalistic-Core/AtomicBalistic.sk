@@ -170,5 +170,6 @@ command /AtomicBalisticAdmin [<text>] [<text>] [<text>] [<text>]:
 			else:
 				message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cAction impossible ! &7-> /AtomicBalisticAdmin help"
 				
+
 on load:
 	log "&a[%now% SUCESS] &7AtomicBalistic full chargé"
