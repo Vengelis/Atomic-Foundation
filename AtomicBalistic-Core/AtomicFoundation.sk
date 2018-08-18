@@ -1,0 +1,163 @@
+#===================================================================================================================================#
+#     _      _                         _          _____                               _           _     _                 
+#    / \    | |_    ___    _ __ ___   (_)   ___  |  ___|   ___    _   _   _ __     __| |   __ _  | |_  (_)   ___    _ __  
+#   / _ \   | __|  / _ \  | '_ ` _ \  | |  / __| | |_     / _ \  | | | | | '_ \   / _` |  / _` | | __| | |  / _ \  | '_ \ 
+#  / ___ \  | |_  | (_) | | | | | | | | | | (__  |  _|   | (_) | | |_| | | | | | | (_| | | (_| | | |_  | | | (_) | | | | |
+# /_/   \_\  \__|  \___/  |_| |_| |_| |_|  \___| |_|      \___/   \__,_| |_| |_|  \__,_|  \__,_|  \__| |_|  \___/  |_| |_|
+#                                                                                                                         
+#							   By Vengelis_
+#
+#===================================================================================================================================# 
+
+options:
+
+	version: 1.1a-alpha
+
+on load:
+	log "&9[%now% INFO] &7Chargement du fichier de configuration 'AtomicFoundation-Config.yml'..."
+	if file "plugins/AtomicFoundation/AtomicFoundation-Config.yml" doesn't exist:
+		log "&6[%now% WARN] &7Création du fichier de configuration"
+		load yaml "plugins/AtomicFoundation/AtomicFoundation-Config.yml"
+		
+		#   set yml value "" from file "plugins/AtomicFoundation/AtomicFoundation-Config.yml" to ""
+		
+		#   Core
+		
+		set yml value "AtomicFoundation.core.general.prefix" from file "plugins/AtomicFoundation/AtomicFoundation-Config.yml" to "&7&l[&c&lAtomic&6Balistic&7&l] &8>"
+		set yml value "AtomicFoundation.core.general.name" from file "plugins/AtomicFoundation/AtomicFoundation-Config.yml" to "AtomicFoundation"
+		
+		#   Permissions
+		
+		set yml value "AtomicFoundation.core.permissions.admin" from file "plugins/AtomicFoundation/AtomicFoundation-Config.yml" to "AtomicFoundation.admin"
+		set yml value "AtomicFoundation.core.permissions.mod" from file "plugins/AtomicFoundation/AtomicFoundation-Config.yml" to "AtomicFoundation.mod"
+		set yml value "AtomicFoundation.core.permissions.player" from file "plugins/AtomicFoundation/AtomicFoundation-Config.yml" to "AtomicFoundation.player"
+		set yml value "AtomicFoundation.core.permissions.deny" from file "plugins/AtomicFoundation/AtomicFoundation-Config.yml" to "&4Erreur ! &cVous n'avez pas la permission d'executer cette commande !"
+		
+		#   AutoUpdater
+		
+		set yml value "AtomicFoundation.core.autoUpdater.enable" from file "plugins/AtomicFoundation/AtomicFoundation-Config.yml" to true
+		set yml value "AtomicFoundation.core.autoUpdater.forcoming" from file "plugins/AtomicFoundation/AtomicFoundation-Config.yml" to true
+	load yaml "plugins/AtomicFoundation/AtomicFoundation-Config.yml"
+	log "&f[%now% &9INFO&f] Configuration chargée"
+on load:
+	set {_AS::CoreLoad::Logo} to (yaml value "AtomicFoundation.core.general.prefix" of "AtomicFoundation-Config")
+	set {_AS::CoreLoad::autoUpdate} to (yaml value "AtomicFoundation.core.autoUpdater.enable" of "AtomicFoundation-Config")
+	if {_AS::CoreLoad::autoUpdate} is true:
+		set {_newVersion} to text from "https://pastebin.com/raw/XgDkWEun"
+		if {_newVersion} is not "{@version}":
+			download from "https://raw.githubusercontent.com/Vengelis/Atomic-Foundation/master/AtomicBalistic-Core/AtomicFoundation.sk" to "plugins/Skript/scripts/AtomicFoundation.sk"
+on unload:
+	log "&9[%now% INFO] &7AtomicBalistic Déchargé !"
+command /AtomicFoundation [<text>] [<text>] [<text>] [<text>]:
+	aliases: af
+	trigger:
+		set {_AS::CoreLoad::Logo} to (yaml value "AtomicFoundation.core.general.prefix" of "AtomicFoundation-Config")
+		set {_AS::CoreLoad::EnabledIcbm} to (yaml value "AtomicFoundation.Modules.ICBM.enable" of "AtomicFoundation-Config")
+		set {_AS::CoreLoad::EnabledPA} to (yaml value "AtomicFoundation.Modules.ParticulesAccelerator.enable" of "AtomicFoundation-Config")
+		set {_AS::CoreLoad::AdminPerm::permission} to (yaml value "AtomicFoundation.core.permissions.admin" of "AtomicFoundation-Config")
+		set {_AS::CoreLoad::AdminPerm::denyMessage} to (yaml value "AtomicFoundation.core.permissions.deny" of "AtomicFoundation-Config")
+		if player has permission "%{_AS::CoreLoad::AdminPerm::permission}%":
+			if arg-1 is not set:
+				make player execute command "/af help"
+			if arg-1 is "help":
+				message "&7---------- &8[ &6AtomicBalistic &8] &7----------"
+				message "   &9Page d'aide aux commandes admins"
+				message ""
+				message "&a/AtomicFoundation modules add <nom du module> &7Ajouter un module"
+				message "&a/AtomicFoundation modules remove <nom du module> &7Retirer un module &c(Suppression complete !)"
+				message "&a/AtomicFoundation modules load <nom du module> &7Charger un module"
+				message "&a/AtomicFoundation modules unload <nom du module> &7Déchargé un module"
+				message "&a/AtomicFoundation modules reload <nom du module> &7Recharger un module"
+				message "&a/AtomicFoundation modules list &7liste des modules"
+			if arg-1 is "modules":
+				if arg-2 is "add":
+					if arg-3 is set:
+						if {AS::Core::Modules::%arg-3%} is set:
+							message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cModule déjà intégré !"
+							stop
+						else:
+							set {_AS::CoreContent::inputModule} to text from "https://raw.githubusercontent.com/Vengelis/Atomic-Foundation/master/Modules/%arg-3%/%arg-3%.sk"
+							if {_AS::CoreContent::inputModule} is "404: Not Found":
+								message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cCe module n'existe pas !"
+								stop
+							else:
+								set {AS::Core::Modules::%arg-3%} to "&7%arg-3%: &6En chargement... %nl%"
+								message "%{_AS::CoreLoad::Logo}% &7Téléchargement du module &6%arg-3%"
+								download from "https://raw.githubusercontent.com/Vengelis/Atomic-Foundation/master/Modules/%arg-3%/%arg-3%.sk" to "plugins/Skript/scripts/AtomicFoundation/%arg-3%.sk"
+								message "%{_AS::CoreLoad::Logo}% &7Téléchargement terminé ! Chargement du module..."
+								wait 1 seconds
+								make player execute command "sk reload AtomicFoundation/%arg-3%"
+								message "%{_AS::CoreLoad::Logo}% &7Module %arg-3% &achargé !"
+								set {AS::Core::Modules::%arg-3%} to "&7%arg-3%: &aChargé %nl%"
+								stop
+					else:
+						message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cAction impossible ! &7-> /AtomicFoundation help"
+						stop
+				else if arg-2 is "remove":
+					if arg-3 is set:
+						if {AS::Core::Modules::%arg-3%} is set:
+							message "%{_AS::CoreLoad::Logo}% &7Supression du module..."
+							delete {%arg-3%::*}
+							delete {AS::Core::Modules::%arg-3%}
+							make player execute command "sk disable AtomicFoundation/%arg-3%"
+							delete file "plugins/Skript/scripts/AtomicFoundation/%arg-3%.sk"
+							message "%{_AS::CoreLoad::Logo}% &7Module %arg-3% &csupprimé !"
+							stop
+						else:
+							message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cModule non trouvé !"
+							stop
+					else:
+						message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cAction impossible ! &7-> /AtomicFoundation help"
+						stop
+				else if arg-2 is "load":
+					if arg-3 is set:
+						if {AS::Core::Modules::%arg-3%} is "&7%arg-3%: &cDéchargé ":
+							message "%{_AS::CoreLoad::Logo}% &7Chargement du module..."
+							make player execute command "sk enable AtomicFoundation/%arg-3%"
+							set {AS::Core::Modules::%arg-3%} to "&7%arg-3%: &aChargé %nl%"
+							message "%{_AS::CoreLoad::Logo}% &7Module %arg-3% &achargé !"
+							stop
+						else:
+							message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cModule non trouvé ou chargé !"
+							stop
+					else:
+						message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cAction impossible ! &7-> /AtomicFoundation help"
+						stop
+				else if arg-2 is "unload":
+					if arg-3 is set:
+						if {AS::Core::Modules::%arg-3%} is "&7%arg-3%: &aChargé ":
+							message "%{_AS::CoreLoad::Logo}% &7Déchargement du module..."
+							set {AS::Core::Modules::%arg-3%} to "&7%arg-3%: &cDéchargé %nl%"
+							make player execute command "sk disable AtomicFoundation/%arg-3%"
+							message "%{_AS::CoreLoad::Logo}% &7Module %arg-3% &6déchargé !"
+							stop
+						else:
+							message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cModule non trouvé ou déchargé !"
+							stop
+					else:
+						message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cAction impossible ! &7-> /AtomicFoundation help"
+						stop
+				else if arg-2 is "reload":
+					if {AS::Core::Modules::%arg-3%} is set:
+						message "%{_AS::CoreLoad::Logo}% &7Rechargement du module..."
+						make player execute command "sk reload AtomicFoundation/%arg-3%"
+						message "%{_AS::CoreLoad::Logo}% &7Module &e%arg-3% &7rechargé !"
+						stop
+					else:
+						message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cModule non trouvé !"
+						stop
+				else if arg-2 is "list":
+					message "%{_AS::CoreLoad::Logo}% &7Liste des modules ajoutés:"
+					message "&a%{AS::Core::Modules::*}%"
+					stop
+				else if arg-2 is "statsVar":
+					if arg-3 is set:
+						if {AS::Core::Modules::%arg-3%} is set:
+							message "%{_AS::CoreLoad::Logo}% &7Liste des variables fixes renseignées:"
+							message "&a%{AB::VarList::%arg-3%::*}%"
+							stop
+				else:
+					message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cAction impossible ! &7-> /AtomicFoundation help"
+					stop
+on load:
+	log "&a[%now% SUCESS] &7AtomicFoundation full chargé"
