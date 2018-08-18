@@ -8,7 +8,7 @@
 #===================================================================================================================================# 
 
 options:
-	version: 1.1.0b-alpha
+	version: 1.1.0c-alpha
 
 #===================================================================================================================================#
 #   Necessite AtomicBalisitc pour le chargement des configurations !
@@ -622,29 +622,32 @@ on click with redstone repeater:
 																														set loop-block to air
 																													create an explosion of force ({_ICBM::MissileInConfigForce} / 4) at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
 																												if {_ICBM::MissileInConfigClasse} is "Sonic":
-																													create an explosion of force 6 at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-																													set {_postionY} to 0
-																													set {_powerWave} to 15
-																													create an explosion of force 6 at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+3, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
+																													set {_prof} to 0
+																													set {_rad} to 20
 																													loop 5 times:
-																														set {_location.%player%} to location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-3-{_postionY}, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-																														loop all blocks in radius {_powerWave} around {_location.%player%}:
+																														loop all blocks in radius {_rad} around {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}:
 																															if block above loop-block is air:
 																																if block below loop-block is not air:
-																																	create an explosion of force 6 at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+3, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-																																	spawn falling block of loop-block at loop-block
-																																	create an explosion of force 6 at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+3, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
+																																	spawn falling block of loop-block at location loop-block's x-coordinate, loop-block's y-coordinate-{_prof}, loop-block's z-coordinate
 																																	set loop-block to air
-																																	push spawned entity upward at speed 3
-																																	create an explosion of force 6 at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+3, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-																																	create an explosion of force 6 at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+3, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate-2
-																																	create an explosion of force 6 at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+3, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate+2
-																																	create an explosion of force 6 at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate-2, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+3, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-																																	create an explosion of force 6 at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate+2, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+3, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-																																	
-																																	
-																														remove 2 from {_powerWave}
-																														add 1 to {_postionY}
+																																	chance of 25%:
+																																		push spawned entity upward at speed 7
+																																	else:
+																																		chance of 25%:
+																																			push spawned entity upward at speed 5
+																																		else:
+																																			chance of 25%:
+																																				push spawned entity upward at speed 3
+																																			else:
+																																				push spawned entity upward at speed 1
+																																	set {_loc} to location of spawned entity
+																																	chance of 5%:
+																																		create a safe explosion of force 7 at location {_loc}'s x-coordinate, {_loc}'s y-coordinate+1, {_loc}'s z-coordinate-1
+																														wait 2 ticks
+																														add 1 to {_prof}
+																														remove 3 from {_rad}
+																													create an explosion of force 5 at {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}
+																												
 																												add 5 to {_count}
 																												wait 5 ticks
 																												set {_stopLaunche.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to true
@@ -753,21 +756,32 @@ on click with redstone repeater:
 																															set loop-block to air
 																														create an explosion of force ({_ICBM::MissileInConfigForce} / 4) at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
 																													if {_ICBM::MissileInConfigClasse} is "Sonic":
-																														create an explosion of force 4 at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-																														set {_postionY} to 0
-																														set {_powerWave} to 15
+																														set {_prof} to 0
+																														set {_rad} to 20
 																														loop 5 times:
-																															set {_location.%player%} to location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-3-{_postionY}, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-																															loop all blocks in radius {_powerWave} around {_location.%player%}:
+																															loop all blocks in radius {_rad} around {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}:
 																																if block above loop-block is air:
 																																	if block below loop-block is not air:
-																																		spawn falling block of loop-block at loop-block
+																																		spawn falling block of loop-block at location loop-block's x-coordinate, loop-block's y-coordinate-{_prof}, loop-block's z-coordinate
 																																		set loop-block to air
-																																		push spawned entity upward at speed 2
-																																		
-																																		
-																																remove 2 from {_powerWave}
-																															add 1 to {_postionY}
+																																		chance of 25%:
+																																			push spawned entity upward at speed 7
+																																		else:
+																																			chance of 25%:
+																																				push spawned entity upward at speed 5
+																																			else:
+																																				chance of 25%:
+																																					push spawned entity upward at speed 3
+																																				else:
+																																					push spawned entity upward at speed 1
+																																		set {_loc} to location of spawned entity
+																																		chance of 5%:
+																																			create a safe explosion of force 7 at location {_loc}'s x-coordinate, {_loc}'s y-coordinate+1, {_loc}'s z-coordinate-1
+																															wait 2 ticks
+																															add 1 to {_prof}
+																															remove 3 from {_rad}
+																														create an explosion of force 5 at {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}
+																													
 																													add 5 to {_count}
 																													wait 5 ticks
 																												if {ICBM::siloOpen.%player%::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} is {_icbmBaseClicked.%player%}:
@@ -1077,21 +1091,32 @@ on right click on iron pressure plate:
 																													set loop-block to air
 																												create an explosion of force ({_ICBM::MissileInConfigForce} / 4) at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
 																											if {_ICBM::MissileInConfigClasse} is "Sonic":
-																												create an explosion of force 4 at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-																												set {_postionY} to 0
-																												set {_powerWave} to 15
+																												set {_prof} to 0
+																												set {_rad} to 20
 																												loop 5 times:
-																													set {_location.%player%} to location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-3-{_postionY}, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-																													loop all blocks in radius {_powerWave} around {_location.%player%}:
+																													loop all blocks in radius {_rad} around {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}:
 																														if block above loop-block is air:
 																															if block below loop-block is not air:
-																																spawn falling block of loop-block at loop-block
+																																spawn falling block of loop-block at location loop-block's x-coordinate, loop-block's y-coordinate-{_prof}, loop-block's z-coordinate
 																																set loop-block to air
-																																push spawned entity upward at speed 2
-																																
-																																
-																													remove 2 from {_powerWave}
-																													add 1 to {_postionY}
+																																chance of 25%:
+																																	push spawned entity upward at speed 7
+																																else:
+																																	chance of 25%:
+																																		push spawned entity upward at speed 5
+																																	else:
+																																		chance of 25%:
+																																			push spawned entity upward at speed 3
+																																		else:
+																																			push spawned entity upward at speed 1
+																																set {_loc} to location of spawned entity
+																																chance of 5%:
+																																	create a safe explosion of force 7 at location {_loc}'s x-coordinate, {_loc}'s y-coordinate+1, {_loc}'s z-coordinate-1
+																													wait 2 ticks
+																													add 1 to {_prof}
+																													remove 3 from {_rad}
+																												create an explosion of force 5 at {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}
+																											
 																											add 5 to {_count}
 																											wait 5 ticks
 																											set {_stopLaunche.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to true
@@ -1226,6 +1251,7 @@ on right click on iron pressure plate:
 																														add 1 to {_prof}
 																														remove 3 from {_rad}
 																													create an explosion of force 5 at {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}
+																												
 																												add 5 to {_count}
 																												wait 5 ticks
 																											if {ICBM::siloOpen.%player%::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} is {_icbmBaseClicked.%player%}:
