@@ -29,6 +29,7 @@ Vous pouvez vous aussi contribuer en faisant un fork ou une pull request. Nous n
 Contributeurs supplémentaires:
 
 - AlexLew
+- Narcos (Beta testeur)
 
 __**Suggestions, idées, bugs ?**__
 
