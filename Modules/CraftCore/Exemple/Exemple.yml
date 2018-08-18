@@ -1,0 +1,17 @@
+CraftCore:
+  version: 0.1
+  name: Exemple
+  item: --item:1 crafting table --name:&eExemple --lore:&7Ceci est juste un exemple ^^
+
+  Recipies:
+    irongear:
+      result: --item:1 iron ingot --name:&eiron gear --lore:&7Un iron gear
+      resources:
+        - --item:4 iron ingot
+
+    structureframe:
+      result: --item:1 iron block --name:&7Iron block
+      resources:
+          - --item:1 iron ingot --name:&ciron gear --lore:&7Un iron gear
+          - --item:1 iron block
+          - --item:1 diamond

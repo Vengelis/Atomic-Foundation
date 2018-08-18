@@ -1,0 +1,175 @@
+#===================================================================================================================================#
+#        _      _                         _          ____            _   _         _     _        
+#       / \    | |_    ___    _ __ ___   (_)   ___  | __ )    __ _  | | (_)  ___  | |_  (_)   ___ 
+#      / _ \   | __|  / _ \  | '_ ` _ \  | |  / __| |  _ \   / _` | | | | | / __| | __| | |  / __|
+#     / ___ \  | |_  | (_) | | | | | | | | | | (__  | |_) | | (_| | | | | | \__ \ | |_  | | | (__ 
+#    /_/   \_\  \__|  \___/  |_| |_| |_| |_|  \___| |____/   \__,_| |_| |_| |___/  \__| |_|  \___|
+#
+#                               By Vengelis_
+#
+#===================================================================================================================================#                                                                                              
+
+on load:
+	log "&9[%now% INFO] &7Chargement du fichier de configuration 'AtomicBalistic-Config.yml'..."
+	if file "plugins/AtomicBalistic/AtomicBalistic-Config.yml" doesn't exist:
+		log "&6[%now% WARN] &7Création du fichier de configuration"
+		load yaml "plugins/AtomicBalistic/AtomicBalistic-Config.yml"
+		
+		#   set yml value "" from file "plugins/AtomicBalistic/AtomicBalistic-Config.yml" to ""
+		
+		#   Core
+		
+		set yml value "AtomicBalistic.core.general.prefix" from file "plugins/AtomicBalistic/AtomicBalistic-Config.yml" to "&7&l[&c&lAtomic&6Balistic&7&l] &8>"
+		set yml value "AtomicBalistic.core.general.name" from file "plugins/AtomicBalistic/AtomicBalistic-Config.yml" to "AtomicBalistic"
+		
+		#   Permissions
+		
+		set yml value "AtomicBalistic.core.permissions.admin" from file "plugins/AtomicBalistic/AtomicBalistic-Config.yml" to "AtomicBalistic.admin"
+		set yml value "AtomicBalistic.core.permissions.mod" from file "plugins/AtomicBalistic/AtomicBalistic-Config.yml" to "AtomicBalistic.mod"
+		set yml value "AtomicBalistic.core.permissions.player" from file "plugins/AtomicBalistic/AtomicBalistic-Config.yml" to "AtomicBalistic.player"
+		set yml value "AtomicBalistic.core.permissions.deny" from file "plugins/AtomicBalistic/AtomicBalistic-Config.yml" to "&4Erreur ! &cVous n'avez pas la permission d'executer cette commande !"
+		
+		#   AutoUpdater
+		
+		set yml value "AtomicBalistic.core.autoUpdater.enable" from file "plugins/AtomicBalistic/AtomicBalistic-Config.yml" to "true"
+		set yml value "AtomicBalistic.core.autoUpdater.forcoming" from file "plugins/AtomicBalistic/AtomicBalistic-Config.yml" to "true"
+		
+		#   Modules
+		
+		set yml value "AtomicBalistic.Modules.ICBM.enable" from file "plugins/AtomicBalistic/AtomicBalistic-Config.yml" to "true"
+		set yml value "AtomicBalistic.Modules.ParticulesAccelerator.enable" from file "plugins/AtomicBalistic/AtomicBalistic-Config.yml" to "false"
+		
+	load yaml "plugins/AtomicBalistic/AtomicBalistic-Config.yml"
+	log "&f[%now% &9INFO&f] Configuration chargée"
+	
+on unload:
+	log "&9[%now% INFO] &7AtomicBalistic Déchargé !"
+
+function ICBMreset(parameter: text):
+	if {_parameter} is "all":
+		delete {ICBM::*}
+		set {ICBM::Counter} to 0
+		loop all players:
+			delete {icbmBaseClicked.%loop-player%}
+	if {_parameter} is "silo":
+		delete {ICBM::ListOfSilo::*}
+	if {_parameter} is "freqency":
+		delete {ICBM::ListOfSilo::Frequency::*} 
+		delete {ICBM::ListOfSilo::FrequencyPassword::*}
+	
+command /AtomicBalisticAdmin [<text>] [<text>] [<text>] [<text>]:
+	aliases: aba
+	trigger:
+		set {_AS::CoreLoad::Logo} to (yaml value "AtomicBalistic.core.general.prefix" of "AtomicBalistic-Config")
+		set {_AS::CoreLoad::EnabledIcbm} to (yaml value "AtomicBalistic.Modules.ICBM.enable" of "AtomicBalistic-Config")
+		set {_AS::CoreLoad::EnabledPA} to (yaml value "AtomicBalistic.Modules.ParticulesAccelerator.enable" of "AtomicBalistic-Config")
+		set {_AS::CoreLoad::AdminPerm::permission} to (yaml value "AtomicBalistic.core.permissions.admin" of "AtomicBalistic-Config")
+		set {_AS::CoreLoad::AdminPerm::denyMessage} to (yaml value "AtomicBalistic.core.permissions.deny" of "AtomicBalistic-Config")
+		if player has permission "%{_AS::CoreLoad::AdminPerm::permission}%":
+			if arg-1 is not set:
+				message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cVous devez spécifier un/des argument(s) &7-> /AtomicBalisticAdmin help"
+			if arg-1 is "help":
+				message "&7---------- &8[ &6AtomicBalistic &8] &7----------"
+				message "   &9Page d'aide aux commandes admins"
+				message ""
+				message "&a/AtomicBalisticAdmin modules add <nom du module> &7Ajouter un module"
+				message "&a/AtomicBalisticAdmin modules remove <nom du module> &7Retirer un module"
+				message "&a/AtomicBalisticAdmin modules reload <nom du module> &7Recharger un module"
+				message "&a/AtomicBalisticAdmin modules list &7liste des modules"
+			if arg-1 is "modules":
+				if arg-2 is "add":
+					if {AS::Core::Modules::%arg-3%} is set:
+						message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cModule déjà intégré !"
+					else:
+						if file "plugins/Skript/scripts/AtomicBalistic/-%arg-3%.sk" doesn't exist:
+							message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cModule non trouvé !"
+							wait 1 ticks
+							if arg-3 is "ICBM":
+								message "%{_AS::CoreLoad::Logo}% &7Téléchragement du module '&eICBM&7' via internet..."
+								wait 1 ticks
+								delete file "plugins/Skript/scripts/AtomicBalistic/-ICBM.sk"
+								create file "plugins/Skript/scripts/AtomicBalistic/-ICBM.sk"
+								download from "https://pastebin.com/raw/df170hWY" to "plugins/Skript/scripts/AtomicBalistic/-ICBM.sk"
+								message "%{_AS::CoreLoad::Logo}% &7Module téléchargé !"
+								delete file "plugins/AtomicBalistic/ICBM.yml"
+								create file "plugins/AtomicBalistic/ICBM.yml"
+								download from "https://pastebin.com/raw/3wqfzx2M" to "plugins/AtomicBalistic/ICBM.yml"
+								message "%{_AS::CoreLoad::Logo}% &7Fichier de configuration d'&eICBM &7téléchargé ! &8(Configuration de: Vengelis_)"
+								make console execute command "sk enable AtomicBalistic/ICBM"
+								set {AS::Core::Modules::%arg-3%} to "&aICBM"
+							stop
+						else:
+							set {AS::Core::Modules::%arg-3%} to "&aICBM"
+							message "%{_AS::CoreLoad::Logo}% &7Module &e%arg-3% &7en cours d'ajout..."
+							make console execute command "sk enable AtomicBalistic/%arg-3%"
+							message "%{_AS::CoreLoad::Logo}% &7Module &e%arg-3% &7ajouté !"
+							stop
+				else if arg-2 is "remove":
+					if {AS::Core::Modules::%arg-3%} is set:
+						delete {AS::Core::Modules::%arg-3%}
+						delete {AB::VarList::%arg-3%::*}
+						message "%{_AS::CoreLoad::Logo}% &7Supression des variables..."
+						ICBMreset("all")
+						message "%{_AS::CoreLoad::Logo}% &7Désactivation du module..."
+						make console execute command "sk disable AtomicBalistic/%arg-3%"
+						message "%{_AS::CoreLoad::Logo}% &7Module &e%arg-3% &7retiré !"
+						stop
+					else:
+						message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cModule non trouvé !"
+						stop
+				else if arg-2 is "list":
+					message "%{_AS::CoreLoad::Logo}% &7Liste des modules ajoutés:"
+					message "&a%{AS::Core::Modules::*}%"
+					stop
+				else if arg-2 is "statsVar":
+					if arg-3 is set:
+						if {AS::Core::Modules::%arg-3%} is set:
+							message "%{_AS::CoreLoad::Logo}% &7Liste des variables fixes:"
+							message "&a%{AB::VarList::%arg-3%::*}%"
+							stop
+				else:
+					message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cAction impossible ! &7-> /AtomicBalisticAdmin help"
+					stop
+			else if arg-1 is "reload" or "relaod":
+				if {AS::Core::Modules::%arg-2%} is set:
+					if arg-3 is "viewLog":
+						message "%{_AS::CoreLoad::Logo}% &7Rechargement du module..."
+						wait 1 ticks
+						make player execute command "sk reload AtomicBalistic/%arg-2%"
+						message "%{_AS::CoreLoad::Logo}% &7Module &e%arg-2% &7rechargé !"
+						stop
+					else:
+						message "%{_AS::CoreLoad::Logo}% &7Rechargement du module..."
+						wait 1 ticks
+						make console execute command "sk reload AtomicBalistic/%arg-2%"
+						message "%{_AS::CoreLoad::Logo}% &7Module &e%arg-2% &7rechargé !"
+						stop
+				else if arg-2 is "all":
+					if arg-3 is "viewLog":
+						loop {AS::Core::Modules::*}:
+							make player execute command "sk reload AtomicBalistic/%uncolored loop-value%"
+							message "&aReload de &a&b%uncolored loop-value%"
+							wait 8 seconds
+							message "&aFin du reload de &a&b%uncolored loop-value%"
+						make player execute command "sk reload %script's name%"
+					else:
+						loop {AS::Core::Modules::*}:
+							make console execute command "sk reload AtomicBalistic/%uncolored loop-value%"
+							wait 8 seconds
+						make console execute command "sk reload %script's name%"
+						message "&aFin du reload."
+				else:
+					if arg-3 is "viewLog":
+						message "%{_AS::CoreLoad::Logo}% &7Rechargement d'AtomicBalistic en cours..."
+						make player execute command "sk reload AtomicBalistic"
+						message "%{_AS::CoreLoad::Logo}% &7Rechargement terminé !"
+					else:
+						message "%{_AS::CoreLoad::Logo}% &7Rechargement d'AtomicBalistic en cours..."
+						make console execute command "sk reload AtomicBalistic"
+						message "%{_AS::CoreLoad::Logo}% &7Rechargement terminé !"
+			else:
+				message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cAction impossible ! &7-> /AtomicBalisticAdmin help"
+				
+
+on load:
+	log "&a[%now% SUCESS] &7AtomicBalistic full chargé"
