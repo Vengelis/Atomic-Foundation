@@ -8,7 +8,7 @@
 #===================================================================================================================================# 
 
 options:
-	version: 1.1.0a-alpha
+	version: 1.1.0b-alpha
 
 #===================================================================================================================================#
 #   Necessite AtomicBalisitc pour le chargement des configurations !
@@ -276,12 +276,12 @@ command /ICBM [<text>] [<text>] [<text>]:
 				message "%{_AS::CoreLoad::Logo}% &7Reset terminé !"
 				stop
 			else if arg-2 is "remote":
-				message "%{_AS::CoreLoad::Logo}% &7Reset des silos en cours..."
+				message "%{_AS::CoreLoad::Logo}% &7Reset des remotes en cours..."
 				delete {ICBM::ListOfControler::*}
 				message "%{_AS::CoreLoad::Logo}% &7Reset terminé !"
 				stop
 			else if arg-2 is "assembler":
-				message "%{_AS::CoreLoad::Logo}% &7Reset des silos en cours..."
+				message "%{_AS::CoreLoad::Logo}% &7Reset des assemblers en cours..."
 				delete {ICBM::ListOfAssembler::*}
 				message "%{_AS::CoreLoad::Logo}% &7Reset terminé !"
 				stop
@@ -360,7 +360,75 @@ function shakeCamera(p: player, seconde: integer):
 		wait 1 ticks
 on load:
 	log "&6[&cICBM&6] &7&oChargement du Missile Concepteur... 2/4"
-
+on right click on iron pressure plate:
+	set {_icbmBaseClicked.%player%} to clicked block's location
+	set {_icbmLocationSilo} to clicked block's location
+	
+	set {_icbmFrameTest.1} to block at location {_icbmBaseClicked.%player%}'s x-coordinate, {_icbmBaseClicked.%player%}'s y-coordinate-1, {_icbmBaseClicked.%player%}'s z-coordinate # Laine orange
+	set {_icbmFrameTest.2} to block at location {_icbmBaseClicked.%player%}'s x-coordinate, {_icbmBaseClicked.%player%}'s y-coordinate-1, {_icbmBaseClicked.%player%}'s z-coordinate+1 # Dalle en stone
+	set {_icbmFrameTest.3} to block at location {_icbmBaseClicked.%player%}'s x-coordinate, {_icbmBaseClicked.%player%}'s y-coordinate-1, {_icbmBaseClicked.%player%}'s z-coordinate-1 # ''
+	set {_icbmFrameTest.4} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate-1, {_icbmBaseClicked.%player%}'s z-coordinate # air
+	set {_icbmFrameTest.5} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate-1, {_icbmBaseClicked.%player%}'s z-coordinate+1 # iron block
+	set {_icbmFrameTest.6} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate-1, {_icbmBaseClicked.%player%}'s z-coordinate-1 # ''
+	set {_icbmFrameTest.7} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+2, {_icbmBaseClicked.%player%}'s y-coordinate-1, {_icbmBaseClicked.%player%}'s z-coordinate # anvil
+	set {_icbmFrameTest.8} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+2, {_icbmBaseClicked.%player%}'s y-coordinate-1, {_icbmBaseClicked.%player%}'s z-coordinate+1 # iron block
+	set {_icbmFrameTest.9} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+2, {_icbmBaseClicked.%player%}'s y-coordinate-1, {_icbmBaseClicked.%player%}'s z-coordinate-1 # ''
+	set {_icbmFrameTest.10} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate, {_icbmBaseClicked.%player%}'s z-coordinate+1 # Dalle en stone
+	set {_icbmFrameTest.11} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate, {_icbmBaseClicked.%player%}'s z-coordinate-1 # ''
+	set {_icbmFrameTest.12} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+2, {_icbmBaseClicked.%player%}'s y-coordinate, {_icbmBaseClicked.%player%}'s z-coordinate # anvil
+	set {_icbmFrameTest.13} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+2, {_icbmBaseClicked.%player%}'s y-coordinate, {_icbmBaseClicked.%player%}'s z-coordinate+1 # iron block
+	set {_icbmFrameTest.14} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+2, {_icbmBaseClicked.%player%}'s y-coordinate, {_icbmBaseClicked.%player%}'s z-coordinate-1 # ''
+	set {_icbmFrameTest.15} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+1, {_icbmBaseClicked.%player%}'s z-coordinate+1 # Dalle en stone
+	set {_icbmFrameTest.16} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+1, {_icbmBaseClicked.%player%}'s z-coordinate-1 # ''
+	set {_icbmFrameTest.17} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+2, {_icbmBaseClicked.%player%}'s y-coordinate+1, {_icbmBaseClicked.%player%}'s z-coordinate # anvil 
+	set {_icbmFrameTest.18} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+2, {_icbmBaseClicked.%player%}'s y-coordinate+1, {_icbmBaseClicked.%player%}'s z-coordinate+1 # iron block
+	set {_icbmFrameTest.19} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+2, {_icbmBaseClicked.%player%}'s y-coordinate+1, {_icbmBaseClicked.%player%}'s z-coordinate-1 # ''
+	set {_icbmFrameTest.20} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+2, {_icbmBaseClicked.%player%}'s z-coordinate+1 # Dalle en stone
+	set {_icbmFrameTest.21} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+2, {_icbmBaseClicked.%player%}'s z-coordinate-1 # ''
+	set {_icbmFrameTest.22} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+2, {_icbmBaseClicked.%player%}'s y-coordinate+2, {_icbmBaseClicked.%player%}'s z-coordinate # anvil
+	set {_icbmFrameTest.23} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+2, {_icbmBaseClicked.%player%}'s y-coordinate+2, {_icbmBaseClicked.%player%}'s z-coordinate+1 # iron block
+	set {_icbmFrameTest.24} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+2, {_icbmBaseClicked.%player%}'s y-coordinate+2, {_icbmBaseClicked.%player%}'s z-coordinate-1 # ''
+	set {_icbmFrameTest.25} to block at location {_icbmBaseClicked.%player%}'s x-coordinate, {_icbmBaseClicked.%player%}'s y-coordinate+3, {_icbmBaseClicked.%player%}'s z-coordinate # Dalle en stone
+	set {_icbmFrameTest.26} to block at location {_icbmBaseClicked.%player%}'s x-coordinate, {_icbmBaseClicked.%player%}'s y-coordinate+3, {_icbmBaseClicked.%player%}'s z-coordinate+1 # ''
+	set {_icbmFrameTest.27} to block at location {_icbmBaseClicked.%player%}'s x-coordinate, {_icbmBaseClicked.%player%}'s y-coordinate+3, {_icbmBaseClicked.%player%}'s z-coordinate-1 # ''
+	set {_icbmFrameTest.28} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+3, {_icbmBaseClicked.%player%}'s z-coordinate+1 # iron block
+	set {_icbmFrameTest.29} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+3, {_icbmBaseClicked.%player%}'s z-coordinate-1 # ''
+	set {_icbmFrameTest.30} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+2, {_icbmBaseClicked.%player%}'s y-coordinate+3, {_icbmBaseClicked.%player%}'s z-coordinate # anvil
+	set {_icbmFrameTest.31} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+2, {_icbmBaseClicked.%player%}'s y-coordinate+3, {_icbmBaseClicked.%player%}'s z-coordinate+1 # iron block
+	set {_icbmFrameTest.32} to block at location {_icbmBaseClicked.%player%}'s x-coordinate+2, {_icbmBaseClicked.%player%}'s y-coordinate+3, {_icbmBaseClicked.%player%}'s z-coordinate-1 # iron block
+	if {_icbmFrameTest.1} is orange wool:
+		if {_icbmFrameTest.2} is stone slab:
+			if {_icbmFrameTest.3} is stone slab:
+				if {_icbmFrameTest.4} is air:
+					if {_icbmFrameTest.5} is iron block:
+						if {_icbmFrameTest.6} is iron block:
+							if {_icbmFrameTest.7} is anvil:
+								if {_icbmFrameTest.8} is iron block:
+									if {_icbmFrameTest.9} is iron block:
+										if {_icbmFrameTest.10} is stone slab:
+											if {_icbmFrameTest.11} is stone slab:
+												if {_icbmFrameTest.12} is anvil:
+													if {_icbmFrameTest.13} is iron block:
+														if {_icbmFrameTest.14} is iron block:
+															if {_icbmFrameTest.15} is stone slab:
+																if {_icbmFrameTest.16} is stone slab:
+																	if {_icbmFrameTest.17} is anvil:
+																		if {_icbmFrameTest.18} is iron block:
+																			if {_icbmFrameTest.19} is iron block:
+																				if {_icbmFrameTest.20} is stone slab: 
+																					if {_icbmFrameTest.21} is stone slab:
+																						if {_icbmFrameTest.22} is anvil:
+																							if {_icbmFrameTest.23} is iron block:
+																								if {_icbmFrameTest.24} is iron block:
+																									if {_icbmFrameTest.25} is stone slab:
+																										if {_icbmFrameTest.26} is stone slab:
+																											if {_icbmFrameTest.27} is stone slab:
+																												if {_icbmFrameTest.28} is iron block:
+																													if {_icbmFrameTest.29} is iron block:
+																														if {_icbmFrameTest.30} is anvil:
+																															if {_icbmFrameTest.31} is iron block:
+																																if {_icbmFrameTest.32} is iron block:
+																																	ICBM_GUI(player,1,"all")
 																																	
 on load:
 	log "&6[&cICBM&6] &7&oChargement de la Tablette ICBM... 3/4"
@@ -461,10 +529,11 @@ on click with redstone repeater:
 																									#shakeCamera(player, 2)
 																									set {_ICBM::MissileInConfig} to (yaml value "ICBM.Missile.%{ICBM::ListOfSilo::SiloContent::LaunchMissileType::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}%.Name" of "%{ICBM::ListOfSilo::SiloContent::LaunchMissileConfig::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}%")
 																									message "&6[&cICBM&6] &7Lancement de '&9%{_ICBM::MissileInConfig}%&7' type '&e%{_ICBM::MissileInConfigType}%&7' au coordonnées '&a%{_ICBM::LastPosition.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}%&7'. Distance de parcours: &6%{_messageDistanceBetweenMissile.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}% blocs"
-																									set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate, {_icbmBaseClicked.%player%}'s z-coordinate to cobblestone wall
-																									set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+1, {_icbmBaseClicked.%player%}'s z-coordinate to cobblestone wall
-																									set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+2, {_icbmBaseClicked.%player%}'s z-coordinate to cobblestone wall
-																									set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+3, {_icbmBaseClicked.%player%}'s z-coordinate to cobblestone wall
+																									
+																									set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate, {_icbmBaseClicked.%player%}'s z-coordinate to redstone block
+																									set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+1, {_icbmBaseClicked.%player%}'s z-coordinate to red concrete
+																									set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+2, {_icbmBaseClicked.%player%}'s z-coordinate to iron block
+																									set block at location {_icbmBaseClicked.%player%}'s x-coordinate+1, {_icbmBaseClicked.%player%}'s y-coordinate+3, {_icbmBaseClicked.%player%}'s z-coordinate to iron block
 																									set {ICBM::ListOfSilo::MissileLaunched::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to {ICBM::ListOfSilo::SiloContent::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}
 																									set {ICBM::ListOfSilo::MissileLaunchedConfigSearch::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to {ICBM::ListOfSilo::SiloContent::LaunchMissileConfig::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}
 																									set {ICBM::ListOfSilo::SiloContent::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to "Empty"
@@ -476,7 +545,11 @@ on click with redstone repeater:
 																										# #! Position ICI
 																										
 																										if {_getWhere} is "E":
-																											set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+4, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to cobblestone wall
+																											set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+5, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to iron block
+																											set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+4, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to iron block
+																											set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+3, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to red concrete
+																											set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+2, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to iron block
+																											set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to redstone block
 																											set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to air
 																										
 																										set {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
@@ -593,7 +666,11 @@ on click with redstone repeater:
 																										if {_stopLaunche.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} is not set:
 																											if {_icbmMissilePlaceExplode.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} is air:
 																												wait 0.25 ticks
-																												set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-4, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to cobblestone wall
+																												set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-5, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to iron block
+																												set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-4, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to iron block
+																												set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-3, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to red concrete
+																												set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-2, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to iron block
+																												set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to redstone block
 																												set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to air
 																												set {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
 																												set {_icbmMissilePlaceExplode.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-5, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
@@ -922,7 +999,11 @@ on right click on iron pressure plate:
 																									# #! Position ICI
 																									
 																									if {_getWhere} is "E":
-																										set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+4, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to cobblestone wall
+																										set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+5, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to iron block
+																										set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+4, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to iron block
+																										set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+3, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to red concrete
+																										set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+2, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to iron block
+																										set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to redstone block
 																										set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to air
 																									
 																									set {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
@@ -1032,7 +1113,11 @@ on right click on iron pressure plate:
 																									if {_stopLaunche.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} is not set:
 																										if {_icbmMissilePlaceExplode.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} is air:
 																											wait 0.25 ticks
-																											set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-4, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to cobblestone wall
+																											set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-5, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to iron block
+																											set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-4, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to iron block
+																											set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-3, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to red concrete
+																											set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-2, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to iron block
+																											set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to redstone block
 																											set block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate to air
 																											set {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
 																											set {_icbmMissilePlaceExplode.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} to block at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-5, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
@@ -1116,20 +1201,31 @@ on right click on iron pressure plate:
 																													create an explosion of force ({_ICBM::MissileInConfigForce} / 4) at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
 																												if {_ICBM::MissileInConfigClasse} is "Sonic":
 																													create an explosion of force 4 at location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate+1, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-																													set {_postionY} to 0
-																													set {_powerWave} to 15
+																													set {_prof} to 0
+																													set {_rad} to 20
 																													loop 5 times:
-																														set {_location.%player%} to location {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s x-coordinate, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s y-coordinate-3-{_postionY}, {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}'s z-coordinate
-																														loop all blocks in radius {_powerWave} around {_location.%player%}:
+																														loop all blocks in radius {_rad} around {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}:
 																															if block above loop-block is air:
 																																if block below loop-block is not air:
-																																	spawn falling block of loop-block at loop-block
+																																	spawn falling block of loop-block at location loop-block's x-coordinate, loop-block's y-coordinate-{_prof}, loop-block's z-coordinate
 																																	set loop-block to air
-																																	push spawned entity upward at speed 2
-																																	
-																																	
-																															remove 2 from {_powerWave}
-																														add 1 to {_postionY}
+																																	chance of 25%:
+																																		push spawned entity upward at speed 7
+																																	else:
+																																		chance of 25%:
+																																			push spawned entity upward at speed 5
+																																		else:
+																																			chance of 25%:
+																																				push spawned entity upward at speed 3
+																																			else:
+																																				push spawned entity upward at speed 1
+																																	set {_loc} to location of spawned entity
+																																	chance of 5%:
+																																		create a safe explosion of force 7 at location {_loc}'s x-coordinate, {_loc}'s y-coordinate+1, {_loc}'s z-coordinate-1
+																														wait 2 ticks
+																														add 1 to {_prof}
+																														remove 3 from {_rad}
+																													create an explosion of force 5 at {_icbmMissilePlace.%{_icbmBaseClicked.%player%}%.%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%}
 																												add 5 to {_count}
 																												wait 5 ticks
 																											if {ICBM::siloOpen.%player%::%{ICBM::ListOfSilo::Frequency::%{_icbmBaseClicked.%player%}%}%} is {_icbmBaseClicked.%player%}:
