@@ -59,6 +59,7 @@ command /AtomicFoundation [<text>] [<text>] [<text>] [<text>]:
 		if player has permission "%{_AS::CoreLoad::AdminPerm::permission}%":
 			if arg-1 is not set:
 				make player execute command "/af help"
+
 			if arg-1 is "help":
 				message "&7---------- &8[ &6AtomicBalistic &8] &7----------"
 				message "   &9Page d'aide aux commandes admins"
@@ -142,6 +143,7 @@ command /AtomicFoundation [<text>] [<text>] [<text>] [<text>]:
 						message "%{_AS::CoreLoad::Logo}% &7Rechargement du module..."
 						make player execute command "sk reload AtomicFoundation/%arg-3%"
 						message "%{_AS::CoreLoad::Logo}% &7Module &e%arg-3% &7rechargé !"
+
 						stop
 					else:
 						message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cModule non trouvé !"
@@ -161,3 +163,4 @@ command /AtomicFoundation [<text>] [<text>] [<text>] [<text>]:
 					stop
 on load:
 	log "&a[%now% SUCESS] &7AtomicFoundation full chargé"
+
