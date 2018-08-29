@@ -9,14 +9,24 @@
 #===================================================================================================================================#
 
 options:
-	version: 1.0.1-build
+	version: 1.0.2-build
 	
-	coeffMultipliantEttendeur: 1.7
-	coefMultipliantModules: 1.3
-	coefMultipliantBoosteur: 1.2
+	#	Forcefield Projector
+	
+	coeffMultipliantEttendeur: 1.7	#
+	coefMultipliantModules: 0.1		#	Ne pas toucher !
+	coefMultipliantBoosteur: 0.05	#
+	coefPuissanceGlobal: 0.2		# 
 	
 	variableEnergyPumpFunction: {MEC::block::%{_l}%::EM}
 	variableEnergyPumpPlace: {MEC::block::%{MFFS::referent::%location of event-block%}%::EM}
+	
+	#	Coercion Deriver
+	
+	energyUseToProductNotFull: 1500
+	energyUseToProductFull: 775
+	product: 500
+	energyType: EM
 
 #===================================================================================================================================#
 #   Necessite AtomicBalisitc pour le chargement des configurations !
@@ -51,9 +61,9 @@ on chunk load:
 		set {MEC::block::%{_l}%::load} to true
 		if {MEC::block::%{_l}%::online} is true:
 			if {MEC::block::%{_l}%::type} is "Force Field Projector":
-				MEC_LOAD("Force Field Projector",{_l})
+				MFFS_LOAD("Force Field Projector",{_l} ,{MFFS::block::%{MFFS::referent::%{_l}%}%::module::owner})
 			if {MEC::block::%{_l}%::type} is "Coercion Deriver":
-				MEC_LOAD("Coercion Deriver",{_l})
+				MFFS_LOAD("Coercion Deriver",{_l} ,{MFFS::block::%{MFFS::referent::%{_l}%}%::module::owner})
 		
 on place:
 	if player's tool is a light blue glazed terracotta named "&3Force Field Projector" with lore "&7Projecteur de champ de force":
@@ -83,9 +93,11 @@ on place:
 			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::fortronNecessaire} to 0
 			
 			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::speedGeneration} to 1
-			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::capacity} to 50000
+			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::capacity} to 5000000000
 			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::speedGenerationIA} to 0
 			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::capacityIA} to 0
+			
+			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::owner} to player
 			
 			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::1} to "Aucun module"
 			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::2} to "Aucun module"
@@ -135,6 +147,7 @@ on place:
 		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::fortronIn} to 0
 		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::EM} to 500000
 		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::capacity} to 50000
+		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::owner} to player
 			
 on break:
 	if {MFFS::block::%position of event-block%::shield} is set:
@@ -464,25 +477,36 @@ function MFFS_GUI(p: player,t: text,l: location):
 			
 		set {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireModG} to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA} + {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
 		
-		set {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire} to {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}*{@coeffMultipliantEttendeur} + {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireModG}*{@coefMultipliantModules}
+		set {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire} to ({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} + {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireModG})*exp ({@coefPuissanceGlobal}/{@coeffMultipliantEttendeur}+{@coefMultipliantModules})
 		
+		set {_loopVerifCoercion} to 0
 		loop blocks in radius 3 of position of {_l}:
 			if {MFFS::block::%{MFFS::referent::%location of loop-block%}%::type} is "Coercion Deriver":
 				add 1 to {_CoercionDeriverDetect}
+				if {MFFS::block::%location of loop-block%::fortronIn} is not less than 0:
+					if {MFFS::block::%location of loop-block%::fortronIn} is higher than 250:
+						if {_loopVerifCoercion} is not higher than 16:
+							add 250 to {MFFS::block::%{_l}%::fortronIn}
+							remove 250 from {MFFS::block::%location of loop-block%::fortronIn}
+							add 1 to {_loopVerifCoercion}
+						else:
+							exit loop
 				
 		if {MFFS::block::%{_l}%::online} is true:
-			make a gui slot 51 of {_p} with 1 green glazed terracotta named "&aON" with lore "||   &e- &7Fortron demandée: &c%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}% &7par seconde||   &e- &7Fortron actuelle: &a%{MFFS::block::%{_l}%::fortronIn}%||&f||   &e- &7Coercion Deriver detectés: &6%{_CoercionDeriverDetect}%" to run:
+			make a gui slot 51 of {_p} with 1 green glazed terracotta named "&aON" with lore "||   &e- &7Fortron demandée: &c%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}% &7par seconde||   &e- &7Fortron actuelle: &a%{MFFS::block::%{_l}%::fortronIn}%||&f||   &e- &7Coercion Deriver detectés: &6%{_CoercionDeriverDetect}%&7/16" to run:
 				set {MFFS::block::%{_l}%::online} to false
 				set {MFFS::block::%{_l}%::generating} to false
 				MFFS_GUI({_p},{_t},{_l})
 		else:
-			make a gui slot 51 of {_p} with 1 red glazed terracotta named "&cOFF" with lore "||   &e- &7Fortron demandée: &c%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}% &7par seconde||   &e- &7Fortron actuelle: &a%{MFFS::block::%{_l}%::fortronIn}%||&f||   &e- &7Coercion Deriver detectés: &6%{_CoercionDeriverDetect}%" to run:
+			make a gui slot 51 of {_p} with 1 red glazed terracotta named "&cOFF" with lore "||   &e- &7Fortron demandée: &c%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}% &7par seconde||   &e- &7Fortron actuelle: &a%{MFFS::block::%{_l}%::fortronIn}%||&f||   &e- &7Coercion Deriver detectés: &6%{_CoercionDeriverDetect}%&7/16" to run:
 				set {MFFS::block::%{_l}%::online} to true
 				MFFS_GUI({_p},{_t},{_l})
-				MFFS_LOAD("Force Field Projector",{_l})
+				MFFS_LOAD("Force Field Projector",{_l}, {MFFS::block::%{MFFS::referent::%{_l}%}%::module::owner})
 	else if {_t} is "Coercion Deriver":
 		open virtual chest inventory with size 5 named "&8C.D. &0> &4ForceField" to {_p}
 		set {_slot} to 0
+		if {@variableEnergyPumpFunction} is less than 0:
+			set {@variableEnergyPumpFunction} to 0
 		loop 45 times:
 			make a gui slot {_slot} of {_p} with black stained glass pane named " " to do nothing
 			add 1 to {_slot}
@@ -497,15 +521,15 @@ function MFFS_GUI(p: player,t: text,l: location):
 		make a gui slot 34 of {_p} with light gray stained glass pane named "&7&oAucun upgrade" to do nothing
 		
 		if {MFFS::block::%{_l}%::online} is true:
-			make a gui slot 23 of {_p} with 1 green glazed terracotta named "&aON" with lore "||   &e- &7Energie demandée: &cXXXXX||   &e- &7Energie actuelle: &a%{MEC::block::%{_l}%::EM}%||   &e- &7Fortron actuelle: &6%{MFFS::block::%{_l}%::fortronIn}%" to run:
+			make a gui slot 23 of {_p} with 1 green glazed terracotta named "&aON" with lore "||   &e- &7Energie demandée: &c{@energyUseToProductNotFull} {@energyType}||   &e- &7Energie actuelle: &a%{@variableEnergyPumpFunction}% {@energyType}||   &e- &7Fortron actuelle: &6%{MFFS::block::%{_l}%::fortronIn}%" to run:
 				set {MFFS::block::%{_l}%::online} to false
 				MFFS_GUI({_p},{_t},{_l})
 		else:
-			make a gui slot 23 of {_p} with 1 red glazed terracotta named "&cOFF" with lore "||   &e- &7Energie demandée: &cXXXXX||   &e- &7Energie actuelle: &a%{MEC::block::%{_l}%::EM}%||   &e- &7Fortron actuelle: &6%{MFFS::block::%{_l}%::fortronIn}%" to run:
+			make a gui slot 23 of {_p} with 1 red glazed terracotta named "&cOFF" with lore "||   &e- &7Energie demandée: &c{@energyUseToProductNotFull} {@energyType}||   &e- &7Energie actuelle: &a%{@variableEnergyPumpFunction}% {@energyType}||   &e- &7Fortron actuelle: &6%{MFFS::block::%{_l}%::fortronIn}%" to run:
 				set {MFFS::block::%{_l}%::online} to true
 				MFFS_GUI({_p},{_t},{_l})
-				MFFS_LOAD("Coercion Deriver",{_l})
-function MFFS_LOAD(t: text,l: location):
+				MFFS_LOAD("Coercion Deriver",{_l}, {MFFS::block::%{MFFS::referent::%{_l}%}%::module::owner})
+function MFFS_LOAD(t: text,l: location,p: player):
 	set {_ok} to true
 	if {_t} is "Force Field Projector":
 		if {MFFS::block::%{_l}%::generating} is false:
@@ -517,16 +541,17 @@ function MFFS_LOAD(t: text,l: location):
 					if {MFFS::block::%{MFFS::referent::%location of loop-block%}%::type} is "Coercion Deriver":
 						if {MFFS::block::%location of loop-block%::fortronIn} is not 0:
 							if {MFFS::block::%location of loop-block%::fortronIn} is higher than 250:
-								if {_loopVerifCoercion} is not higher than 8:
+								if {_loopVerifCoercion} is not higher than 16:
 									add 250 to {MFFS::block::%{_l}%::fortronIn}
 									remove 250 from {MFFS::block::%location of loop-block%::fortronIn}
 									add 1 to {_loopVerifCoercion}
 								else:
 									exit loop
 				if {MFFS::block::%{_l}%::online} is false:
-					broadcast "stop1"
+					message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Arret manuel)" to {_p}
 					set {_ok} to false
 					set {MFFS::block::%{_l}%::generating} to false
+					set {MFFS::block::%{_l}%::online} to false
 					set {_count} to 0
 					loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
 						set {_distNow::%{_l}%} to position of loop-block
@@ -539,35 +564,56 @@ function MFFS_LOAD(t: text,l: location):
 										exit loop
 									set {_location::%{_count}%} to loop-value
 									set block at loop-value to air
-									delete {MFFS::block::%{_location::%{_count}%}%::shield}
+									delete {MFFS::block::%position of loop-value%::shield}
 									remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
 									add 1 to {_count}
 						chance of 6%:
 							wait 1 ticks
 				else if {MFFS::block::%{_l}%::load} is false:
+					message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Chuncks déchargés)" to {_p}
 					set {_ok} to false
 					set {MFFS::block::%{_l}%::generating} to false
-					broadcast "stop2"
-				else if {MFFS::block::%{_l}%::fortronIn} is 0:
+					set {MFFS::block::%{_l}%::online} to false
+				else if {MFFS::block::%{_l}%::fortronIn} is less than 0:
+					message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Manque de fortron)" to {_p}
 					set {_ok} to false
 					set {MFFS::block::%{_l}%::generating} to false
-					broadcast "stop3"
+					set {MFFS::block::%{_l}%::fortronPower} to 0
+					set {MFFS::block::%{_l}%::online} to false
+					set {_count} to 0
+					loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
+						set {_distNow::%{_l}%} to position of loop-block
+						set {_distTot::%{_l}%} to distance between {_distNow::%{_l}%} and {_pos::%{_l}%}
+						set {_distDem1::%{_l}%} to {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}-2
+						if {_distTot::%{_l}%} is between {_distDem1::%{_l}%} and {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}:
+							if {_distTot::%{_l}%} is not -1 or 0 or 1 or 2:
+								if loop-block is 95:11 or 95:3:
+									if {MFFS::block::%{_l}%::online} is true:
+										exit loop
+									set {_location::%{_count}%} to loop-value
+									set block at loop-value to air
+									delete {MFFS::block::%position of loop-value%::shield}
+									remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
+									add 1 to {_count}
+						chance of 6%:
+							wait 1 ticks
 				else:
+					message "&c[&6M.F.F.S.&c] &3Démarrage du forcefield..." to {_p}
 					set {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount} to 0
-					if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronIn} is not 0:
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronIn} is not less than 0:
 						if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronIn} is not higher than ({MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}-500):
-							remove {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire} from {MFFS::block::%{_l}%::fortronIn}
 							add 1 to {MFFS::block::%{_l}%::fortronPower}
 							set {_count} to 0
 							loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
+								remove ({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/7.5) from {MFFS::block::%{_l}%::fortronIn}
 								set {_loopVerifCoercion} to 0
 								loop blocks in radius 3 of position of {_l}:
-									if {MFFS::block::%{MFFS::referent::%location of loop-block%}%::type} is "Coercion Deriver":
-										if {MFFS::block::%location of loop-block%::fortronIn} is not 0:
-											if {MFFS::block::%location of loop-block%::fortronIn} is higher than 250:
-												if {_loopVerifCoercion} is not higher than 8:
-													add 250 to {MFFS::block::%{_l}%::fortronIn}
-													remove 250 from {MFFS::block::%location of loop-block%::fortronIn}
+									if {MFFS::block::%{MFFS::referent::%location of loop-block-2%}%::type} is "Coercion Deriver":
+										if {MFFS::block::%location of loop-block-2%::fortronIn} is not less than 0:
+											if {MFFS::block::%location of loop-block-2%::fortronIn} is higher than 1000:
+												if {_loopVerifCoercion} is not higher than 16:
+													add 1000 to {MFFS::block::%{_l}%::fortronIn}
+													remove 1000 from {MFFS::block::%location of loop-block-2%::fortronIn}
 													add 1 to {_loopVerifCoercion}
 												else:
 													exit loop
@@ -575,34 +621,35 @@ function MFFS_LOAD(t: text,l: location):
 								set {_distTot::%{_l}%} to distance between {_distNow::%{_l}%} and {_pos::%{_l}%}
 								set {_distDem1::%{_l}%} to {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}-2
 								if {_distTot::%{_l}%} is between {_distDem1::%{_l}%} and {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}:
-									if {_distTot::%{_l}%} is not -1 or 0 or 1 or 2:
-										if loop-block is air:
-											if {MFFS::block::%{_l}%::online} is false:
-												exit loop
-											set {_location::%{_count}%} to loop-value
-											chance of 50%:
-												set block at loop-value to 95:11
-												set {MFFS::block::%position of loop-value%::shield} to "%{MFFS::referent::%{_l}%}%"
-											else:
-												set block at loop-value to 95:3
-												set {MFFS::block::%position of loop-value%::shield} to "%{MFFS::referent::%{_l}%}%"
-											add 1 to {_count}
-											add 1 to {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
-								chance of 4%:
-									wait 1 tick
-							broadcast "%{MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}%"
+									if {MFFS::block::%{_l}%::fortronIn} is not less than 0:
+										if {_distTot::%{_l}%} is not -1 or 0 or 1 or 2:
+											if loop-block is air:
+												if {MFFS::block::%{_l}%::online} is false:
+													exit loop
+												set {_location::%{_count}%} to loop-value
+												chance of 50%:
+													set block at loop-value to 95:11
+													set {MFFS::block::%position of loop-value%::shield} to "%{MFFS::referent::%{_l}%}%"
+												else:
+													set block at loop-value to 95:3
+													set {MFFS::block::%position of loop-value%::shield} to "%{MFFS::referent::%{_l}%}%"
+												add 1 to {_count}
+												add 1 to {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
+									else:
+										exit loop
+									chance of 4%:
+										wait 1 tick
 						else:
-							remove ({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/4) from {MFFS::block::%{_l}%::fortronIn}
+							remove ({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/15) from {MFFS::block::%{_l}%::fortronIn}
 							set {MFFS::block::%{_l}%::fortronPower} to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
 							loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
 								set {_loopVerifCoercion} to 0
 								loop blocks in radius 3 of position of {_l}:
-									if {MFFS::block::%{MFFS::referent::%location of loop-block%}%::type} is "Coercion Deriver":
-										if {MFFS::block::%location of loop-block%::fortronIn} is not 0:
-											if {MFFS::block::%location of loop-block%::fortronIn} is higher than 250:
-												if {_loopVerifCoercion} is not higher than 8:
-													add 250 to {MFFS::block::%{_l}%::fortronIn}
-													remove 250 from {MFFS::block::%location of loop-block%::fortronIn}
+									if {MFFS::block::%{MFFS::referent::%location of loop-block-2%}%::type} is "Coercion Deriver":
+										if {MFFS::block::%location of loop-block-2%::fortronIn} is not less than 0:
+											if {MFFS::block::%location of loop-block-2%::fortronIn} is higher than 1000:
+												if {_loopVerifCoercion} is not higher than 16:
+													remove 1000 from {MFFS::block::%location of loop-block-2%::fortronIn}
 													add 1 to {_loopVerifCoercion}
 												else:
 													exit loop
@@ -610,21 +657,25 @@ function MFFS_LOAD(t: text,l: location):
 								set {_distTot::%{_l}%} to distance between {_distNow::%{_l}%} and {_pos::%{_l}%}
 								set {_distDem1::%{_l}%} to {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}-2
 								if {_distTot::%{_l}%} is between {_distDem1::%{_l}%} and {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}:
-									if {_distTot::%{_l}%} is not -1 or 0 or 1 or 2:
-										if loop-block is air:
-											if {MFFS::block::%{_l}%::online} is false:
-												exit loop
-											set {_location::%{_count}%} to loop-value
-											chance of 50%:
-												set block at loop-value to 95:11
-												set {MFFS::block::%loop-value%::shield} to "%{MFFS::referent::%{_l}%}%"
-											else:
-												set block at loop-value to 95:3
-												set {MFFS::block::%loop-value%::shield} to "%{MFFS::referent::%{_l}%}%"
-											add 1 to {_count}
-											add 1 to {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
+									if {MFFS::block::%{_l}%::fortronIn} is not less than 0:
+										if {_distTot::%{_l}%} is not -1 or 0 or 1 or 2:
+											if loop-block is air:
+												if {MFFS::block::%{_l}%::online} is false:
+													exit loop
+												set {_location::%{_count}%} to loop-value
+												chance of 50%:
+													set block at loop-value to 95:11
+													set {MFFS::block::%loop-value%::shield} to "%{MFFS::referent::%{_l}%}%"
+												else:
+													set block at loop-value to 95:3
+													set {MFFS::block::%loop-value%::shield} to "%{MFFS::referent::%{_l}%}%"
+												add 1 to {_count}
+												add 1 to {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
+									else:
+										exit loop
 								wait 5 ticks
 					else:
+						message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Manque de fortron) &8-Etat antérieur: &cActif !" to {_p}
 						loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
 							set {_distNow::%{_l}%} to position of loop-block
 							set {_distTot::%{_l}%} to distance between {_distNow::%{_l}%} and {_pos::%{_l}%}
@@ -644,24 +695,32 @@ function MFFS_LOAD(t: text,l: location):
 	if {_t} is "Coercion Deriver":
 		if {MFFS::block::%{_l}%::generating} is false:
 			set {MFFS::block::%{_l}%::generating} to true
+			message "&c[&6M.F.F.S.&c] &3Démarrage du coercion deriver..." to {_p}
 			while {_ok} is true:
 				if {MFFS::block::%{_l}%::online} is false:
+					message "&c[&6M.F.F.S.&c] &3Arret du coercion deriver. &7(Arret manuel)" to {_p}
 					set {_ok} to false
 					set {MFFS::block::%{_l}%::generating} to false
 				else if {MFFS::block::%{_l}%::load} is false:
+					message "&c[&6M.F.F.S.&c] &3Arret du coercion deriver &7(Chunck déchargé)" to {_p}
 					set {_ok} to false
 					set {MFFS::block::%{_l}%::generating} to false
-				else if {@variableEnergyPumpFunction} is 0:
+				else if {@variableEnergyPumpFunction} is less than 0:
+					message "&c[&6M.F.F.S.&c] &3Arret du coercion deriver &7(Manque d'énergie)" to {_p}
 					set {_ok} to false
 					set {MFFS::block::%{_l}%::generating} to false
 				else:
-					if {@variableEnergyPumpFunction} is not 0:
-						if {MEC::block::%{_l}%::EM} is not higher than ({MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}-500):
-							remove 1500 from {@variableEnergyPumpFunction}
-							add 50 to {MFFS::block::%{_l}%::fortronIn}
+					if {@variableEnergyPumpFunction} is not less than 0:
+						if {MFFS::block::%{_l}%::fortronIn} is not higher than ({MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}-500):
+							remove {@energyUseToProductNotFull} from {@variableEnergyPumpFunction}
+							add {@product} to {MFFS::block::%{_l}%::fortronIn}
 						else:
-							remove 775 from {@variableEnergyPumpFunction}
-							add 50 to {MFFS::block::%{_l}%::fortronIn}
+							remove {@energyUseToProductFull} from {@variableEnergyPumpFunction}
+					else:
+						message "&c[&6M.F.F.S.&c] &3Arret du coercion &7(Manque d'énergie) &8-Etat antérieur: &cActif !" to {_p}
+						set {_ok} to false
+						set {MFFS::block::%{_l}%::generating} to false
+						set {@variableEnergyPumpFunction} to 0
 					wait 1 second
 					
 command /mffsreset:
