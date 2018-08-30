@@ -1,0 +1,37 @@
+CraftCore:
+  version: 0.3
+  name: MEC
+  item: --item:1 redstone --name:&eMEC --lore:&7Créez & gérez de l'énergie
+
+  Recipies:
+    printed_processor:
+      result: --item:1 glowstone dust --name:&ePrinted processor --lore:&7Un processeur basic
+      resources:
+        - --item:4 iron ingot --name:&eiron gear --lore:&7Un iron gear
+        - --item:4 glowstone dust
+        - --item:2 gold ingot
+
+    machine_frame:
+      result: --item:1 iron block --name:&eMachine frame
+      resources:
+        - --item:1 iron ingot --name:&eiron gear --lore:&7Un iron gear
+        - --item:1 iron block
+        - --item:1 diamond
+    coal_generator_MK1:
+      result: --item:1 coal block --name:&cCoal generator MK1 --lore:&7Un générateur d'énergie utilisant du charbon ||&c100EM/s
+      resources:
+        - --item:1 iron block --name:&eMachine frame
+        - --item:1 glowstone dust --name:&ePrinted processor --lore:&7Un processeur basic
+        - --item:4 diamond
+    energie_cell_MK1:
+      result: --item:1 light gray concrete --name:&cEnergie cell MK1 --lore:&7Une machine pour stocker l'énergie
+      resources:
+        - --item:1 iron block --name:&eMachine frame
+    energie_cable_MK1:
+      result: --item:1 string --name:&2Cable d'énergie MK1 --lore:&7Transfert 300EM/10s ||&7Lié à &6NONE
+      resources:
+        - --item:1 string
+    relay:
+      result: --item:3 cyan glass block --name:&cRelay énergétique
+      resources:
+        - --item:1 iron block

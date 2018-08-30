@@ -1,0 +1,348 @@
+options:
+	seconds: 2
+
+on load:
+	if file "plugins/AtomicFoundation/CraftCore/MEC.yml" doesn't exist: 
+		create file "plugins/AtomicFoundation/CraftCore/MEC.yml"
+		download from "https://raw.githubusercontent.com/Gaby2907/AtomicBalistic/master/Modules/Exemple/Exemple.yml" to "plugins/AtomicBalistic/CraftCore/Exemple.yml"
+
+	if script "AtomicFoundation/CraftCore.sk" is not loaded:
+		reload script "AtomicFoundation/CraftCore.sk"
+	set {_s} to 0
+	while {_ok} is not set:
+		if script "AtomicFoundation/CraftCore.sk" is loaded:
+			set {_ok} to true
+		else:
+			wait 10 seconds
+			if {_s} is 10:
+				set {_ok} to "error"
+				message "&8&l[&eAtomicFoundation&8-&6MEC&8&l] &cCraftCore n'a pas pu être chargé." to all players
+			add 1 to {_s}
+	if {_ok} is true:
+		CraftCore_generate("mec","plugins/AtomicFoundation/CraftCore/MEC.yml") 
+
+on place:
+	if player's tool is a coal block named "&cCoal generator MK1" with lore "&7Un générateur d'énergie utilisant du charbon ||&c100EM/s":
+		cancel event
+		set {_b} to event-block
+		loop 2 times:
+			set {_b} to block above {_b}
+			if {_b} is not air:
+				play 10 smoke at location of {_b}
+				set {_ok} to false
+		if {_ok} is false:
+			message "&8&l[&eAtomicFoundation&8-&6M.E.C&8&l] &7Pas assez de place." to player
+		else:
+			remove 1 coal block named "&cCoal generator MK1" with lore "&7Un générateur d'énergie utilisant du charbon ||&c100EM/s" from player's inventory
+			wait 1 tick
+			set event-block to magma block
+			set block above event-block to hopper
+			set block 2 up event-block to iron block
+			set {MEC::referent::%location of block above event-block%} to location of event-block
+			set {MEC::referent::%location of event-block%} to location of event-block
+			set {MEC::referent::%location of block 2 up event-block%} to location of event-block
+			set {MEC::block::%{MEC::referent::%location of event-block%}%::type} to "Coal generator MK1"
+			set {MEC::block::%{MEC::referent::%location of event-block%}%::EM} to 0
+			set {MEC::block::%{MEC::referent::%location of event-block%}%::MAXEM} to 2500
+			set {MEC::block::%{MEC::referent::%location of event-block%}%::generating} to false
+			set {MEC::block::%{MEC::referent::%location of event-block%}%::coal} to 0
+			set {_b} to event-block
+			loop 3 times:
+				set {_l} to location of {_b}
+				set {MEC::structure::%location of event-block%::%{_l}%} to {_l}
+				set {_b} to block above {_b} 
+			set {_c} to chunk at {MEC::referent::%location of event-block%}
+			set {_x} to chunk x coord of {_c} * 16
+			set {_z} to chunk z coord of {_c} * 16
+			set {_y} to 0
+			set {_w} to chunk world of {_c}
+			set {_loc} to location({_x},{_y},{_z},{_w})
+			set {MEC::chunk::%{_loc}%::%{MEC::referent::%location of event-block%}%} to {MEC::referent::%location of event-block%} 
+			set {MEC::block::%{MEC::referent::%location of event-block%}%::load} to true 
+	else if player's tool is 1 light gray concrete named "&cEnergie cell MK1" with lore "&7Une machine pour stocker l'énergie":
+		cancel event
+		set {_b} to event-block
+		loop 2 times:
+			set {_b} to block above {_b}
+			if {_b} is not air:
+				play 10 smoke at location of {_b}
+				set {_ok} to false
+		if {_ok} is false:
+			message "&8&l[&eAtomicFoundation&8-&6M.E.C&8&l] &7Pas assez de place." to player
+		else:
+			remove 1 light gray concrete named "&cEnergie cell MK1" with lore "&7Une machine pour stocker l'énergie" from player's inventory
+			wait 1 tick
+			set event-block to light gray concrete
+			set block above event-block to redstone block
+			set block 2 up event-block to daylight sensor
+			set {MEC::referent::%location of block above event-block%} to location of event-block
+			set {MEC::referent::%location of event-block%} to location of event-block
+			set {MEC::referent::%location of block 2 up event-block%} to location of event-block
+			set {MEC::block::%{MEC::referent::%location of event-block%}%::type} to "Energie cell MK1"
+			set {MEC::block::%{MEC::referent::%location of event-block%}%::EM} to 0
+			set {MEC::block::%{MEC::referent::%location of event-block%}%::MAXEM} to 15000
+			set {MEC::block::%{MEC::referent::%location of event-block%}%::generating} to false
+			set {_b} to event-block
+			loop 3 times:
+				set {_l} to location of {_b}
+				set {MEC::structure::%location of event-block%::%{_l}%} to {_l}
+				set {_b} to block above {_b} 
+			set {_c} to chunk at {MEC::referent::%location of event-block%}
+			set {_x} to chunk x coord of {_c} * 16
+			set {_z} to chunk z coord of {_c} * 16
+			set {_y} to 0
+			set {_w} to chunk world of {_c}
+			set {_loc} to location({_x},{_y},{_z},{_w})
+			set {MEC::chunk::%{_loc}%::%{MEC::referent::%location of event-block%}%} to {MEC::referent::%location of event-block%} 
+			set {MEC::block::%{MEC::referent::%location of event-block%}%::load} to true 
+
+on break:
+	if {MEC::referent::%location of event-block%} is set:
+		loop {MEC::block::%{MEC::referent::%location of event-block%}%::LINK::*}:
+			if {MEC::block::%{MEC::referent::%location of event-block%}%::sender::%loop-value%} is set:
+				set {_type} to {MEC::block::%{MEC::referent::%location of event-block%}%::LINKTYPE::%loop-value%}
+				delete {MEC::block::%{MEC::referent::%location of event-block%}%::LINKTYPE::%loop-value%}
+				delete {MEC::block::%{MEC::referent::%location of event-block%}%::sender::%loop-value%}
+				delete {MEC::current::%{MEC::referent::%location of event-block%}%::%loop-value%}
+			else:
+				set {_type} to {MEC::block::%loop-value%::LINKTYPE::%{MEC::referent::%location of event-block%}%}
+				delete {MEC::block::%loop-value%::LINKTYPE::%{MEC::referent::%location of event-block%}%}
+				delete {MEC::block::%loop-value%::sender::%{MEC::referent::%location of event-block%}%}
+				delete {MEC::current::%loop-value%::%{MEC::referent::%location of event-block%}%}
+			if {_type} is "MK1":
+				drop 1 string named "&2Cable d'énergie MK1" with lore "&7Transfert 300EM/10s ||&7Lié à &6NONE" at event-location
+				delete {MEC::block::%loop-value%::LINK::%{MEC::referent::%location of event-block%}%}
+				delete {MEC::block::%{MEC::referent::%location of event-block%}%::LINK::%loop-value%}
+		if {MEC::block::%{MEC::referent::%location of event-block%}%::type} is "Coal generator MK1":
+			delete {MEC::block::%{MEC::referent::%location of event-block%}%::*}
+			drop 1 coal block named "&cCoal generator MK1" with lore "&7Un générateur d'énergie utilisant du charbon ||&c100EM/s" 
+			set {_c} to chunk at {MEC::referent::%location of event-block%}
+			set {_x} to chunk x coord of {_c} * 16
+			set {_z} to chunk z coord of {_c} * 16
+			set {_y} to 0
+			set {_w} to chunk world of {_c}
+			set {_loc} to location({_x},{_y},{_z},{_w})
+			delete {MEC::chunk::%{_loc}%::%{MEC::referent::%location of event-block%}%}
+			loop {MEC::structure::%{MEC::referent::%location of event-block%}%::*}:
+				set block at loop-value to air
+				delete {MEC::referent::%loop-value%}
+			delete {MEC::structure::%{MEC::referent::%location of event-block%}%::*}
+		else if {MEC::block::%{MEC::referent::%location of event-block%}%::type} is "Energie cell MK1":
+			delete {MEC::block::%{MEC::referent::%location of event-block%}%::*}
+			drop 1 light gray concrete named "&cEnergie cell MK1" with lore "&7Une machine pour stocker l'énergie" at event-location
+			set {_c} to chunk at {MEC::referent::%location of event-block%}
+			set {_x} to chunk x coord of {_c} * 16
+			set {_z} to chunk z coord of {_c} * 16
+			set {_y} to 0
+			set {_w} to chunk world of {_c}
+			set {_loc} to location({_x},{_y},{_z},{_w})
+			delete {MEC::chunk::%{_loc}%::%{MEC::referent::%location of event-block%}%}
+			loop {MEC::structure::%{MEC::referent::%location of event-block%}%::*}:
+				set block at loop-value to air
+				delete {MEC::referent::%loop-value%}
+			delete {MEC::structure::%{MEC::referent::%location of event-block%}%::*}
+
+on right click:
+	if clicked block is set:
+		if {MEC::referent::%location of event-block%} is set:
+			cancel event
+			if player's tool is not a string:
+				MEC_GUI(player,{MEC::block::%{MEC::referent::%location of event-block%}%::type},{MEC::referent::%location of event-block%}) 
+			else:
+				if name of player's tool is "&2Cable d'énergie MK1":
+					if lore of player's tool contains "&7Transfert 300EM/10s":
+						set {_liste::*} to lore of player's tool split at "Lié à &6"
+						if {_liste::2} is "NONE":
+							remove 1 string named "&2Cable d'énergie MK1" with lore "&7Transfert 300EM/10s ||&7Lié à &6NONE" from player's inventory
+							give 1 string named "&2Cable d'énergie MK1" with lore "&7Transfert 300EM/10s ||&7Lié à &6%{MEC::referent::%location of event-block%}%" to player
+						else:
+							if {MEC::block::%{MEC::referent::%location of event-block%}%::LINK::%{_liste::2}%} is not set:
+								set {_loc1} to MEC_text2Loc("%{_liste::2}%",world("%world of player%"))
+								set {_loc2} to MEC_text2Loc("%{MEC::referent::%location of event-block%}%",world("%world of player%"))
+								if distance between {_loc1} and {_loc2} is less than 16:
+									if {_loc1} is not {_loc2}:
+										set {MEC::block::%{MEC::referent::%location of event-block%}%::LINK::%{_loc1}%} to {_loc1}
+										set {MEC::block::%{_loc1}%::LINK::%{MEC::referent::%location of event-block%}%} to {MEC::referent::%location of event-block%}
+										set {MEC::block::%{_loc1}%::LINKTYPE::%{MEC::referent::%location of event-block%}%} to "MK1"
+										set {MEC::block::%{_loc1}%::sender::%{MEC::referent::%location of event-block%}%} to {MEC::referent::%location of event-block%}
+										remove 1 string named "&2Cable d'énergie MK1" with lore "&7Transfert 300EM/10s ||&7Lié à &6%{_liste::2}%" from player's inventory
+										message "&7Machine lié..." to player
+										MEC_CABLE_LOAD({_loc1})
+										drawLine particle redstone, RGB 255, 0, 0, center {_loc1}, target {_loc2}, id "%{_liste::2}%-%{MEC::referent::%location of event-block%}%", onlyFor player, solid true, density 10, length 0, zigZag count 0, height 0, visibleRange 64, displacementXYZ 0, 1, 0, pulseDelay 1
+										wait 3 seconds
+										stopEffect id "%{_liste::2}%-%{MEC::referent::%location of event-block%}%"
+								else:
+									message "&7Ces deux machines sont à plus de 15 blocs..." to player
+							else:
+								message "&7Ces machines sont déjà liés..." to player
+		else:
+			if name of player's tool is "&2Cable d'énergie MK1":
+				cancel event
+
+
+
+
+on drop:
+	if event-item is string:
+		if name of event-item is "&2Cable d'énergie MK1":
+			set {_liste::*} to lore of player's tool split at "Lié à &6"
+			if {_liste::2} is not "NONE":
+				cancel event
+				set {_s} to item amount of event-item
+
+				set {_item} to "%{_s}% string" parsed as item
+				set name of {_item} to "&2Cable d'énergie MK1"
+				set lore of {_item} to "&7Transfert 300EM/10s ||&7Lié à &6NONE"
+				give {_item} to player
+				wait 1 tick
+				remove event-item from player's inventory
+
+function MEC_GUI(p: player,t: text,l: location):
+	set {MEC::GUI::%{_p}%} to {_l}
+	if {_t} is "Coal generator MK1":
+		open virtual chest inventory with size 1 named "&7Coal generator MK1" to {_p}
+		if {MEC::block::%{_l}%::online} is true:
+			make a gui slot 0 of {_p} with 1 green wool named "&aON" to run:
+				set {MEC::block::%{_l}%::online} to false
+				MEC_GUI({_p},{_t},{_l})
+		else:
+			make a gui slot 0 of {_p} with 1 red wool named "&cOFF" to run:
+				set {MEC::block::%{_l}%::online} to true
+				MEC_GUI({_p},{_t},{_l})
+				MEC_LOAD("Coal generator MK1",{_l})
+		make a gui slot 7 of {_p} with 1 unlighted furnace named "&fCoal: %{MEC::block::%{_l}%::coal}%"
+
+		make a gui slot 8 of {_p} with 1 light gray stained glass pane named "&f" to run:
+			if cursor slot of {_p} is coal or charcoal:
+				if {MEC::block::%{_l}%::coal} is 0:
+					MEC_CABLE_LOAD({_l})
+				set {_amount} to (item amount of cursor slot of {_p} * 3)
+				add {_amount} to {MEC::block::%{_l}%::coal}
+				delete cursor slot of {_p}
+				MEC_GUI({_p},{_t},{_l})
+		set {_ok} to true
+		while {_ok} is true:
+			if name of {_p}'s current inventory is not "&7Coal generator MK1":
+				set {_ok} to false
+			else if {MEC::GUI::%{_p}%} is not {_l}:
+				set {_ok} to false
+			else:
+				make a gui slot 1 of {_p} with 1 cyan glass block named "&3EM : %{MEC::block::%{_l}%::EM}%/%{MEC::block::%{_l}%::MAXEM}%"
+				make a gui slot 7 of {_p} with 1 unlighted furnace named "&fCoal: %{MEC::block::%{_l}%::coal}%"
+				wait {@seconds} seconds
+	else if {_t} is "Energie cell MK1":
+		open virtual chest inventory with size 1 named "&7Energie cell MK1" to {_p}
+		make a gui slot 0 of {_p} with 1 cyan glass block named "&3EM : %{MEC::block::%{_l}%::EM}%/%{MEC::block::%{_l}%::MAXEM}%"
+		set {_ok} to true
+		while {_ok} is true:
+			if name of {_p}'s current inventory is not "&7Energie cell MK1":
+				set {_ok} to false
+			else if {MEC::GUI::%{_p}%} is not {_l}:
+				set {_ok} to false
+			else:
+				make a gui slot 0 of {_p} with 1 cyan glass block named "&3EM : %{MEC::block::%{_l}%::EM}%/%{MEC::block::%{_l}%::MAXEM}%"
+				wait {@seconds} seconds
+
+
+
+on chunk unload:
+	set {_c} to event-chunk
+	set {_x} to chunk x coord of {_c} * 16
+	set {_z} to chunk z coord of {_c} * 16
+	set {_y} to 0
+	set {_w} to chunk world of {_c}
+	set {_loc} to location({_x},{_y},{_z},{_w})
+	loop {MEC::chunk::%{_loc}%::*}:
+		set {_l} to loop-value
+		set {MEC::block::%{_l}%::load} to false
+		delete {MEC::current::%{_l}%::*}
+
+on chunk load:
+	set {_c} to event-chunk
+	set {_x} to chunk x coord of {_c} * 16
+	set {_z} to chunk z coord of {_c} * 16
+	set {_y} to 0
+	set {_w} to chunk world of {_c}
+	set {_loc} to location({_x},{_y},{_z},{_w})
+	loop {MEC::chunk::%{_loc}%::*}:
+		set {_l} to loop-value
+		set {MEC::block::%{_l}%::load} to true
+		if {MEC::block::%{_l}%::online} is true:
+			if {MEC::block::%{_l}%::type} is "Coal generator MK1":
+				MEC_LOAD("Coal generator MK1",{_l})
+
+function MEC_LOAD(t: text,l: location):
+	set {_ok} to true
+	if {_t} is "Coal generator MK1":
+		if {MEC::block::%{_l}%::generating} is false:
+			set {MEC::block::%{_l}%::generating} to true
+			MEC_CABLE_LOAD({_l})
+			while {_ok} is true:
+				if {MEC::block::%{_l}%::online} is false:
+					set {_ok} to false
+					set {MEC::block::%{_l}%::generating} to false
+				else if {MEC::block::%{_l}%::load} is false:
+					set {_ok} to false
+					set {MEC::block::%{_l}%::generating} to false
+				else if {MEC::block::%{_l}%::coal} is 0:
+					set {_ok} to false
+					set {MEC::block::%{_l}%::generating} to false
+				else:
+					if {MEC::block::%{_l}%::EM} is not {MEC::block::%{_l}%::MAXEM}:
+						if {MEC::block::%{_l}%::EM} is not higher than ({MEC::block::%{_l}%::MAXEM} - 101):
+							remove 1 from {MEC::block::%{_l}%::coal}
+							add 100 to {MEC::block::%{_l}%::EM}
+						else:
+							set {MEC::block::%{_l}%::EM} to {MEC::block::%{_l}%::MAXEM}
+					wait {@seconds} second
+
+function MEC_CABLE_LOAD(l: location):
+	set {_ok} to true
+	loop {MEC::block::%{_l}%::sender::*}:
+		if {MEC::block::%{_l}%::LINK::%loop-value%} is set:
+			if {MEC::current::%{_l}%::%loop-value%} is not set:
+				set {MEC::current::%{_l}%::%loop-value%} to true
+			else:
+				stop
+			set {MEC::state} to true
+			while {_ok} is true:
+				if {MEC::block::%{_l}%::load} is false:
+					set {_ok} to false
+				if {MEC::current::%{_l}%::%loop-value%} is not set:
+					set {_ok} to false
+				if {MEC::state} is false:
+					set {_ok} to false
+				if {MEC::block::%{_l}%::EM} is not 0:
+					if {MEC::block::%loop-value%::EM} is not {MEC::block::%loop-value%::MAXEM}:
+						if {MEC::block::%loop-value%::EM} < ({MEC::block::%loop-value%::MAXEM} - 300):
+							if {MEC::block::%{_l}%::EM} >= 300:
+								remove 300 from {MEC::block::%{_l}%::EM}
+								add 300 to {MEC::block::%loop-value%::EM} 
+							else:
+								add {MEC::block::%{_l}%::EM} to {MEC::block::%loop-value%::EM}
+								set {MEC::block::%{_l}%::EM} to 0
+						else:
+							set {_n} to ({MEC::block::%loop-value%::MAXEM} - {MEC::block::%loop-value%::EM})
+							if {MEC::block::%{_l}%::EM} >= {_n}:
+								remove {_n} from {MEC::block::%{_l}%::EM}
+								add {_n} to {MEC::block::%loop-value%::EM} 
+							else:
+								add {MEC::block::%{_l}%::EM} to {MEC::block::%loop-value%::EM}
+								remove {MEC::block::%{_l}%::EM} from {MEC::block::%{_l}%::EM}
+				wait {@seconds} seconds
+			delete {MEC::current::%{_l}%::%loop-value%}
+
+
+
+
+function MEC_text2Loc(location: text, world: world) :: location: #thx Snow-pyon for this function ^^
+	set {_loc::*} to {_location} parsed as "x: %num%, y: %num%, z: %num%"
+	return location({_loc::1}, {_loc::2}, {_loc::3}, {_world})
+
+		
+command /stopwhile:
+	trigger:
+		if {MEC::state} is not false:
+			set {MEC::state} to false
+
+
