@@ -92,8 +92,6 @@ function CraftCore_GUI(p: player,page: number,type: text):
 			set {_s} to 28
 		else if {_s} is 35:
 			set {_s} to 37
-		else if {_s} is 44:
-			set {_s} to 46
 		set {_loopvalue} to loop-value
 		delete {_lore}
 		loop {CraftCore::recipies::%{_loopvalue}%::need::*}:
