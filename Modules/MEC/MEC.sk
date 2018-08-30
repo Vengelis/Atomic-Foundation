@@ -59,7 +59,7 @@ on place:
 			set {_loc} to location({_x},{_y},{_z},{_w})
 			set {MEC::chunk::%{_loc}%::%{MEC::referent::%location of event-block%}%} to {MEC::referent::%location of event-block%} 
 			set {MEC::block::%{MEC::referent::%location of event-block%}%::load} to true 
-	else if player's tool is 1 light gray concrete named "&cEnergie cell MK1" with lore "&7Une machine pour stocker l'énergie":
+	else if player's tool is light gray concrete named "&cEnergie cell MK1" with lore "&7Une machine pour stocker l'énergie":
 		cancel event
 		set {_b} to event-block
 		loop 2 times:
@@ -95,6 +95,16 @@ on place:
 			set {_loc} to location({_x},{_y},{_z},{_w})
 			set {MEC::chunk::%{_loc}%::%{MEC::referent::%location of event-block%}%} to {MEC::referent::%location of event-block%} 
 			set {MEC::block::%{MEC::referent::%location of event-block%}%::load} to true 
+	else if player's tool is 1 cyan glass block named "&cRelay énergétique" with lore "&7Permet de prolonger la ||&7limite de 15 block des cables":
+		set {MEC::referent::%location of event-block%} to location of event-block
+		set {MEC::block::%{MEC::referent::%location of event-block%}%::type} to "Relay"
+		set {_c} to chunk at {MEC::referent::%location of event-block%}
+		set {_x} to chunk x coord of {_c} * 16
+		set {_z} to chunk z coord of {_c} * 16
+		set {_y} to 0
+		set {_w} to chunk world of {_c}
+		set {_loc} to location({_x},{_y},{_z},{_w})
+		set {MEC::chunk::%{_loc}%::%{MEC::referent::%location of event-block%}%} to {MEC::referent::%location of event-block%} 
 
 on break:
 	if {MEC::referent::%location of event-block%} is set:
@@ -145,32 +155,48 @@ on break:
 on right click:
 	if clicked block is set:
 		if {MEC::referent::%location of event-block%} is set:
+			set {_type} to {MEC::block::%{MEC::referent::%location of event-block%}%::type}
+			set {_locblock} to {MEC::referent::%location of event-block%}
+		else:
+			if {MEC::block::%location of event-block%::type} is set:
+				set {_type} to {MEC::block::%location of event-block%::type}
+				set {_locblock} to location of event-block 
+			else:
+				set {_type} to "<none>"
+		if {_type} is not "<none>":
 			cancel event
 			if player's tool is not a string:
-				MEC_GUI(player,{MEC::block::%{MEC::referent::%location of event-block%}%::type},{MEC::referent::%location of event-block%}) 
+				MEC_GUI(player,{_type},{_locblock}) 
 			else:
 				if name of player's tool is "&2Cable d'énergie MK1":
 					if lore of player's tool contains "&7Transfert 300EM/10s":
 						set {_liste::*} to lore of player's tool split at "Lié à &6"
 						if {_liste::2} is "NONE":
+							if {_type} is "Relay":
+								if {MEC::block::%{_locblock}%::sendto} is set:
+									message "&8&l[&eAtomicFoundation&8-&6M.E.C&8&l] &7Le relay ne peut envoyer de l'énergie qu'a une seul machine (ou relay)." to player
+									stop
 							remove 1 string named "&2Cable d'énergie MK1" with lore "&7Transfert 300EM/10s ||&7Lié à &6NONE" from player's inventory
 							give 1 string named "&2Cable d'énergie MK1" with lore "&7Transfert 300EM/10s ||&7Lié à &6%{MEC::referent::%location of event-block%}%" to player
 						else:
-							if {MEC::block::%{MEC::referent::%location of event-block%}%::LINK::%{_liste::2}%} is not set:
+							if {MEC::block::%{_locblock}%::LINK::%{_liste::2}%} is not set:
 								set {_loc1} to MEC_text2Loc("%{_liste::2}%",world("%world of player%"))
-								set {_loc2} to MEC_text2Loc("%{MEC::referent::%location of event-block%}%",world("%world of player%"))
+								set {_loc2} to MEC_text2Loc("%{_locblock}%",world("%world of player%"))
 								if distance between {_loc1} and {_loc2} is less than 16:
 									if {_loc1} is not {_loc2}:
-										set {MEC::block::%{MEC::referent::%location of event-block%}%::LINK::%{_loc1}%} to {_loc1}
-										set {MEC::block::%{_loc1}%::LINK::%{MEC::referent::%location of event-block%}%} to {MEC::referent::%location of event-block%}
-										set {MEC::block::%{_loc1}%::LINKTYPE::%{MEC::referent::%location of event-block%}%} to "MK1"
-										set {MEC::block::%{_loc1}%::sender::%{MEC::referent::%location of event-block%}%} to {MEC::referent::%location of event-block%}
+										if {MEC::block::%{_loc1}%::type} is "Relay":
+											set {MEC::block::%{_loc1}%::sendto} to {_loc2}
+										else:
+											set {MEC::block::%{_loc1}%::sender::%{_locblock}%} to {_locblock}
+										set {MEC::block::%{_locblock}%::LINK::%{_loc1}%} to {_loc1}
+										set {MEC::block::%{_loc1}%::LINK::%{_locblock}%} to {_locblock}
+										set {MEC::block::%{_loc1}%::LINKTYPE::%{_locblock}%} to "MK1"
 										remove 1 string named "&2Cable d'énergie MK1" with lore "&7Transfert 300EM/10s ||&7Lié à &6%{_liste::2}%" from player's inventory
 										message "&7Machine lié..." to player
 										MEC_CABLE_LOAD({_loc1})
-										drawLine particle redstone, RGB 255, 0, 0, center {_loc1}, target {_loc2}, id "%{_liste::2}%-%{MEC::referent::%location of event-block%}%", onlyFor player, solid true, density 10, length 0, zigZag count 0, height 0, visibleRange 64, displacementXYZ 0, 1, 0, pulseDelay 1
+										drawLine particle redstone, RGB 255, 0, 0, center {_loc1}, target {_loc2}, id "%{_liste::2}%-%{_locblock}%", onlyFor player, solid true, density 10, length 0, zigZag count 0, height 0, visibleRange 64, displacementXYZ 0, 1, 0, pulseDelay 1
 										wait 3 seconds
-										stopEffect id "%{_liste::2}%-%{MEC::referent::%location of event-block%}%"
+										stopEffect id "%{_liste::2}%-%{_locblock}%"
 								else:
 									message "&7Ces deux machines sont à plus de 15 blocs..." to player
 							else:
@@ -178,8 +204,6 @@ on right click:
 		else:
 			if name of player's tool is "&2Cable d'énergie MK1":
 				cancel event
-
-
 
 
 on drop:

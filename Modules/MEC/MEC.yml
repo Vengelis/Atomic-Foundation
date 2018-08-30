@@ -32,6 +32,6 @@ CraftCore:
       resources:
         - --item:1 string
     relay:
-      result: --item:3 cyan glass block --name:&cRelay énergétique
+      result: --item:3 cyan glass block --name:&cRelay énergétique --lore:&7Permet de prolonger la ||&7limite de 15 block des cables
       resources:
         - --item:1 iron block
