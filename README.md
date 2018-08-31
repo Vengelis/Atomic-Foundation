@@ -19,7 +19,7 @@ __**Contributeurs:**__
 
 Nous sommes 4 contributeurs:
 
-- **Vengelis**: Chef du projet et responsable du module I.C.B.M.
+- **Vengelis**: Chef du projet et responsable du module I.C.B.M. et M.F.F.S.
 - **uiytt**: Responsable du module CraftCore et de M.E.C.
 - **noftaly**: Participe au développement du github ainsi que de petite fonctions par ci et par là dans les skripts.
 - **Blackmine**: Responsable du module StructureManager.
