@@ -96,62 +96,55 @@ on place:
 			set {MEC::chunk::%{_loc}%::%{MEC::referent::%location of event-block%}%} to {MEC::referent::%location of event-block%} 
 			set {MEC::block::%{MEC::referent::%location of event-block%}%::load} to true 
 	else if player's tool is 1 cyan glass block named "&cRelay énergétique" with lore "&7Permet de prolonger la ||&7limite de 15 block des cables":
-		set {MEC::referent::%location of event-block%} to location of event-block
-		set {MEC::block::%{MEC::referent::%location of event-block%}%::type} to "Relay"
-		set {_c} to chunk at {MEC::referent::%location of event-block%}
-		set {_x} to chunk x coord of {_c} * 16
-		set {_z} to chunk z coord of {_c} * 16
-		set {_y} to 0
-		set {_w} to chunk world of {_c}
-		set {_loc} to location({_x},{_y},{_z},{_w})
-		set {MEC::chunk::%{_loc}%::%{MEC::referent::%location of event-block%}%} to {MEC::referent::%location of event-block%} 
+		set {MEC::block::%location of event-block%::type} to "Relay"
+		set {_loc} to MEC_getCHUNKblock(location of event-block)
+		set {MEC::chunk::%{_loc}%::%location of event-block%} to location of event-block
 
 on break:
 	if {MEC::referent::%location of event-block%} is set:
-		loop {MEC::block::%{MEC::referent::%location of event-block%}%::LINK::*}:
-			if {MEC::block::%{MEC::referent::%location of event-block%}%::sender::%loop-value%} is set:
-				set {_type} to {MEC::block::%{MEC::referent::%location of event-block%}%::LINKTYPE::%loop-value%}
-				delete {MEC::block::%{MEC::referent::%location of event-block%}%::LINKTYPE::%loop-value%}
-				delete {MEC::block::%{MEC::referent::%location of event-block%}%::sender::%loop-value%}
-				delete {MEC::current::%{MEC::referent::%location of event-block%}%::%loop-value%}
+		set {_l} to {MEC::referent::%location of event-block%}
+	else:
+		set {_l} to location of event-block
+	if {MEC::block::%{_l}%::type} is set:
+		loop {MEC::block::%{_l}%::LINK::*}:
+			if {MEC::block::%{_l}%::sender::%loop-value%} is set:
+				set {_type} to {MEC::block::%{_l}%::LINKTYPE::%loop-value%}
+				delete {MEC::block::%{_l}%::LINKTYPE::%loop-value%}
+				delete {MEC::block::%{_l}%::sender::%loop-value%}
+				delete {MEC::current::%{_l}%::%loop-value%}
 			else:
-				set {_type} to {MEC::block::%loop-value%::LINKTYPE::%{MEC::referent::%location of event-block%}%}
-				delete {MEC::block::%loop-value%::LINKTYPE::%{MEC::referent::%location of event-block%}%}
-				delete {MEC::block::%loop-value%::sender::%{MEC::referent::%location of event-block%}%}
-				delete {MEC::current::%loop-value%::%{MEC::referent::%location of event-block%}%}
+				set {_type} to {MEC::block::%loop-value%::LINKTYPE::%{_l}%}
+				delete {MEC::block::%loop-value%::LINKTYPE::%{_l}%}
+				delete {MEC::block::%loop-value%::sender::%{_l}%}
+				delete {MEC::current::%loop-value%::%{_l}%}
 			if {_type} is "MK1":
 				drop 1 string named "&2Cable d'énergie MK1" with lore "&7Transfert 300EM/10s ||&7Lié à &6NONE" at event-location
-				delete {MEC::block::%loop-value%::LINK::%{MEC::referent::%location of event-block%}%}
-				delete {MEC::block::%{MEC::referent::%location of event-block%}%::LINK::%loop-value%}
+				delete {MEC::block::%loop-value%::LINK::%{_l}%}
+				delete {MEC::block::%{_l}%::LINK::%loop-value%}
 			MEC_CABLE_LOAD(loop-value)
-		if {MEC::block::%{MEC::referent::%location of event-block%}%::type} is "Coal generator MK1":
+		if {MEC::block::%{_l}%::type} is "Coal generator MK1":
 			delete {MEC::block::%{MEC::referent::%location of event-block%}%::*}
 			drop 1 coal block named "&cCoal generator MK1" with lore "&7Un générateur d'énergie utilisant du charbon ||&c100EM/s" 
-			set {_c} to chunk at {MEC::referent::%location of event-block%}
-			set {_x} to chunk x coord of {_c} * 16
-			set {_z} to chunk z coord of {_c} * 16
-			set {_y} to 0
-			set {_w} to chunk world of {_c}
-			set {_loc} to location({_x},{_y},{_z},{_w})
-			delete {MEC::chunk::%{_loc}%::%{MEC::referent::%location of event-block%}%}
-			loop {MEC::structure::%{MEC::referent::%location of event-block%}%::*}:
+			set {_loc} to MEC_getCHUNKblock({_l})
+			delete {MEC::chunk::%{_loc}%::%{_l}%}
+			loop {MEC::structure::%{_l}%::*}:
 				set block at loop-value to air
 				delete {MEC::referent::%loop-value%}
-			delete {MEC::structure::%{MEC::referent::%location of event-block%}%::*}
-		else if {MEC::block::%{MEC::referent::%location of event-block%}%::type} is "Energie cell MK1":
-			delete {MEC::block::%{MEC::referent::%location of event-block%}%::*}
+			delete {MEC::structure::%{_l}%::*}
+		else if {MEC::block::%{_l}%::type} is "Energie cell MK1":
+			delete {MEC::block::%{_l}%::*}
 			drop 1 light gray concrete named "&cEnergie cell MK1" with lore "&7Une machine pour stocker l'énergie" at event-location
-			set {_c} to chunk at {MEC::referent::%location of event-block%}
-			set {_x} to chunk x coord of {_c} * 16
-			set {_z} to chunk z coord of {_c} * 16
-			set {_y} to 0
-			set {_w} to chunk world of {_c}
-			set {_loc} to location({_x},{_y},{_z},{_w})
-			delete {MEC::chunk::%{_loc}%::%{MEC::referent::%location of event-block%}%}
-			loop {MEC::structure::%{MEC::referent::%location of event-block%}%::*}:
+			set {_loc} to MEC_getCHUNKblock({_l})
+			delete {MEC::chunk::%{_loc}%::%{_l}%}
+			loop {MEC::structure::%{_l}%::*}:
 				set block at loop-value to air
 				delete {MEC::referent::%loop-value%}
-			delete {MEC::structure::%{MEC::referent::%location of event-block%}%::*}
+			delete {MEC::structure::%{_l}%::*}
+		else if {MEC::block::%{_l}%::type} is "Relay":
+			set {_loc} to MEC_getCHUNKblock({_l})
+			delete {MEC::block::%{_l}%::*}
+			delete {MEC::chunk::%{_loc}%::%{_l}%}
+			drop 1 cyan glass block named "&cRelay énergétique" with lore "&7Permet de prolonger la ||&7limite de 15 block des cables" at event-location
 
 on right click:
 	if clicked block is set:
@@ -178,15 +171,19 @@ on right click:
 									message "&8&l[&eAtomicFoundation&8-&6M.E.C&8&l] &7Le relay ne peut envoyer de l'énergie qu'a une seul machine (ou relay)." to player
 									stop
 							remove 1 string named "&2Cable d'énergie MK1" with lore "&7Transfert 300EM/10s ||&7Lié à &6NONE" from player's inventory
-							give 1 string named "&2Cable d'énergie MK1" with lore "&7Transfert 300EM/10s ||&7Lié à &6%{MEC::referent::%location of event-block%}%" to player
+							give 1 string named "&2Cable d'énergie MK1" with lore "&7Transfert 300EM/10s ||&7Lié à &6%{_locblock}%" to player
 						else:
 							if {MEC::block::%{_locblock}%::LINK::%{_liste::2}%} is not set:
 								set {_loc1} to MEC_text2Loc("%{_liste::2}%",world("%world of player%"))
-								set {_loc2} to MEC_text2Loc("%{_locblock}%",world("%world of player%"))
+								set {_loc2} to {_locblock}
 								if distance between {_loc1} and {_loc2} is less than 16:
 									if {_loc1} is not {_loc2}:
 										if {MEC::block::%{_loc1}%::type} is "Relay":
-											set {MEC::block::%{_loc1}%::sendto} to {_loc2}
+											if {MEC::block::%{_loc2}%::LINK::%{_loc1}%} is not set:
+												set {MEC::block::%{_loc1}%::sendto} to {_loc2}
+											else:
+												message "&7Ces deux machines sont déjà lié..."
+												stop
 
 										else:
 											set {MEC::block::%{_loc1}%::sender::%{_locblock}%} to {_locblock}
@@ -327,23 +324,41 @@ function MEC_CABLE_LOAD(l: location):
 	loop {MEC::block::%{_l}%::sender::*}:
 		if {MEC::current::%{_l}%::%loop-value%} is not set:
 			set {MEC::current::%{_l}%::%loop-value%} to true
-			MEC_CABLE_LOAD_LINK({_l},loop-value)
+			MEC_CABLE_LOAD_LINK({_l},loop-value,{MEC::block::%{_l}%::LINKTYPE::%loop-value%})
 		
 			
-function MEC_CABLE_LOAD_LINK(l: location,loopvalue: location):
+function MEC_CABLE_LOAD_LINK(l: location,loopvalue: location,linktype: text):
 	set {MEC::state} to true
 	set {_ok} to true
+	if {_linktype} is "MK1":
+		set {_v} to 300
 	while {_ok} is true:
+		if {MEC::block::%{_loopvalue}%::type} is "Relay":
+			set {_ok2} to true
+			set {_t} to {_loopvalue}
+			set {_s} to 0
+			while {_ok2} is true:
+				if {MEC::block::%{_t}%::sendto} is not set:
+					set {_ok2} to false
+				if {_s} is 50:
+					play 10 smoke at location of {_l}
+					if {_linktype} is "MK1":
+						drop 1 string named "&2Cable d'énergie MK1" with lore "&7Transfert 300EM/10s ||&7Lié à &6NONE" at {_l}
+					stop
+				add 1 to {_s}
+				set {_t} to {MEC::block::%{_t}%::sendto}
+				wait 1 tick
+			set {_loopvalue} to {_t}
 		if {MEC::block::%{_l}%::load} is false:
 			set {_ok} to false
 		if {MEC::current::%{_l}%::%{_loopvalue}%} is not set:
 			set {_ok} to false
 		if {MEC::block::%{_l}%::EM} is not 0:
 			if {MEC::block::%{_loopvalue}%::EM} is not {MEC::block::%{_loopvalue}%::MAXEM}:
-				if {MEC::block::%{_loopvalue}%::EM} < ({MEC::block::%{_loopvalue}%::MAXEM} - 300):
-					if {MEC::block::%{_l}%::EM} >= 300:
-						remove 300 from {MEC::block::%{_l}%::EM}
-						add 300 to {MEC::block::%{_loopvalue}%::EM} 
+				if {MEC::block::%{_loopvalue}%::EM} < ({MEC::block::%{_loopvalue}%::MAXEM} - {_v}):
+					if {MEC::block::%{_l}%::EM} >= {_v}:
+						remove {_v} from {MEC::block::%{_l}%::EM}
+						add {_v} to {MEC::block::%{_loopvalue}%::EM} 
 					else:
 						add {MEC::block::%{_l}%::EM} to {MEC::block::%{_loopvalue}%::EM}
 						set {MEC::block::%{_l}%::EM} to 0
@@ -364,7 +379,13 @@ function MEC_CABLE_LOAD_LINK(l: location,loopvalue: location):
 function MEC_text2Loc(location: text, world: world) :: location: #thx Snow-pyon for this function ^^
 	set {_loc::*} to {_location} parsed as "x: %num%, y: %num%, z: %num%"
 	return location({_loc::1}, {_loc::2}, {_loc::3}, {_world})
-
+function MEC_getCHUNKblock(l: location) :: location:
+	set {_c} to chunk at {_l}
+	set {_x} to chunk x coord of {_c} * 16
+	set {_z} to chunk z coord of {_c} * 16
+	set {_y} to 0
+	set {_w} to chunk world of {_c}
+	return location({_x},{_y},{_z},{_w})
 		
 
 
