@@ -186,6 +186,7 @@ on right click:
 									if {_loc1} is not {_loc2}:
 										if {MEC::block::%{_loc1}%::type} is "Relay":
 											set {MEC::block::%{_loc1}%::sendto} to {_loc2}
+
 										else:
 											set {MEC::block::%{_loc1}%::sender::%{_locblock}%} to {_locblock}
 										set {MEC::block::%{_locblock}%::LINK::%{_loc1}%} to {_loc1}
@@ -321,40 +322,42 @@ function MEC_LOAD(t: text,l: location):
 					wait {@seconds} second
 
 function MEC_CABLE_LOAD(l: location):
-	set {_ok} to true
 	loop {MEC::block::%{_l}%::sender::*}:
-		if {MEC::block::%{_l}%::LINK::%loop-value%} is set:
-			if {MEC::current::%{_l}%::%loop-value%} is not set:
-				set {MEC::current::%{_l}%::%loop-value%} to true
-			else:
-				stop
-			set {MEC::state} to true
-			while {_ok} is true:
-				if {MEC::block::%{_l}%::load} is false:
-					set {_ok} to false
-				if {MEC::current::%{_l}%::%loop-value%} is not set:
-					set {_ok} to false
-				if {MEC::state} is false:
-					set {_ok} to false
-				if {MEC::block::%{_l}%::EM} is not 0:
-					if {MEC::block::%loop-value%::EM} is not {MEC::block::%loop-value%::MAXEM}:
-						if {MEC::block::%loop-value%::EM} < ({MEC::block::%loop-value%::MAXEM} - 300):
-							if {MEC::block::%{_l}%::EM} >= 300:
-								remove 300 from {MEC::block::%{_l}%::EM}
-								add 300 to {MEC::block::%loop-value%::EM} 
-							else:
-								add {MEC::block::%{_l}%::EM} to {MEC::block::%loop-value%::EM}
-								set {MEC::block::%{_l}%::EM} to 0
+		if {MEC::current::%{_l}%::%loop-value%} is not set:
+			set {MEC::current::%{_l}%::%loop-value%} to true
+		else:
+			stop
+		MEC_CABLE_LOAD_LINK({_l},loop-value)
+			
+function MEC_CABLE_LOAD_LINK(l: location,loopvalue: location)
+	set {MEC::state} to true
+	set {_ok} to true
+	while {_ok} is true:
+		if {MEC::block::%{_l}%::load} is false:
+			set {_ok} to false
+		if {MEC::current::%{_l}%::%{_loopvalue}%} is not set:
+			set {_ok} to false
+		if {MEC::state} is false:
+			set {_ok} to false
+		if {MEC::block::%{_l}%::EM} is not 0:
+			if {MEC::block::%{_loopvalue}%::EM} is not {MEC::block::%{_loopvalue}%::MAXEM}:
+				if {MEC::block::%{_loopvalue}%::EM} < ({MEC::block::%{_loopvalue}%::MAXEM} - 300):
+					if {MEC::block::%{_l}%::EM} >= 300:
+						remove 300 from {MEC::block::%{_l}%::EM}
+						add 300 to {MEC::block::%{_loopvalue}%::EM} 
+					else:
+						add {MEC::block::%{_l}%::EM} to {MEC::block::%{_loopvalue}%::EM}
+						set {MEC::block::%{_l}%::EM} to 0
+				else:
+					set {_n} to ({MEC::block::%{_loopvalue}%::MAXEM} - {MEC::block::%{_loopvalue}%::EM})
+						if {MEC::block::%{_l}%::EM} >= {_n}:
+							remove {_n} from {MEC::block::%{_l}%::EM}
+							add {_n} to {MEC::block::%{_loopvalue}%::EM} 
 						else:
-							set {_n} to ({MEC::block::%loop-value%::MAXEM} - {MEC::block::%loop-value%::EM})
-							if {MEC::block::%{_l}%::EM} >= {_n}:
-								remove {_n} from {MEC::block::%{_l}%::EM}
-								add {_n} to {MEC::block::%loop-value%::EM} 
-							else:
-								add {MEC::block::%{_l}%::EM} to {MEC::block::%loop-value%::EM}
-								remove {MEC::block::%{_l}%::EM} from {MEC::block::%{_l}%::EM}
-				wait {@seconds} seconds
-			delete {MEC::current::%{_l}%::%loop-value%}
+							add {MEC::block::%{_l}%::EM} to {MEC::block::%{_loopvalue}%::EM}
+							remove {MEC::block::%{_l}%::EM} from {MEC::block::%{_l}%::EM}
+	wait {@seconds} seconds
+	delete {MEC::current::%{_l}%::%{_loopvalue}%}
 
 
 
