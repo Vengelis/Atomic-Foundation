@@ -123,6 +123,7 @@ on break:
 				drop 1 string named "&2Cable d'énergie MK1" with lore "&7Transfert 300EM/10s ||&7Lié à &6NONE" at event-location
 				delete {MEC::block::%loop-value%::LINK::%{MEC::referent::%location of event-block%}%}
 				delete {MEC::block::%{MEC::referent::%location of event-block%}%::LINK::%loop-value%}
+			MEC_CABLE_LOAD(loop-value)
 		if {MEC::block::%{MEC::referent::%location of event-block%}%::type} is "Coal generator MK1":
 			delete {MEC::block::%{MEC::referent::%location of event-block%}%::*}
 			drop 1 coal block named "&cCoal generator MK1" with lore "&7Un générateur d'énergie utilisant du charbon ||&c100EM/s" 
@@ -245,6 +246,7 @@ function MEC_GUI(p: player,t: text,l: location):
 				add {_amount} to {MEC::block::%{_l}%::coal}
 				delete cursor slot of {_p}
 				MEC_GUI({_p},{_t},{_l})
+				MEC_LOAD("Coal generator MK1",{_l})
 		set {_ok} to true
 		while {_ok} is true:
 			if name of {_p}'s current inventory is not "&7Coal generator MK1":
@@ -325,19 +327,16 @@ function MEC_CABLE_LOAD(l: location):
 	loop {MEC::block::%{_l}%::sender::*}:
 		if {MEC::current::%{_l}%::%loop-value%} is not set:
 			set {MEC::current::%{_l}%::%loop-value%} to true
-		else:
-			stop
-		MEC_CABLE_LOAD_LINK({_l},loop-value)
+			MEC_CABLE_LOAD_LINK({_l},loop-value)
+		
 			
-function MEC_CABLE_LOAD_LINK(l: location,loopvalue: location)
+function MEC_CABLE_LOAD_LINK(l: location,loopvalue: location):
 	set {MEC::state} to true
 	set {_ok} to true
 	while {_ok} is true:
 		if {MEC::block::%{_l}%::load} is false:
 			set {_ok} to false
 		if {MEC::current::%{_l}%::%{_loopvalue}%} is not set:
-			set {_ok} to false
-		if {MEC::state} is false:
 			set {_ok} to false
 		if {MEC::block::%{_l}%::EM} is not 0:
 			if {MEC::block::%{_loopvalue}%::EM} is not {MEC::block::%{_loopvalue}%::MAXEM}:
@@ -350,13 +349,13 @@ function MEC_CABLE_LOAD_LINK(l: location,loopvalue: location)
 						set {MEC::block::%{_l}%::EM} to 0
 				else:
 					set {_n} to ({MEC::block::%{_loopvalue}%::MAXEM} - {MEC::block::%{_loopvalue}%::EM})
-						if {MEC::block::%{_l}%::EM} >= {_n}:
-							remove {_n} from {MEC::block::%{_l}%::EM}
-							add {_n} to {MEC::block::%{_loopvalue}%::EM} 
-						else:
-							add {MEC::block::%{_l}%::EM} to {MEC::block::%{_loopvalue}%::EM}
-							remove {MEC::block::%{_l}%::EM} from {MEC::block::%{_l}%::EM}
-	wait {@seconds} seconds
+					if {MEC::block::%{_l}%::EM} >= {_n}:
+						remove {_n} from {MEC::block::%{_l}%::EM}
+						add {_n} to {MEC::block::%{_loopvalue}%::EM} 
+					else:
+						add {MEC::block::%{_l}%::EM} to {MEC::block::%{_loopvalue}%::EM}
+						remove {MEC::block::%{_l}%::EM} from {MEC::block::%{_l}%::EM}
+		wait {@seconds} seconds
 	delete {MEC::current::%{_l}%::%{_loopvalue}%}
 
 
@@ -367,9 +366,5 @@ function MEC_text2Loc(location: text, world: world) :: location: #thx Snow-pyon 
 	return location({_loc::1}, {_loc::2}, {_loc::3}, {_world})
 
 		
-command /stopwhile:
-	trigger:
-		if {MEC::state} is not false:
-			set {MEC::state} to false
 
 
