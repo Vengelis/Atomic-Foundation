@@ -8,18 +8,33 @@
 #						By Vengelis
 #===================================================================================================================================#
 
+
+#					Notes à moi même
+#
+#
+#
+#
+#
+
+
+
+
 options:
-	version: 1.0.2-build
+	version: 1.0.3-build
 	
 	#	Forcefield Projector
 	
-	coeffMultipliantEttendeur: 1.7	#
-	coefMultipliantModules: 0.1		#	Ne pas toucher !
-	coefMultipliantBoosteur: 0.05	#
-	coefPuissanceGlobal: 0.2		# 
+	coeffMultipliantEttendeur: 1.7																			#
+	coefMultipliantModules: 0.1																				#	Ne pas toucher !
+	coefMultipliantBoosteur: 0.05																			#
+	coefPuissanceGlobal: 0.2																				# 
 	
 	variableEnergyPumpFunction: {MEC::block::%{_l}%::EM}
 	variableEnergyPumpPlace: {MEC::block::%{MFFS::referent::%location of event-block%}%::EM}
+	
+	maxCoercion: 64
+	
+	capacityInitialFortronProjector: 5000000
 	
 	#	Coercion Deriver
 	
@@ -27,6 +42,9 @@ options:
 	energyUseToProductFull: 775
 	product: 500
 	energyType: EM
+	
+	capacityInitialFortronCoercion: 50000
+	capacityInitialElecCoercion: 100000																		#	Pas encore utilisé
 
 #===================================================================================================================================#
 #   Necessite AtomicBalisitc pour le chargement des configurations !
@@ -36,6 +54,7 @@ command /t:
 	trigger:
 		drop 1 light blue glazed terracotta named "&3Force Field Projector" with lore "&7Projecteur de champ de force"
 		drop 1 gray glazed terracotta named "&3Coercion Deriver" with lore "&7Générateur de Fortron"
+		drop 1 purple glazed terracotta named "&3Coercion Deriver Creative" with lore "&7Générateur de Fortron"
 		drop 10 iron trapdoor named "&3Etendeur"
 
 on chunk unload:
@@ -93,7 +112,7 @@ on place:
 			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::fortronNecessaire} to 0
 			
 			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::speedGeneration} to 1
-			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::capacity} to 5000000000
+			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::capacity} to {@capacityInitialFortronProjector}
 			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::speedGenerationIA} to 0
 			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::capacityIA} to 0
 			
@@ -142,11 +161,24 @@ on place:
 		set event-block to gray glazed terracotta
 		set {MFFS::referent::%location of event-block%} to location of event-block
 		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::type} to "Coercion Deriver"
-		set {@variableEnergyPumpPlace} to 100000
+		set {@variableEnergyPumpPlace} to 0
 		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::generating} to false
 		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::fortronIn} to 0
 		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::EM} to 500000
-		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::capacity} to 50000
+		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::capacity} to {@capacityInitialFortronCoercion}
+		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::owner} to player
+	else if player's tool is a purple glazed terracotta named "&3Coercion Deriver Creative" with lore "&7Générateur de Fortron":
+		cancel event
+		remove 1 purple glazed terracotta named "&3Coercion Deriver Creative" with lore "&7Générateur de Fortron" from player's inventory
+		wait 1 tick
+		set event-block to purple glazed terracotta
+		set {MFFS::referent::%location of event-block%} to location of event-block
+		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::type} to "Coercion Deriver Creative"
+		set {@variableEnergyPumpPlace} to 100000
+		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::generating} to false
+		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::fortronIn} to 5000000
+		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::EM} to 500000
+		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::capacity} to 50000000000
 		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::owner} to player
 			
 on break:
@@ -183,6 +215,20 @@ on break:
 				set block at loop-value to air
 				delete {MFFS::referent::%loop-value%}
 			delete {MFFS::structure::%{MFFS::referent::%location of event-block%}%::*}
+		else if {MFFS::block::%{MFFS::referent::%location of event-block%}%::type} is "Coercion Deriver Creative":
+			delete {MFFS::block::%{MFFS::referent::%location of event-block%}%::*}
+			drop 1 purple glazed terracotta named "&3Coercion Deriver Creative" with lore "&7Générateur de Fortron"
+			set {_c} to chunk at {MFFS::referent::%location of event-block%}
+			set {_x} to chunk x coord of {_c} * 16
+			set {_z} to chunk z coord of {_c} * 16
+			set {_y} to 0
+			set {_w} to chunk world of {_c}
+			set {_loc} to location({_x},{_y},{_z},{_w})
+			delete {MFFS::chunk::%{_loc}%::%{MFFS::referent::%location of event-block%}%}
+			loop {MFFS::structure::%{MFFS::referent::%location of event-block%}%::*}:
+				set block at loop-value to air
+				delete {MFFS::referent::%loop-value%}
+			delete {MFFS::structure::%{MFFS::referent::%location of event-block%}%::*}
 			
 on right click:
 	if clicked block is set:
@@ -192,6 +238,8 @@ on right click:
 			
 function MFFS_GUI(p: player,t: text,l: location):
 	if {_t} is "Force Field Projector":
+		if {MFFS::block::%{_l}%::fortronIn} is less than 0:
+			set {MFFS::block::%{_l}%::fortronIn} to 0
 		open virtual chest inventory with size 6 named "&8F.F.P &0> &4ForceField" to {_p}
 		set {_slot} to 0
 		loop 54 times:
@@ -199,120 +247,178 @@ function MFFS_GUI(p: player,t: text,l: location):
 			add 1 to {_slot}
 		
 		make a gui slot 14 of {_p} with blue stained glass pane named "&3&oEtendeur:" with lore "||   &e- &7Nombre d'étendeur: &6%{MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::1}%" to run:
-			if cursor slot of {_p} is iron trapdoor named "&3Etendeur":
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::1} is 64:
-					cancel event
-					stop
+			if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+				message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+			else:
+				if cursor slot of {_p} is iron trapdoor named "&3Etendeur":
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::1} is 64:
+						cancel event
+						stop
+					else:
+						set {_amount} to item amount of cursor slot of {_p}
+						add {_amount} to {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::1}
+						delete cursor slot of {_p}
+						MFFS_GUI({_p},{_t},{_l})
 				else:
-					set {_amount} to item amount of cursor slot of {_p}
-					add {_amount} to {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::1}
-					delete cursor slot of {_p}
+					remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::1}
+					drop 1 iron trapdoor named "&3Etendeur"
 					MFFS_GUI({_p},{_t},{_l})
 		make a gui slot 15 of {_p} with blue stained glass pane named "&3&oEtendeur:" with lore "||   &e- &7Nombre d'étendeur: &6%{MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::2}%" to run:
-			if cursor slot of {_p} is iron trapdoor named "&3Etendeur":
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::2} is 64:
-					cancel event
-					stop
+			if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+				message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+			else:
+				if cursor slot of {_p} is iron trapdoor named "&3Etendeur":
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::2} is 64:
+						cancel event
+						stop
+					else:
+						set {_amount} to item amount of cursor slot of {_p}
+						add {_amount} to {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::2}
+						delete cursor slot of {_p}
+						MFFS_GUI({_p},{_t},{_l})
 				else:
-					set {_amount} to item amount of cursor slot of {_p}
-					add {_amount} to {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::2}
-					delete cursor slot of {_p}
+					remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::2}
+					drop 1 iron trapdoor named "&3Etendeur"
 					MFFS_GUI({_p},{_t},{_l})
 		make a gui slot 16 of {_p} with blue stained glass pane named "&3&oEtendeur:" with lore "||   &e- &7Nombre d'étendeur: &6%{MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::3}%" to run:
-			if cursor slot of {_p} is iron trapdoor named "&3Etendeur":
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::3} is 64:
-					cancel event
-					stop
+			if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+				message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+			else:
+				if cursor slot of {_p} is iron trapdoor named "&3Etendeur":
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::3} is 64:
+						cancel event
+						stop
+					else:
+						set {_amount} to item amount of cursor slot of {_p}
+						add {_amount} to {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::3}
+						delete cursor slot of {_p}
+						MFFS_GUI({_p},{_t},{_l})
 				else:
-					set {_amount} to item amount of cursor slot of {_p}
-					add {_amount} to {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::3}
-					delete cursor slot of {_p}
+					remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::3}
+					drop 1 iron trapdoor named "&3Etendeur"
 					MFFS_GUI({_p},{_t},{_l})
-		
 		make a gui slot 23 of {_p} with blue stained glass pane named "&3&oEtendeur:" with lore "||   &e- &7Nombre d'étendeur: &6%{MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::4}%" to run:
-			if cursor slot of {_p} is iron trapdoor named "&3Etendeur":
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::4} is 64:
-					cancel event
-					stop
+			if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+				message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+			else:
+				if cursor slot of {_p} is iron trapdoor named "&3Etendeur":
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::4} is 64:
+						cancel event
+						stop
+					else:
+						set {_amount} to item amount of cursor slot of {_p}
+						add {_amount} to {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::4}
+						delete cursor slot of {_p}
+						MFFS_GUI({_p},{_t},{_l})
 				else:
-					set {_amount} to item amount of cursor slot of {_p}
-					add {_amount} to {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::4}
-					delete cursor slot of {_p}
+					remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::4}
+					drop 1 iron trapdoor named "&3Etendeur"
 					MFFS_GUI({_p},{_t},{_l})
 		make a gui slot 24 of {_p} with red stained glass pane named "%{MFFS::block::%{MFFS::referent::%{_l}%}%::moduleForme}%" to run:
-			if cursor slot of {_p} is heavy weighted pressure plate named "&3Cube Module":
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::moduleForme} is "Cube Module":
-					cancel event
-					stop
-				else:
-					delete cursor slot of {_p}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::moduleForme} to "Cube Module"
-					MFFS_GUI({_p},{_t},{_l})
-			if cursor slot of {_p} is light weighted pressure plate named "&3Sphere Module":
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::moduleForme} is "Sphere Module":
-					cancel event
-					stop
-				else:
-					delete cursor slot of {_p}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::moduleForme} to "Sphere Module"
-					MFFS_GUI({_p},{_t},{_l})
+			if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+				message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
 			else:
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::moduleForme} is "Sphere Module":
-					drop 1 heavy weighted pressure plate named "&3Cube Module"
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::moduleForme} to "Aucun module"
-					MFFS_GUI({_p},{_t},{_l})
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::moduleForme} is "Cube Module":
-					drop 1 light weighted pressure plate named "&3Sphere Module"
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::moduleForme} to "Aucun module"
-					MFFS_GUI({_p},{_t},{_l})
+				if cursor slot of {_p} is heavy weighted pressure plate named "&3Cube Module":
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::moduleForme} is "Cube Module":
+						cancel event
+						stop
+					else:
+						delete cursor slot of {_p}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::moduleForme} to "Cube Module"
+						MFFS_GUI({_p},{_t},{_l})
+				if cursor slot of {_p} is light weighted pressure plate named "&3Sphere Module":
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::moduleForme} is "Sphere Module":
+						cancel event
+						stop
+					else:
+						delete cursor slot of {_p}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::moduleForme} to "Sphere Module"
+						MFFS_GUI({_p},{_t},{_l})
+				else:
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::moduleForme} is "Sphere Module":
+						drop 1 heavy weighted pressure plate named "&3Cube Module"
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::moduleForme} to "Aucun module"
+						MFFS_GUI({_p},{_t},{_l})
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::moduleForme} is "Cube Module":
+						drop 1 light weighted pressure plate named "&3Sphere Module"
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::moduleForme} to "Aucun module"
+						MFFS_GUI({_p},{_t},{_l})
 		
 		
 		
 		make a gui slot 25 of {_p} with blue stained glass pane named "&3&oEtendeur:" with lore "||   &e- &7Nombre d'étendeur: &6%{MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::5}%" to run:
-			if cursor slot of {_p} is iron trapdoor named "&3Etendeur":
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::5} is 64:
-					cancel event
-					stop
+			if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+				message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+			else:
+				if cursor slot of {_p} is iron trapdoor named "&3Etendeur":
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::5} is 64:
+						cancel event
+						stop
+					else:
+						set {_amount} to item amount of cursor slot of {_p}
+						add {_amount} to {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::5}
+						delete cursor slot of {_p}
+						MFFS_GUI({_p},{_t},{_l})
 				else:
-					set {_amount} to item amount of cursor slot of {_p}
-					add {_amount} to {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::5}
-					delete cursor slot of {_p}
+					remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::5}
+					drop 1 iron trapdoor named "&3Etendeur"
 					MFFS_GUI({_p},{_t},{_l})
 		make a gui slot 32 of {_p} with blue stained glass pane named "&3&oEtendeur:" with lore "||   &e- &7Nombre d'étendeur: &6%{MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::6}%" to run:
-			if cursor slot of {_p} is iron trapdoor named "&3Etendeur":
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::6} is 64:
-					cancel event
-					stop
+			if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+				message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+			else:
+				if cursor slot of {_p} is iron trapdoor named "&3Etendeur":
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::6} is 64:
+						cancel event
+						stop
+					else:
+						set {_amount} to item amount of cursor slot of {_p}
+						add {_amount} to {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::6}
+						delete cursor slot of {_p}
+						MFFS_GUI({_p},{_t},{_l})
 				else:
-					set {_amount} to item amount of cursor slot of {_p}
-					add {_amount} to {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::6}
-					delete cursor slot of {_p}
+					remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::6}
+					drop 1 iron trapdoor named "&3Etendeur"
 					MFFS_GUI({_p},{_t},{_l})
 		make a gui slot 33 of {_p} with blue stained glass pane named "&3&oEtendeur:" with lore "||   &e- &7Nombre d'étendeur: &6%{MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::7}%" to run:
-			if cursor slot of {_p} is iron trapdoor named "&3Etendeur":
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::7} is 64:
-					cancel event
-					stop
+			if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+				message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+			else:
+				if cursor slot of {_p} is iron trapdoor named "&3Etendeur":
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::7} is 64:
+						cancel event
+						stop
+					else:
+						set {_amount} to item amount of cursor slot of {_p}
+						add {_amount} to {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::7}
+						delete cursor slot of {_p}
+						MFFS_GUI({_p},{_t},{_l})
 				else:
-					set {_amount} to item amount of cursor slot of {_p}
-					add {_amount} to {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::7}
-					delete cursor slot of {_p}
+					remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::7}
+					drop 1 iron trapdoor named "&3Etendeur"
 					MFFS_GUI({_p},{_t},{_l})
 		make a gui slot 34 of {_p} with blue stained glass pane named "&3&oEtendeur:" with lore "||   &e- &7Nombre d'étendeur: &6%{MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::8}%" to run:
-			if cursor slot of {_p} is iron trapdoor named "&3Etendeur":
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::8} is 64:
-					cancel event
-					stop
+			if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+				message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+			else:
+				if cursor slot of {_p} is iron trapdoor named "&3Etendeur":
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::8} is 64:
+						cancel event
+						stop
+					else:
+						set {_amount} to item amount of cursor slot of {_p}
+						add {_amount} to {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::8}
+						delete cursor slot of {_p}
+						MFFS_GUI({_p},{_t},{_l})
 				else:
-					set {_amount} to item amount of cursor slot of {_p}
-					add {_amount} to {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::8}
-					delete cursor slot of {_p}
+					remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::etendeur::8}
+					drop 1 iron trapdoor named "&3Etendeur"
 					MFFS_GUI({_p},{_t},{_l})
 					
-		make a gui slot 37 of {_p} with light gray stained glass pane named "&7&oAucun boosteur" to do nothing
-		make a gui slot 38 of {_p} with light gray stained glass pane named "&7&oAucun boosteur" to do nothing
+		make a gui slot 37 of {_p} with light gray stained glass pane named "&7&oAucun boosteur" with lore "||&f|| &e- &6WIP &7(En développement)" to do nothing
+		make a gui slot 38 of {_p} with light gray stained glass pane named "&7&oAucun boosteur" with lore "||&f|| &e- &6WIP &7(En développement)" to do nothing
 		
-		make a gui slot 40 of {_p} with name tag named "&7&oAucune fréquence" to do nothing
+		make a gui slot 40 of {_p} with name tag named "&7&oAucune fréquence" with lore "||&f|| &e- &6WIP &7(En développement)" to do nothing
 		
 		set {_CoercionDeriverDetect} to 0
 		
@@ -320,160 +426,208 @@ function MFFS_GUI(p: player,t: text,l: location):
 		
 		if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::1} is "Speed Module" or "Capacity Module":
 			make a gui slot 10 of {_p} with light gray stained glass pane named "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::1}%" to run:
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::1} is "Speed Module":
-					remove 50 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
-					remove 0.3 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::1} to "Aucun module"
-					MFFS_GUI({_p},{_t},{_l})
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::1} is "Capacity Module":
-					remove 25 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
-					remove 2500 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::1} to "Aucun module"
-					MFFS_GUI({_p},{_t},{_l})
+				if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+					message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+				else:
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::1} is "Speed Module":
+						remove 50 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
+						remove 0.3 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::1} to "Aucun module"
+						drop 1 daylight sensor named "&3Speed Module"
+						MFFS_GUI({_p},{_t},{_l})
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::1} is "Capacity Module":
+						remove 25 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
+						remove 2500 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::1} to "Aucun module"
+						drop 1 daylight sensor named "&3Capacity Module"
+						MFFS_GUI({_p},{_t},{_l})
 		else:
 			make a gui slot 10 of {_p} with light gray stained glass pane named "Aucun module" to run:
-				if cursor slot of {_p} is daylight sensor named "&3Speed Module":
-					add 50 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
-					add 0.3 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
-					delete cursor slot of {_p}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::1} to "Speed Module"
-					MFFS_GUI({_p},{_t},{_l})
-				if cursor slot of {_p} is daylight sensor named "&3Capacity Module":
-					add 25 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
-					add 2500 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
-					delete cursor slot of {_p}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::1} to "Capacity Module"
-					MFFS_GUI({_p},{_t},{_l})
+				if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+					message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+				else:
+					if cursor slot of {_p} is daylight sensor named "&3Speed Module":
+						add 50 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
+						add 0.3 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
+						delete cursor slot of {_p}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::1} to "Speed Module"
+						MFFS_GUI({_p},{_t},{_l})
+					if cursor slot of {_p} is daylight sensor named "&3Capacity Module":
+						add 25 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
+						add 2500 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
+						delete cursor slot of {_p}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::1} to "Capacity Module"
+						MFFS_GUI({_p},{_t},{_l})
 		if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::2} is "Speed Module" or "Capacity Module":
 			make a gui slot 11 of {_p} with light gray stained glass pane named "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::2}%" to run:
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::2} is "Speed Module":
-					remove 50 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
-					remove 0.3 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::2} to "Aucun module"
-					MFFS_GUI({_p},{_t},{_l})
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::2} is "Capacity Module":
-					remove 25 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
-					remove 2500 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::2} to "Aucun module"
-					MFFS_GUI({_p},{_t},{_l})
+				if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+					message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+				else:
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::2} is "Speed Module":
+						remove 50 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
+						remove 0.3 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::2} to "Aucun module"
+						drop 1 daylight sensor named "&3Speed Module"
+						MFFS_GUI({_p},{_t},{_l})
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::2} is "Capacity Module":
+						remove 25 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
+						remove 2500 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::2} to "Aucun module"
+						drop 1 daylight sensor named "&3Capacity Module"
+						MFFS_GUI({_p},{_t},{_l})
 		else:
 			make a gui slot 11 of {_p} with light gray stained glass pane named "Aucun module" to run:
-				if cursor slot of {_p} is daylight sensor named "&3Speed Module":
-					add 50 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
-					add 0.3 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
-					delete cursor slot of {_p}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::2} to "Speed Module"
-					MFFS_GUI({_p},{_t},{_l})
-				if cursor slot of {_p} is daylight sensor named "&3Capacity Module":
-					add 25 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
-					add 2500 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
-					delete cursor slot of {_p}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::2} to "Capacity Module"
-					MFFS_GUI({_p},{_t},{_l})
+				if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+					message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+				else:
+					if cursor slot of {_p} is daylight sensor named "&3Speed Module":
+						add 50 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
+						add 0.3 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
+						delete cursor slot of {_p}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::2} to "Speed Module"
+						MFFS_GUI({_p},{_t},{_l})
+					if cursor slot of {_p} is daylight sensor named "&3Capacity Module":
+						add 25 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
+						add 2500 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
+						delete cursor slot of {_p}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::2} to "Capacity Module"
+						MFFS_GUI({_p},{_t},{_l})
 		if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::3} is "Speed Module" or "Capacity Module":
 			make a gui slot 12 of {_p} with light gray stained glass pane named "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::3}%" to run:
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::3} is "Speed Module":
-					remove 50 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
-					remove 0.3 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::3} to "Aucun module"
-					MFFS_GUI({_p},{_t},{_l})
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::3} is "Capacity Module":
-					remove 25 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
-					remove 2500 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::3} to "Aucun module"
-					MFFS_GUI({_p},{_t},{_l})
+				if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+					message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+				else:
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::3} is "Speed Module":
+						remove 50 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
+						remove 0.3 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::3} to "Aucun module"
+						drop 1 daylight sensor named "&3Speed Module"
+						MFFS_GUI({_p},{_t},{_l})
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::3} is "Capacity Module":
+						remove 25 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
+						remove 2500 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::3} to "Aucun module"
+						drop 1 daylight sensor named "&3Capacity Module"
+						MFFS_GUI({_p},{_t},{_l})
 		else:
 			make a gui slot 12 of {_p} with light gray stained glass pane named "Aucun module" to run:
-				if cursor slot of {_p} is daylight sensor named "&3Speed Module":
-					add 50 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
-					add 0.3 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
-					delete cursor slot of {_p}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::3} to "Speed Module"
-					MFFS_GUI({_p},{_t},{_l})
-				if cursor slot of {_p} is daylight sensor named "&3Capacity Module":
-					add 25 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
-					add 2500 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
-					delete cursor slot of {_p}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::3} to "Capacity Module"
-					MFFS_GUI({_p},{_t},{_l})
+				if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+					message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+				else:
+					if cursor slot of {_p} is daylight sensor named "&3Speed Module":
+						add 50 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
+						add 0.3 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
+						delete cursor slot of {_p}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::3} to "Speed Module"
+						MFFS_GUI({_p},{_t},{_l})
+					if cursor slot of {_p} is daylight sensor named "&3Capacity Module":
+						add 25 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
+						add 2500 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
+						delete cursor slot of {_p}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::3} to "Capacity Module"
+						MFFS_GUI({_p},{_t},{_l})
 		if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::4} is "Speed Module" or "Capacity Module":
 			make a gui slot 19 of {_p} with light gray stained glass pane named "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::4}%" to run:
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::4} is "Speed Module":
-					remove 50 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
-					remove 0.3 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::4} to "Aucun module"
-					MFFS_GUI({_p},{_t},{_l})
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::4} is "Capacity Module":
-					remove 25 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
-					remove 2500 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::4} to "Aucun module"
-					MFFS_GUI({_p},{_t},{_l})
+				if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+					message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+				else:
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::4} is "Speed Module":
+						remove 50 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
+						remove 0.3 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::4} to "Aucun module"
+						drop 1 daylight sensor named "&3Speed Module"
+						MFFS_GUI({_p},{_t},{_l})
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::4} is "Capacity Module":
+						remove 25 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
+						remove 2500 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::4} to "Aucun module"
+						drop 1 daylight sensor named "&3Capacity Module"
+						MFFS_GUI({_p},{_t},{_l})
 		else:
 			make a gui slot 19 of {_p} with light gray stained glass pane named "Aucun module" to run:
-				if cursor slot of {_p} is daylight sensor named "&3Speed Module":
-					add 50 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
-					add 0.3 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
-					delete cursor slot of {_p}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::4} to "Speed Module"
-					MFFS_GUI({_p},{_t},{_l})
-				if cursor slot of {_p} is daylight sensor named "&3Capacity Module":
-					add 25 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
-					add 2500 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
-					delete cursor slot of {_p}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::4} to "Capacity Module"
-					MFFS_GUI({_p},{_t},{_l})
+				if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+					message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+				else:
+					if cursor slot of {_p} is daylight sensor named "&3Speed Module":
+						add 50 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
+						add 0.3 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
+						delete cursor slot of {_p}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::4} to "Speed Module"
+						MFFS_GUI({_p},{_t},{_l})
+					if cursor slot of {_p} is daylight sensor named "&3Capacity Module":
+						add 25 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
+						add 2500 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
+						delete cursor slot of {_p}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::4} to "Capacity Module"
+						MFFS_GUI({_p},{_t},{_l})
 		if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::5} is "Speed Module" or "Capacity Module":
 			make a gui slot 20 of {_p} with light gray stained glass pane named "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::5}%" to run:
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::5} is "Speed Module":
-					remove 50 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
-					remove 0.3 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::5} to "Aucun module"
-					MFFS_GUI({_p},{_t},{_l})
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::5} is "Capacity Module":
-					remove 25 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
-					remove 2500 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::5} to "Aucun module"
-					MFFS_GUI({_p},{_t},{_l})
+				if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+					message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+				else:
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::5} is "Speed Module":
+						remove 50 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
+						remove 0.3 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::5} to "Aucun module"
+						drop 1 daylight sensor named "&3Speed Module"
+						MFFS_GUI({_p},{_t},{_l})
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::5} is "Capacity Module":
+						remove 25 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
+						remove 2500 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::5} to "Aucun module"
+						drop 1 daylight sensor named "&3Capacity Module"
+						MFFS_GUI({_p},{_t},{_l})
 		else:
 			make a gui slot 20 of {_p} with light gray stained glass pane named "Aucun module" to run:
-				if cursor slot of {_p} is daylight sensor named "&3Speed Module":
-					add 50 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
-					add 0.3 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
-					delete cursor slot of {_p}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::5} to "Speed Module"
-					MFFS_GUI({_p},{_t},{_l})
-				if cursor slot of {_p} is daylight sensor named "&3Capacity Module":
-					add 25 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
-					add 2500 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
-					delete cursor slot of {_p}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::5} to "Capacity Module"
-					MFFS_GUI({_p},{_t},{_l})
+				if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+					message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+				else:
+					if cursor slot of {_p} is daylight sensor named "&3Speed Module":
+						add 50 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
+						add 0.3 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
+						delete cursor slot of {_p}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::5} to "Speed Module"
+						MFFS_GUI({_p},{_t},{_l})
+					if cursor slot of {_p} is daylight sensor named "&3Capacity Module":
+						add 25 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
+						add 2500 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
+						delete cursor slot of {_p}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::5} to "Capacity Module"
+						MFFS_GUI({_p},{_t},{_l})
 		if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::6} is "Speed Module" or "Capacity Module":
 			make a gui slot 21 of {_p} with light gray stained glass pane named "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::6}%" to run:
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::6} is "Speed Module":
-					remove 50 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
-					remove 0.3 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::6} to "Aucun module"
-					MFFS_GUI({_p},{_t},{_l})
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::6} is "Capacity Module":
-					remove 25 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
-					remove 2500 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::6} to "Aucun module"
-					MFFS_GUI({_p},{_t},{_l})
+				if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+					message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+				else:
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::6} is "Speed Module":
+						remove 50 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
+						remove 0.3 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::6} to "Aucun module"
+						drop 1 daylight sensor named "&3Speed Module"
+						MFFS_GUI({_p},{_t},{_l})
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::module::6} is "Capacity Module":
+						remove 25 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
+						remove 2500 from {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::6} to "Aucun module"
+						drop 1 daylight sensor named "&3Capacity Module"
+						MFFS_GUI({_p},{_t},{_l})
 		else:
 			make a gui slot 21 of {_p} with light gray stained glass pane named "Aucun module" to run:
-				if cursor slot of {_p} is daylight sensor named "&3Speed Module":
-					add 50 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
-					add 0.3 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
-					delete cursor slot of {_p}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::6} to "Speed Module"
-					MFFS_GUI({_p},{_t},{_l})
-				if cursor slot of {_p} is daylight sensor named "&3Capacity Module":
-					add 25 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
-					add 2500 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
-					delete cursor slot of {_p}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::6} to "Capacity Module"
-					MFFS_GUI({_p},{_t},{_l})
+				if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+					message "&cForcefield en cours d'utilisation. Action impossible !" to {_p}
+				else:
+					if cursor slot of {_p} is daylight sensor named "&3Speed Module":
+						add 50 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
+						add 0.3 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}
+						delete cursor slot of {_p}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::6} to "Speed Module"
+						MFFS_GUI({_p},{_t},{_l})
+					if cursor slot of {_p} is daylight sensor named "&3Capacity Module":
+						add 25 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA}
+						add 2500 to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
+						delete cursor slot of {_p}
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::module::6} to "Capacity Module"
+						MFFS_GUI({_p},{_t},{_l})
 			
 		set {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireModG} to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacityIA} + {MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGenerationIA}
 		
@@ -481,27 +635,33 @@ function MFFS_GUI(p: player,t: text,l: location):
 		
 		set {_loopVerifCoercion} to 0
 		loop blocks in radius 3 of position of {_l}:
-			if {MFFS::block::%{MFFS::referent::%location of loop-block%}%::type} is "Coercion Deriver":
+			if {MFFS::block::%{MFFS::referent::%location of loop-block%}%::type} is "Coercion Deriver" or "Coercion Deriver Creative":
 				add 1 to {_CoercionDeriverDetect}
 				if {MFFS::block::%location of loop-block%::fortronIn} is not less than 0:
 					if {MFFS::block::%location of loop-block%::fortronIn} is higher than 250:
-						if {_loopVerifCoercion} is not higher than 16:
-							add 250 to {MFFS::block::%{_l}%::fortronIn}
-							remove 250 from {MFFS::block::%location of loop-block%::fortronIn}
-							add 1 to {_loopVerifCoercion}
+						if {MFFS::block::%{_l}%::fortronIn} is less than {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}:
+							if {_loopVerifCoercion} is not higher than {@maxCoercion}:
+								add 250 to {MFFS::block::%{_l}%::fortronIn}
+								remove 250 from {MFFS::block::%location of loop-block%::fortronIn}
+								add 1 to {_loopVerifCoercion}
+							else:
+								exit loop
 						else:
 							exit loop
 				
 		if {MFFS::block::%{_l}%::online} is true:
-			make a gui slot 51 of {_p} with 1 green glazed terracotta named "&aON" with lore "||   &e- &7Fortron demandée: &c%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}% &7par seconde||   &e- &7Fortron actuelle: &a%{MFFS::block::%{_l}%::fortronIn}%||&f||   &e- &7Coercion Deriver detectés: &6%{_CoercionDeriverDetect}%&7/16" to run:
+			make a gui slot 51 of {_p} with 1 green glazed terracotta named "&aON" with lore "||   &e- &7Fortron demandée: &c%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}% &7par seconde||   &e- &7Fortron actuelle: &a%{MFFS::block::%{_l}%::fortronIn}%||&f||   &e- &7Coercion Deriver detectés: &6%{_CoercionDeriverDetect}%&7/{@maxCoercion}" to run:
 				set {MFFS::block::%{_l}%::online} to false
 				set {MFFS::block::%{_l}%::generating} to false
 				MFFS_GUI({_p},{_t},{_l})
 		else:
-			make a gui slot 51 of {_p} with 1 red glazed terracotta named "&cOFF" with lore "||   &e- &7Fortron demandée: &c%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}% &7par seconde||   &e- &7Fortron actuelle: &a%{MFFS::block::%{_l}%::fortronIn}%||&f||   &e- &7Coercion Deriver detectés: &6%{_CoercionDeriverDetect}%&7/16" to run:
-				set {MFFS::block::%{_l}%::online} to true
-				MFFS_GUI({_p},{_t},{_l})
-				MFFS_LOAD("Force Field Projector",{_l}, {MFFS::block::%{MFFS::referent::%{_l}%}%::module::owner})
+			make a gui slot 51 of {_p} with 1 red glazed terracotta named "&cOFF" with lore "||   &e- &7Fortron demandée: &c%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}% &7par seconde||   &e- &7Fortron actuelle: &a%{MFFS::block::%{_l}%::fortronIn}%||&f||   &e- &7Coercion Deriver detectés: &6%{_CoercionDeriverDetect}%&7/{@maxCoercion}" to run:
+				if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
+					message "&cForcefield en cours d'utilisation. Action impossible ! &7(&e%{MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}%&7)" to {_p}
+				else:
+					set {MFFS::block::%{_l}%::online} to true
+					MFFS_GUI({_p},{_t},{_l})
+					MFFS_LOAD("Force Field Projector",{_l}, {MFFS::block::%{MFFS::referent::%{_l}%}%::module::owner})
 	else if {_t} is "Coercion Deriver":
 		open virtual chest inventory with size 5 named "&8C.D. &0> &4ForceField" to {_p}
 		set {_slot} to 0
@@ -523,159 +683,70 @@ function MFFS_GUI(p: player,t: text,l: location):
 		if {MFFS::block::%{_l}%::online} is true:
 			make a gui slot 23 of {_p} with 1 green glazed terracotta named "&aON" with lore "||   &e- &7Energie demandée: &c{@energyUseToProductNotFull} {@energyType}||   &e- &7Energie actuelle: &a%{@variableEnergyPumpFunction}% {@energyType}||   &e- &7Fortron actuelle: &6%{MFFS::block::%{_l}%::fortronIn}%" to run:
 				set {MFFS::block::%{_l}%::online} to false
+				delete {MFFS::block::%{MFFS::referent::%{_l}%}%::forceStop}
 				MFFS_GUI({_p},{_t},{_l})
 		else:
 			make a gui slot 23 of {_p} with 1 red glazed terracotta named "&cOFF" with lore "||   &e- &7Energie demandée: &c{@energyUseToProductNotFull} {@energyType}||   &e- &7Energie actuelle: &a%{@variableEnergyPumpFunction}% {@energyType}||   &e- &7Fortron actuelle: &6%{MFFS::block::%{_l}%::fortronIn}%" to run:
 				set {MFFS::block::%{_l}%::online} to true
+				set {MFFS::block::%{MFFS::referent::%{_l}%}%::forceStop} to true
 				MFFS_GUI({_p},{_t},{_l})
 				MFFS_LOAD("Coercion Deriver",{_l}, {MFFS::block::%{MFFS::referent::%{_l}%}%::module::owner})
+	else if {_t} is "Coercion Deriver Creative":
+		open virtual chest inventory with size 5 named "&8C.D.&5C. &0> &4ForceField" to {_p}
+		set {_slot} to 0
+		if {@variableEnergyPumpFunction} is less than 0:
+			set {@variableEnergyPumpFunction} to 0
+		loop 45 times:
+			make a gui slot {_slot} of {_p} with black stained glass pane named " " to do nothing
+			add 1 to {_slot}
+			
+		make a gui slot 11 of {_p} with name tag named "&7&oAucune fréquence" to do nothing
+		make a gui slot 28 of {_p} with light gray stained glass pane named "&7&oAucun module d'énergie" to do nothing
+		make a gui slot 29 of {_p} with light gray stained glass pane named "&7&oAucun module d'énergie" to do nothing
+		make a gui slot 30 of {_p} with light gray stained glass pane named "&7&oAucun module d'énergie" to do nothing
+		
+		make a gui slot 16 of {_p} with light gray stained glass pane named "&7&oAucun upgrade" to do nothing
+		make a gui slot 25 of {_p} with light gray stained glass pane named "&7&oAucun upgrade" to do nothing
+		make a gui slot 34 of {_p} with light gray stained glass pane named "&7&oAucun upgrade" to do nothing
+		
+		if {MFFS::block::%{_l}%::online} is true:
+			make a gui slot 23 of {_p} with 1 green glazed terracotta named "&aON" with lore "||   &e- &7Energie demandée: &c0 {@energyType}||   &e- &7Energie actuelle: &aInfini {@energyType}||   &e- &7Fortron actuelle: &6%{MFFS::block::%{_l}%::fortronIn}%" to run:
+				set {MFFS::block::%{_l}%::online} to false
+				MFFS_GUI({_p},{_t},{_l})
+		else:
+			make a gui slot 23 of {_p} with 1 red glazed terracotta named "&cOFF" with lore "||   &e- &7Energie demandée: &c0 {@energyType}||   &e- &7Energie actuelle: &aInfini {@energyType}||   &e- &7Fortron actuelle: &6%{MFFS::block::%{_l}%::fortronIn}%" to run:
+				set {MFFS::block::%{_l}%::online} to true
+				MFFS_GUI({_p},{_t},{_l})
+				MFFS_LOAD("Coercion Deriver Creative",{_l}, {MFFS::block::%{MFFS::referent::%{_l}%}%::module::owner})
 function MFFS_LOAD(t: text,l: location,p: player):
 	set {_ok} to true
 	if {_t} is "Force Field Projector":
 		if {MFFS::block::%{_l}%::generating} is false:
 			set {MFFS::block::%{_l}%::generating} to true
 			set {_pos::%{_l}%} to position of {_l}
-			while {_ok} is true:
-				set {_loopVerifCoercion} to 0
-				loop blocks in radius 3 of position of {_l}:
-					if {MFFS::block::%{MFFS::referent::%location of loop-block%}%::type} is "Coercion Deriver":
-						if {MFFS::block::%location of loop-block%::fortronIn} is not 0:
-							if {MFFS::block::%location of loop-block%::fortronIn} is higher than 250:
-								if {_loopVerifCoercion} is not higher than 16:
-									add 250 to {MFFS::block::%{_l}%::fortronIn}
-									remove 250 from {MFFS::block::%location of loop-block%::fortronIn}
-									add 1 to {_loopVerifCoercion}
-								else:
-									exit loop
-				if {MFFS::block::%{_l}%::online} is false:
-					message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Arret manuel)" to {_p}
-					set {_ok} to false
-					set {MFFS::block::%{_l}%::generating} to false
-					set {MFFS::block::%{_l}%::online} to false
-					set {_count} to 0
-					loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
-						set {_distNow::%{_l}%} to position of loop-block
-						set {_distTot::%{_l}%} to distance between {_distNow::%{_l}%} and {_pos::%{_l}%}
-						set {_distDem1::%{_l}%} to {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}-2
-						if {_distTot::%{_l}%} is between {_distDem1::%{_l}%} and {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}:
-							if {_distTot::%{_l}%} is not -1 or 0 or 1 or 2:
-								if loop-block is 95:11 or 95:3:
-									if {MFFS::block::%{_l}%::online} is true:
-										exit loop
-									set {_location::%{_count}%} to loop-value
-									set block at loop-value to air
-									delete {MFFS::block::%position of loop-value%::shield}
-									remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
-									add 1 to {_count}
-						chance of 6%:
-							wait 1 ticks
-				else if {MFFS::block::%{_l}%::load} is false:
-					message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Chuncks déchargés)" to {_p}
-					set {_ok} to false
-					set {MFFS::block::%{_l}%::generating} to false
-					set {MFFS::block::%{_l}%::online} to false
-				else if {MFFS::block::%{_l}%::fortronIn} is less than 0:
-					message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Manque de fortron)" to {_p}
-					set {_ok} to false
-					set {MFFS::block::%{_l}%::generating} to false
-					set {MFFS::block::%{_l}%::fortronPower} to 0
-					set {MFFS::block::%{_l}%::online} to false
-					set {_count} to 0
-					loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
-						set {_distNow::%{_l}%} to position of loop-block
-						set {_distTot::%{_l}%} to distance between {_distNow::%{_l}%} and {_pos::%{_l}%}
-						set {_distDem1::%{_l}%} to {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}-2
-						if {_distTot::%{_l}%} is between {_distDem1::%{_l}%} and {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}:
-							if {_distTot::%{_l}%} is not -1 or 0 or 1 or 2:
-								if loop-block is 95:11 or 95:3:
-									if {MFFS::block::%{_l}%::online} is true:
-										exit loop
-									set {_location::%{_count}%} to loop-value
-									set block at loop-value to air
-									delete {MFFS::block::%position of loop-value%::shield}
-									remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
-									add 1 to {_count}
-						chance of 6%:
-							wait 1 ticks
-				else:
-					message "&c[&6M.F.F.S.&c] &3Démarrage du forcefield..." to {_p}
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount} to 0
-					if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronIn} is not less than 0:
-						if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronIn} is not higher than ({MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}-500):
-							add 1 to {MFFS::block::%{_l}%::fortronPower}
-							set {_count} to 0
-							loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
-								remove ({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/7.5) from {MFFS::block::%{_l}%::fortronIn}
-								set {_loopVerifCoercion} to 0
-								loop blocks in radius 3 of position of {_l}:
-									if {MFFS::block::%{MFFS::referent::%location of loop-block-2%}%::type} is "Coercion Deriver":
-										if {MFFS::block::%location of loop-block-2%::fortronIn} is not less than 0:
-											if {MFFS::block::%location of loop-block-2%::fortronIn} is higher than 1000:
-												if {_loopVerifCoercion} is not higher than 16:
-													add 1000 to {MFFS::block::%{_l}%::fortronIn}
-													remove 1000 from {MFFS::block::%location of loop-block-2%::fortronIn}
-													add 1 to {_loopVerifCoercion}
-												else:
-													exit loop
-								set {_distNow::%{_l}%} to position of loop-block
-								set {_distTot::%{_l}%} to distance between {_distNow::%{_l}%} and {_pos::%{_l}%}
-								set {_distDem1::%{_l}%} to {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}-2
-								if {_distTot::%{_l}%} is between {_distDem1::%{_l}%} and {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}:
-									if {MFFS::block::%{_l}%::fortronIn} is not less than 0:
-										if {_distTot::%{_l}%} is not -1 or 0 or 1 or 2:
-											if loop-block is air:
-												if {MFFS::block::%{_l}%::online} is false:
-													exit loop
-												set {_location::%{_count}%} to loop-value
-												chance of 50%:
-													set block at loop-value to 95:11
-													set {MFFS::block::%position of loop-value%::shield} to "%{MFFS::referent::%{_l}%}%"
-												else:
-													set block at loop-value to 95:3
-													set {MFFS::block::%position of loop-value%::shield} to "%{MFFS::referent::%{_l}%}%"
-												add 1 to {_count}
-												add 1 to {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
+			message "&c[&6M.F.F.S.&c] &3Démarrage du forcefield..." to {_p}
+			if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} or {MFFS::block::%{MFFS::referent::%{_l}%}%::forceStop} is not set:
+				while {_ok} is true:
+					set {_loopVerifCoercion} to 0
+					loop blocks in radius 3 of position of {_l}:
+						if {MFFS::block::%{MFFS::referent::%location of loop-block%}%::type} is "Coercion Deriver" or "Coercion Deriver Creative":
+							if {MFFS::block::%location of loop-block%::fortronIn} is not 0:
+								if {MFFS::block::%location of loop-block%::fortronIn} is higher than 250:
+									if {MFFS::block::%{_l}%::fortronIn} is less than {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}:
+										if {_loopVerifCoercion} is not higher than {@maxCoercion}:
+											add 250 to {MFFS::block::%{_l}%::fortronIn}
+											remove 250 from {MFFS::block::%location of loop-block%::fortronIn}
+											add 1 to {_loopVerifCoercion}
+										else:
+											exit loop
 									else:
 										exit loop
-									chance of 4%:
-										wait 1 tick
-						else:
-							remove ({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/15) from {MFFS::block::%{_l}%::fortronIn}
-							set {MFFS::block::%{_l}%::fortronPower} to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
-							loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
-								set {_loopVerifCoercion} to 0
-								loop blocks in radius 3 of position of {_l}:
-									if {MFFS::block::%{MFFS::referent::%location of loop-block-2%}%::type} is "Coercion Deriver":
-										if {MFFS::block::%location of loop-block-2%::fortronIn} is not less than 0:
-											if {MFFS::block::%location of loop-block-2%::fortronIn} is higher than 1000:
-												if {_loopVerifCoercion} is not higher than 16:
-													remove 1000 from {MFFS::block::%location of loop-block-2%::fortronIn}
-													add 1 to {_loopVerifCoercion}
-												else:
-													exit loop
-								set {_distNow::%{_l}%} to position of loop-block
-								set {_distTot::%{_l}%} to distance between {_distNow::%{_l}%} and {_pos::%{_l}%}
-								set {_distDem1::%{_l}%} to {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}-2
-								if {_distTot::%{_l}%} is between {_distDem1::%{_l}%} and {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}:
-									if {MFFS::block::%{_l}%::fortronIn} is not less than 0:
-										if {_distTot::%{_l}%} is not -1 or 0 or 1 or 2:
-											if loop-block is air:
-												if {MFFS::block::%{_l}%::online} is false:
-													exit loop
-												set {_location::%{_count}%} to loop-value
-												chance of 50%:
-													set block at loop-value to 95:11
-													set {MFFS::block::%loop-value%::shield} to "%{MFFS::referent::%{_l}%}%"
-												else:
-													set block at loop-value to 95:3
-													set {MFFS::block::%loop-value%::shield} to "%{MFFS::referent::%{_l}%}%"
-												add 1 to {_count}
-												add 1 to {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
-									else:
-										exit loop
-								wait 5 ticks
-					else:
-						message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Manque de fortron) &8-Etat antérieur: &cActif !" to {_p}
+					if {MFFS::block::%{_l}%::online} is false:
+						message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Arret manuel)" to {_p}
+						set {_ok} to false
+						set {MFFS::block::%{_l}%::generating} to false
+						set {MFFS::block::%{_l}%::online} to false
+						set {_count} to 0
 						loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
 							set {_distNow::%{_l}%} to position of loop-block
 							set {_distTot::%{_l}%} to distance between {_distNow::%{_l}%} and {_pos::%{_l}%}
@@ -687,11 +758,157 @@ function MFFS_LOAD(t: text,l: location,p: player):
 											exit loop
 										set {_location::%{_count}%} to loop-value
 										set block at loop-value to air
-										delete {MFFS::block::%{MFFS::referent::%{_distNow::%{_l}%}%}%::shield}
+										delete {MFFS::block::%position of loop-value%::shield}
 										remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
 										add 1 to {_count}
+							chance of 6%:
+								wait 1 ticks
+						message "&aDégénération du forcefield terminée !" to {_p}
+						delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
+					else if {MFFS::block::%{_l}%::load} is false:
+						message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Chuncks déchargés)" to {_p}
+						set {_ok} to false
+						set {MFFS::block::%{_l}%::generating} to false
+					else if {MFFS::block::%{_l}%::fortronIn} is less than 0:
+						message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Manque de fortron)" to {_p}
+						set {_ok} to false
+						set {MFFS::block::%{_l}%::generating} to false
+						set {MFFS::block::%{_l}%::fortronPower} to 0
+						set {MFFS::block::%{_l}%::online} to false
+						set {_count} to 0
+						loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
+							set {_distNow::%{_l}%} to position of loop-block
+							set {_distTot::%{_l}%} to distance between {_distNow::%{_l}%} and {_pos::%{_l}%}
+							set {_distDem1::%{_l}%} to {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}-2
+							if {_distTot::%{_l}%} is between {_distDem1::%{_l}%} and {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}:
+								if {_distTot::%{_l}%} is not -1 or 0 or 1 or 2:
+									if loop-block is 95:11 or 95:3:
+										if {MFFS::block::%{_l}%::online} is true:
+											exit loop
+										set {_location::%{_count}%} to loop-value
+										set block at loop-value to air
+										delete {MFFS::block::%position of loop-value%::shield}
+										remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
+										add 1 to {_count}
+							chance of 6%:
+								wait 1 ticks
+						message "&aDégénération du forcefield terminée !" to {_p}
+						delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
+					else if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} is less than 3:
+						message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Etendeur inferieur à 3)" to {_p}
+						set {_ok} to false
+						set {MFFS::block::%{_l}%::generating} to false
+						set {MFFS::block::%{_l}%::fortronPower} to 0
+						set {MFFS::block::%{_l}%::online} to false
+						set {_count} to 0
+						delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
+					else:
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} to "Génération activée..."
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount} to 0
+						if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronIn} is not less than 0:
+							if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronIn} is not higher than ({MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}-500):
+								add 1 to {MFFS::block::%{_l}%::fortronPower}
+								set {_count} to 0
+								loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
+									set {_loopVerifCoercion} to 0
+									loop blocks in radius 3 of position of {_l}:
+										if {MFFS::block::%{MFFS::referent::%location of loop-block-2%}%::type} is "Coercion Deriver" or "Coercion Deriver Creative":
+											if {MFFS::block::%location of loop-block-2%::fortronIn} is not less than 0:
+												if {MFFS::block::%location of loop-block-2%::fortronIn} is higher than 1000:
+													if {MFFS::block::%{_l}%::fortronIn} is less than {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}:
+														if {_loopVerifCoercion} is not higher than {@maxCoercion}:
+															add 1000 to {MFFS::block::%{_l}%::fortronIn}
+															remove 1000 from {MFFS::block::%location of loop-block-2%::fortronIn}
+															add 1 to {_loopVerifCoercion}
+														else:
+															exit loop
+									set {_distNow::%{_l}%} to position of loop-block
+									set {_distTot::%{_l}%} to distance between {_distNow::%{_l}%} and {_pos::%{_l}%}
+									set {_distDem1::%{_l}%} to {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}-2
+									if {_distTot::%{_l}%} is between {_distDem1::%{_l}%} and {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}:
+										if {MFFS::block::%{_l}%::fortronIn} is not less than 0:
+											if {_distTot::%{_l}%} is not -1 or 0 or 1 or 2:
+												if loop-block is air:
+													if {MFFS::block::%{_l}%::online} is false:
+														exit loop
+													set {_location::%{_count}%} to loop-value
+													chance of 50%:
+														set block at loop-value to 95:11
+														set {MFFS::block::%position of loop-value%::shield} to "%{MFFS::referent::%{_l}%}%"
+													else:
+														set block at loop-value to 95:3
+														set {MFFS::block::%position of loop-value%::shield} to "%{MFFS::referent::%{_l}%}%"
+													add 1 to {_count}
+													add 1 to {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
+										else:
+											exit loop
+										remove ({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/7) from {MFFS::block::%{_l}%::fortronIn}
+										chance of 4%:
+											wait 1 tick
+											message "%{MFFS::block::%{_l}%::fortronIn}%" to {_p}
+											message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%" to {_p}
+											message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/7%" to {_p}
+							else:
+								set {MFFS::block::%{_l}%::fortronPower} to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
+								loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
+									set {_loopVerifCoercion} to 0
+									loop blocks in radius 3 of position of {_l}:
+										if {MFFS::block::%{MFFS::referent::%location of loop-block-2%}%::type} is "Coercion Deriver" or "Coercion Deriver Creative":
+											if {MFFS::block::%location of loop-block-2%::fortronIn} is not less than 0:
+												if {MFFS::block::%location of loop-block-2%::fortronIn} is higher than 1000:
+													if {MFFS::block::%{_l}%::fortronIn} is less than {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}:
+														if {_loopVerifCoercion} is not higher than {@maxCoercion}:
+															remove 1000 from {MFFS::block::%location of loop-block-2%::fortronIn}
+															add 1 to {_loopVerifCoercion}
+														else:
+															exit loop
+									set {_distNow::%{_l}%} to position of loop-block
+									set {_distTot::%{_l}%} to distance between {_distNow::%{_l}%} and {_pos::%{_l}%}
+									set {_distDem1::%{_l}%} to {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}-2
+									if {_distTot::%{_l}%} is between {_distDem1::%{_l}%} and {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}:
+										if {MFFS::block::%{_l}%::fortronIn} is not less than 0:
+											if {_distTot::%{_l}%} is not -1 or 0 or 1 or 2:
+												if loop-block is air:
+													if {MFFS::block::%{_l}%::online} is false:
+														exit loop
+													set {_location::%{_count}%} to loop-value
+													chance of 50%:
+														set block at loop-value to 95:11
+														set {MFFS::block::%loop-value%::shield} to "%{MFFS::referent::%{_l}%}%"
+													else:
+														set block at loop-value to 95:3
+														set {MFFS::block::%loop-value%::shield} to "%{MFFS::referent::%{_l}%}%"
+													add 1 to {_count}
+													add 1 to {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
+										else:
+											exit loop
+										remove ({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/15) from {MFFS::block::%{_l}%::fortronIn}
+										chance of 4%:
+											wait 1 tick
+											message "%{MFFS::block::%{_l}%::fortronIn}%" to {_p}
+											message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%" to {_p}
+											message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/15%" to {_p}
 							wait 1 ticks
-					wait 1 ticks
+						else:
+							set {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} to "Arret en cours..."
+							message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Manque de fortron) &8-Etat antérieur: &cActif !" to {_p}
+							loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
+								set {_distNow::%{_l}%} to position of loop-block
+								set {_distTot::%{_l}%} to distance between {_distNow::%{_l}%} and {_pos::%{_l}%}
+								set {_distDem1::%{_l}%} to {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}-2
+								if {_distTot::%{_l}%} is between {_distDem1::%{_l}%} and {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}:
+									if {_distTot::%{_l}%} is not -1 or 0 or 1 or 2:
+										if loop-block is 95:11 or 95:3:
+											if {MFFS::block::%{_l}%::online} is true:
+												exit loop
+											set {_location::%{_count}%} to loop-value
+											set block at loop-value to air
+											delete {MFFS::block::%{MFFS::referent::%{_distNow::%{_l}%}%}%::shield}
+											remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
+											add 1 to {_count}
+								wait 1 ticks
+							delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
+						wait 1 ticks
 	if {_t} is "Coercion Deriver":
 		if {MFFS::block::%{_l}%::generating} is false:
 			set {MFFS::block::%{_l}%::generating} to true
@@ -722,7 +939,42 @@ function MFFS_LOAD(t: text,l: location,p: player):
 						set {MFFS::block::%{_l}%::generating} to false
 						set {@variableEnergyPumpFunction} to 0
 					wait 1 second
+	if {_t} is "Coercion Deriver Creative":
+		if {MFFS::block::%{_l}%::generating} is false:
+			set {MFFS::block::%{_l}%::generating} to true
+			message "&c[&6M.F.F.S.&c] &3Démarrage du coercion deriver creative..." to {_p}
+			while {_ok} is true:
+				if {MFFS::block::%{_l}%::online} is false:
+					message "&c[&6M.F.F.S.&c] &3Arret du coercion deriver creative. &7(Arret manuel)" to {_p}
+					set {_ok} to false
+					set {MFFS::block::%{_l}%::generating} to false
+				else if {MFFS::block::%{_l}%::load} is false:
+					message "&c[&6M.F.F.S.&c] &3Arret du coercion deriver creative &7(Chunck déchargé)" to {_p}
+					set {_ok} to false
+					set {MFFS::block::%{_l}%::generating} to false
+				else if {@variableEnergyPumpFunction} is less than 0:
+					message "&c[&6M.F.F.S.&c] &3Arret du coercion deriver creative &7(Manque d'énergie)" to {_p}
+					set {_ok} to false
+					set {MFFS::block::%{_l}%::generating} to false
+				else:
+					if {@variableEnergyPumpFunction} is not less than 0:
+						if {MFFS::block::%{_l}%::fortronIn} is not higher than ({MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}-500):
+							add {@product} to {MFFS::block::%{_l}%::fortronIn}
+					else:
+						message "&c[&6M.F.F.S.&c] &3Arret du coercion &7(Manque d'énergie) &8-Etat antérieur: &cActif !" to {_p}
+						set {_ok} to false
+						set {MFFS::block::%{_l}%::generating} to false
+						set {@variableEnergyPumpFunction} to 0
+					wait 1 second
 					
 command /mffsreset:
 	trigger:
 		delete {MFFS::*}
+command /testets:
+	trigger:
+		set {_chatmenu} to create new chatmenu with close x 0 y 18 text "Close!"
+		create new horizontal x 0 y 0 width 320 for {_chatmenu} 
+		create new text x 0 y 1 with "testing" for {_chatmenu}
+		create new button x 0 y 5 with "&6[Gamemode 1]" for {_chatmenu} to run server command "gamemode 1 %player%"
+		create new button x 0 y 8 with "&6[Gamemode 2]" for {_chatmenu} to run server command "gamemode 2 %player%"
+		view {_chatmenu} to player
