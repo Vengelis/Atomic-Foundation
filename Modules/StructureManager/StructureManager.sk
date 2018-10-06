@@ -1,0 +1,164 @@
+options:
+  version: 0.1-backup
+
+on load:
+	if file "plugins/AtomicBalistic/struc.yml" exists:
+		log "fichier existe"
+	load yaml "plugins/AtomicBalistic/struc.yml"
+
+
+function verifStructure(block: block, blockInterectLocation: location, p: player, nameStructure: text) :: boolean:
+	set {_direction} to (yaml value "%{_nameStructure}%.Direction" of "struc")
+	set {_structureParts} to (yaml value "%{_nameStructure}%.nbBlock" of "struc")
+	set {_ID} to 0
+	set {_trigger} to 0
+	set {_partOfStructure} to 0
+	while {_trigger} < 5:
+		if {_direction} is "Nord":
+			add 1 to {_trigger}
+			loop yaml node list "%{_nameStructure}%.datas" of "struc":
+				add 1 to {_ID}
+				set {_place::%{_ID}%::1} to (yaml value "%{_nameStructure}%.datas.%{_ID}%.X" of "struc")
+				set {_place::%{_ID}%::2} to (yaml value "%{_nameStructure}%.datas.%{_ID}%.Y" of "struc")
+				set {_place::%{_ID}%::3} to (yaml value "%{_nameStructure}%.datas.%{_ID}%.Z" of "struc")
+				set {_blockPlace} to (yaml value "%{_nameStructure}%.datas.%{_ID}%.Block" of "struc")
+				set {_locationBlock} to block at location {_blockInterectLocation}'s x-coordinate-{_place::%{_ID}%::1}, {_blockInterectLocation}'s y-coordinate+{_place::%{_ID}%::2}, {_blockInterectLocation}'s z-coordinate-{_place::%{_ID}%::3} in world of {_p}
+				set {_blockPlace} to "%{_blockPlace}%"
+				set {_locBlock} to {_locationBlock}'s location
+				set {_locationBlock} to "%{_locationBlock}%"
+				replace all " item" with "" in {_locationBlock}
+				#broadcast "%{_ID}% &9%{_locationBlock}% &2%{_blockPlace}% &cnord"
+				if {_blockPlace} is "%{_locationBlock}%":
+					add 1 to {_partOfStructure}
+				else:
+					set {_direction} to "Sud"
+					set {_nopMessage} to true
+					#set block at {_locBlock} to gold block
+					#broadcast "%{_ID}% %{_locationBlock}% %{_blockPlace}% %{_locBlock}% &cnord"
+					#broadcast "&cstop"
+					exit loop
+			if {_nopMessage} is not set:
+				if {_structureParts} = {_partOfStructure}:
+					set {_trigger} to 10
+					message "&7Structure basée sur: &aNord" to {_p}
+					return true
+				else:
+					return false
+		delete {_nopMessage}
+		set {_partOfStructure} to 0
+		set {_ID} to 0
+		if {_direction} is "Sud":
+			add 1 to {_trigger}
+			loop yaml node list "%{_nameStructure}%.datas" of "struc":
+				add 1 to {_ID}
+				set {_blockPlace} to (yaml value "%{_nameStructure}%.datas.%{_ID}%.Block" of "struc")
+				set {_place::%{_ID}%::1} to (yaml value "%{_nameStructure}%.datas.%{_ID}%.X" of "struc")
+				set {_place::%{_ID}%::2} to (yaml value "%{_nameStructure}%.datas.%{_ID}%.Y" of "struc")
+				set {_place::%{_ID}%::3} to (yaml value "%{_nameStructure}%.datas.%{_ID}%.Z" of "struc")
+				set {_locationBlock} to block at location {_blockInterectLocation}'s x-coordinate+{_place::%{_ID}%::1}, {_blockInterectLocation}'s y-coordinate+{_place::%{_ID}%::2}, {_blockInterectLocation}'s z-coordinate+{_place::%{_ID}%::3} in world of {_p}
+				set {_blockPlace} to "%{_blockPlace}%"
+				set {_locBlock} to {_locationBlock}'s location
+				set {_locationBlock} to "%{_locationBlock}%"
+				replace all " item" with "" in {_locationBlock}
+				#broadcast "%{_ID}% &9%{_locationBlock}% &2%{_blockPlace}% &csud"
+				if {_blockPlace} is "%{_locationBlock}%":
+					add 1 to {_partOfStructure}
+					#broadcast "ok"
+				else:
+					set {_direction} to "Est"
+					set {_nopMessage} to true
+					#set block at {_locBlock} to gold block
+					#broadcast "%{_ID}% %{_locationBlock}% %{_blockPlace}% %{_locBlock}% &csud"
+					exit loop
+			if {_nopMessage} is not set:
+				if {_structureParts} = {_partOfStructure}:
+					set {_trigger} to 10
+					message "&7Structure basée sur: &aSud" to {_p}
+					return true
+				else:
+					return false
+		delete {_nopMessage}
+		set {_partOfStructure} to 0
+		set {_ID} to 0
+		if {_direction} is "Est":
+			add 1 to {_trigger}
+			loop yaml node list "%{_nameStructure}%.datas" of "struc":
+				add 1 to {_ID}
+				set {_blockPlace} to (yaml value "%{_nameStructure}%.datas.%{_ID}%.Block" of "struc")
+				set {_place::%{_ID}%::1} to (yaml value "%{_nameStructure}%.datas.%{_ID}%.X" of "struc")
+				set {_place::%{_ID}%::2} to (yaml value "%{_nameStructure}%.datas.%{_ID}%.Y" of "struc")
+				set {_place::%{_ID}%::3} to (yaml value "%{_nameStructure}%.datas.%{_ID}%.Z" of "struc")
+				set {_locationBlock} to block at location {_blockInterectLocation}'s x-coordinate+{_place::%{_ID}%::3}, {_blockInterectLocation}'s y-coordinate+{_place::%{_ID}%::2}, {_blockInterectLocation}'s z-coordinate+{_place::%{_ID}%::1} in world of {_p}
+				set {_blockPlace} to "%{_blockPlace}%"
+				set {_locBlock} to {_locationBlock}'s location
+				set {_locationBlock} to "%{_locationBlock}%"
+				replace all " item" with "" in {_locationBlock}
+				#broadcast "%{_ID}% &9%{_locationBlock}% &2%{_blockPlace}% &cest"
+				if {_blockPlace} is "%{_locationBlock}%":
+					add 1 to {_partOfStructure}
+					#set {_debug} to location {_blockInterectLocation}'s x-coordinate+{_place::%{_ID}%::3}, {_blockInterectLocation}'s y-coordinate+{_place::%{_ID}%::2}, {_blockInterectLocation}'s z-coordinate+{_place::%{_ID}%::1} in world of {_p}
+					#set block at {_debug} to iron block
+				else:
+					set {_direction} to "Ouest"
+					set {_nopMessage} to true
+					#set block at {_locBlock} to gold block
+					#broadcast "%{_ID}% %{_locationBlock}% %{_blockPlace}% %{_locBlock}% &cest"
+					exit loop
+			if {_nopMessage} is not set:
+				if {_structureParts} = {_partOfStructure}:
+					set {_trigger} to 10
+					message "&7Structure basée sur: &aEst" to {_p}
+					return true
+				else:
+					return false
+		delete {_nopMessage}
+		set {_partOfStructure} to 0
+		set {_ID} to 0
+		if {_direction} is "Ouest":
+			add 1 to {_trigger}
+			loop yaml node list "%{_nameStructure}%.datas" of "struc":
+				add 1 to {_ID}
+				set {_blockPlace} to (yaml value "%{_nameStructure}%.datas.%{_ID}%.Block" of "struc")
+				set {_place::%{_ID}%::1} to (yaml value "%{_nameStructure}%.datas.%{_ID}%.X" of "struc")
+				set {_place::%{_ID}%::2} to (yaml value "%{_nameStructure}%.datas.%{_ID}%.Y" of "struc")
+				set {_place::%{_ID}%::3} to (yaml value "%{_nameStructure}%.datas.%{_ID}%.Z" of "struc")
+				set {_locationBlock} to block at location {_blockInterectLocation}'s x-coordinate-{_place::%{_ID}%::3}, {_blockInterectLocation}'s y-coordinate+{_place::%{_ID}%::2}, {_blockInterectLocation}'s z-coordinate-{_place::%{_ID}%::1} in world of {_p}
+				set {_blockPlace} to "%{_blockPlace}%"
+				set {_locBlock} to {_locationBlock}'s location
+				set {_locationBlock} to "%{_locationBlock}%"
+				replace all " item" with "" in {_locationBlock}
+				#broadcast "%{_ID}% &9%{_locationBlock}% &2%{_blockPlace}% &couest"
+				if {_blockPlace} is "%{_locationBlock}%":
+					add 1 to {_partOfStructure}
+				else:
+					set {_direction} to "Nord"
+					set {_nopMessage} to true
+					#set block at {_locBlock} to gold block
+					#broadcast "%{_ID}% %{_locationBlock}% %{_blockPlace}% %{_locBlock}% &cest"
+					exit loop
+			if {_nopMessage} is not set:
+				if {_structureParts} = {_partOfStructure}:
+					set {_trigger} to 10 
+					message "&7Structure basée sur: &aOuest" to {_p}
+					return true
+				else:
+					return false
+		delete {_nopMessage}
+		set {_partOfStructure} to 0
+		set {_ID} to 0
+		if {_direction} is not "Ouest" or "Est" or "Nord" or "Sud":
+			add 10 to {_trigger}
+			message "&4Erreur de configuration !" to {_p}
+			
+			
+on click on iron block:
+	set {_block} to clicked block
+	set {_blockInterectLocation} to location of clicked block
+	if verifStructure(clicked block, location of clicked block, player, "siloMissile") is true:
+		broadcast "ok !"
+			
+			
+command /cc:
+	trigger:
+		loop 200 times:
+			broadcast ""
