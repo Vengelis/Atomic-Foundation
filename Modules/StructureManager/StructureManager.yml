@@ -1,0 +1,144 @@
+base:
+  Direction: Nord
+  nbBlocks: 6
+  datas:
+    1:
+      X: -1
+      Y: 0
+      Z: 1
+      Block: diamond_block
+    2:
+      X: 0
+      Y: 0
+      Z: 1
+      Block: diamond_block
+    3:
+      X: 1
+      Y: 0
+      Z: 1
+      Block: diamond_block
+    4:
+      X: 2
+      Y: 0
+      Z: 1
+      Block: diamond_block
+    5:
+      X: 3
+      Y: 0
+      Z: 1
+      Block: diamond_block
+    6:
+      X: 3
+      Y: 0
+      Z: 2
+      Block: diamond_block
+      
+siloMissile:
+  Direction: Nord
+  nbBlock: 21
+  datas:
+    1:
+      X: 0
+      Y: 1
+      Z: 0
+      Block: inactive_iron_pressure_plate
+    2:
+      X: -1
+      Y: 0
+      Z: 0
+      Block: _stone_brick_stairs
+    3:
+      X: 1
+      Y: 0
+      Z: 0
+      Block: _stone_brick_stairs
+    4:
+      X: -1
+      Y: 0
+      Z: 1
+      Block: blue wool
+    5:
+      X: 1
+      Y: 0
+      Z: 1
+      Block: blue wool
+    6:
+      X: 0
+      Y: 0
+      Z: 1
+      Block: air
+    7:
+      X: -1
+      Y: 0
+      Z: 2
+      Block: iron_block
+    8:
+      X: 1
+      Y: 0
+      Z: 2
+      Block: iron_block
+    9:
+      X: -1
+      Y: 1
+      Z: 1
+      Block: iron_block
+    10:
+      X: 1
+      Y: 1
+      Z: 1
+      Block: iron_block
+    11:
+      X: -1
+      Y: 1
+      Z: 2
+      Block: stone slab
+    12:
+      X: 1
+      Y: 1
+      Z: 2
+      Block: stone slab
+    13:
+      X: -1
+      Y: 2
+      Z: 1
+      Block: 145
+    14:
+      X: 0
+      Y: 2
+      Z: 1
+      Block: air
+    15:
+      X: 1
+      Y: 2
+      Z: 1
+      Block: 145
+    16:
+      X: -1
+      Y: 3
+      Z: 1
+      Block: 145
+    17:
+      X: 0
+      Y: 3
+      Z: 1
+      Block: air
+    18:
+      X: 1
+      Y: 3
+      Z: 1
+      Block: 145
+    19:
+      X: -1
+      Y: 4
+      Z: 1
+      Block: 145
+    20:
+      X: 0
+      Y: 4
+      Z: 1
+      Block: air
+    21:
+      X: 1
+      Y: 4
+      Z: 1
+      Block: 145
