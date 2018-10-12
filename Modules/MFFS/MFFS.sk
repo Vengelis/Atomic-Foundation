@@ -1,4 +1,4 @@
-#===================================================================================================================================#
+#===========================================================================================================================================================================================================#
 #	  __  __       _____       _____       ____  
 #	 |  \/  |     |  ___|     |  ___|     / ___| 
 #	 | |\/| |     | |_        | |_        \___ \ 
@@ -6,62 +6,78 @@
 #	 |_|  |_| (_) |_|     (_) |_|     (_) |____/ 
 #	                                             
 #						By Vengelis
-#===================================================================================================================================#
+#===========================================================================================================================================================================================================#
 
 
-#					Notes à moi même
 #
 #
 #
-#
-#
 
-
-
-
+#===========================================================================================================================================================================================================#
+	
+#===========================================================================================================================================================================================================#
+	
 options:
-	version: 1.0.5-build
+
+	version: 1.0.7-build
+
+#===========================================================================================================================================================================================================#
 	
 	#	Forcefield Projector
 	
 	coeffMultipliantEttendeur: 1.7																			#
-	coefMultipliantModules: 0.1																				#	Ne pas toucher !
-	coefMultipliantBoosteur: 0.05																			#
+	coefMultipliantModules: 0.1																				#		Ne pas toucher !
+	coefMultipliantBoosteur: 0.05																			#	-> Coef de consommation de fortron 
 	coefPuissanceGlobal: 0.2																				# 
 	
-	variableEnergyPumpFunction: {MEC::block::%{_l}%::EM}
-	variableEnergyPumpPlace: {MEC::block::%{MFFS::referent::%location of event-block%}%::EM}
+	variableEnergyPumpFunction: {MEC::block::%{_l}%::EM}													# 	Fonction qui utilise le %{_l}%
+	variableEnergyPumpPlace: {MEC::block::%{MFFS::referent::%location of event-block%}%::EM}				#	Founction qui utlise le %{MFFS::referent::%location of event-block%}%
 	
-	maxCoercion: 64
+	maxCoercion: 64																							#	Maximum de coercion detecté par le projecteur
+	capacityInitialFortronProjector: 5000000																#	Capacité initial du projecteur
 	
-	capacityInitialFortronProjector: 5000000
+	projectorWatingChanceInitial: 5																			#	Chance initial de faire une attente entre 1 check de bloc
 	
-	projectorWatingChanceInitial: 5
+#===========================================================================================================================================================================================================#
 	
 	#	Coercion Deriver
 	
-	energyUseToProductNotFull: 1500
-	energyUseToProductFull: 775
-	product: 500
-	energyType: EM
+	energyUseToProductNotFull: 1500																			#	Energie utilisée pour produire du fortron quand le buffer n'est pas plein
+	energyUseToProductFull: 775																				#	Energie utilisée pour produire du fortron quand le buffer est pas plein
+	product: 500																							#	Fortron produit
+	energyType: EM																							#	Nom de l'energie utilisée pour produire du fortron
 	
-	capacityInitialFortronCoercion: 50000
+	capacityInitialFortronCoercion: 50000																	#
 	capacityInitialElecCoercion: 100000																		#	Pas encore utilisé
+	
+#===========================================================================================================================================================================================================#
 	
 	#	Modules
 	
-	capacityModule: 100000
-	pourcentageGlow: 15
+	capacityModule: 100000																					#	Capacité ajoutée par le Capacity Module
+	pourcentageGlow: 15																						#	Pourcentage d'apparition d'une lampe avec le Glow Module
+	powerShockPush: 4																						#	Force de projection du Shock Module
+	powerShockDamage: 3																						#	Degats fait par le Shock Module
+	
+#===========================================================================================================================================================================================================#
 	
 	#	Forcefield
 	
-	ignoreBlocks: air or sapling or plants
+	ignoreBlocks: air or sapling or plants or water or stationary water or water source or flowing water or falling water or moving water or lava or stationary lava or lava source or flowing lava or falling lava or moving lava
 	fluidSponge: water or stationary water or water source or flowing water or falling water or moving water or lava or stationary lava or lava source or flowing lava or falling lava or moving lava
 
-#===================================================================================================================================#
+#===========================================================================================================================================================================================================#
 #   Necessite AtomicBalisitc pour le chargement des configurations !
-#	Dépendant de CraftCore !
-#===================================================================================================================================#							  
+#	Dépendant de CraftCore et de MEC !
+#===========================================================================================================================================================================================================#							  
+
+effect check mffs block [of] shield position %string%:
+	set {_pos} to expression-1
+	if {MFFS::block::%{_pos}%::shield} is set:
+		return true
+	else:
+		return false
+		
 command /t:
 	trigger:
 		drop 64 light blue glazed terracotta named "&3Force Field Projector" with lore "&7Projecteur de champ de force"
@@ -72,6 +88,7 @@ command /t:
 		drop 64 observer named "&3Glow Module"
 		drop 64 observer named "&3Desintegration Module"
 		drop 64 observer named "&3Sponge Module"
+		drop 64 observer named "&3Shock Module"
 		drop 64 iron trapdoor named "&3Etendeur"
 
 on chunk unload:
@@ -142,6 +159,16 @@ on place:
 			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::5} to "Aucun module"
 			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::6} to "Aucun module"
 			
+			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::surbrillance::1} to "&cOFF"
+			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::desintegration::1} to "&cOFF"
+			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::sponge::1} to "&cOFF"
+			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::shock::1} to "&cOFF"
+			
+			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::surbrillance::2} to "&cOFF"
+			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::desintegration::2} to "&cOFF"
+			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::sponge::2} to "&cOFF"
+			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::shock::2} to "&cOFF"
+			
 			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::etendeur::1} to 0
 			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::etendeur::2} to 0
 			set {MFFS::block::%{MFFS::referent::%location of event-block%}%::etendeur::3} to 0
@@ -197,12 +224,42 @@ on place:
 		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::EM} to 500000
 		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::capacity} to 50000000000
 		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::owner} to player
-			
+	else if player's tool is a grey shulcker box named "&3Biometric Identifier" with lore "&7Identificateur de personnel":
+		cancel event
+		remove 1 grey shulcker box named "&3Biometric Identifier" with lore "&7Identificateur de personnel" from player's inventory
+		wait 1 tick
+		set event-block to grey shulcker box
+		set {MFFS::referent::%location of event-block%} to location of event-block
+		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::type} to "Biometric Identifier"
+		set {@variableEnergyPumpPlace} to 100000
+		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::module::owner} to player
+		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::member::1} to "Personne"
+		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::member::2} to "Personne"
+		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::member::3} to "Personne"
+		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::member::4} to "Personne"
+		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::member::5} to "Personne"
+		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::member::6} to "Personne"
+		set {MFFS::block::%{MFFS::referent::%location of event-block%}%::member::7} to "Personne"
+	
+
+on explosion:
+	cancel event
+	loop exploded blocks:
+		if {MFFS::block::%position of loop-block%::shield} is set:
+			cancel event
 on break:
 	if {MFFS::block::%position of event-block%::shield} is set:
 		cancel event
 		remove 50 from {MFFS::block::%{MFFS::referent::%{MFFS::block::%position of event-block%::shield}%}%::fortronIn}
+		set {_tempVerif} to {MFFS::block::%position of event-block%::shield}
+		replace all "x:" with "" in {_tempVerif}
+		replace all "y:" with "" in {_tempVerif}
+		replace all "z:" with "" in {_tempVerif}
+		replace all " " with "" in {_tempVerif}
 		message "&c[&6M.F.F.S.&c] &3Forcefield position: &9%{MFFS::block::%position of event-block%::shield}%"
+		if {MFFS::block::world:%{_tempVerif}%::shock::1} or {MFFS::block::world:%{_tempVerif}%::shock::2} is "&aON":
+			push the entity backwards at speed {@powerShockPush}
+			damage entity by {@powerShockDamage} hearts
 	if {MFFS::referent::%location of event-block%} is set:
 		if {MFFS::block::%{MFFS::referent::%location of event-block%}%::type} is "Force Field Projector":
 			delete {MFFS::block::%{MFFS::referent::%location of event-block%}%::*}
@@ -463,6 +520,16 @@ function MFFS_GUI(p: player,t: text,l: location):
 					else:
 						cancel event
 						MFFS_GUI({_p},{_t},{_l})
+				else if cursor slot of {_p} is observer named "&3Shock Module":
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} is "Aucun boosteur":
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} to "Shock Module"
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::shock::1} to "&aON"
+						broadcast "%{MFFS::block::%{MFFS::referent::%{_l}%}%::shock::1}% %{_l}%"
+						delete cursor slot of {_p}
+						MFFS_GUI({_p},{_t},{_l})
+					else:
+						cancel event
+						MFFS_GUI({_p},{_t},{_l})
 				else:
 					if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} is "Glow Module":
 						drop 1 observer named "&3%{MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1}%"		
@@ -477,6 +544,11 @@ function MFFS_GUI(p: player,t: text,l: location):
 					else if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} is "Sponge Module":
 						drop 1 observer named "&3%{MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1}%"
 						set {MFFS::block::%{MFFS::referent::%{_l}%}%::sponge::1} to "&cOFF"
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} to "Aucun boosteur"
+						MFFS_GUI({_p},{_t},{_l})
+					else if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} is "Shock Module":
+						drop 1 observer named "&3%{MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1}%"
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::shock::1} to "&cOFF"
 						set {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} to "Aucun boosteur"
 						MFFS_GUI({_p},{_t},{_l})
 					else:
@@ -512,6 +584,15 @@ function MFFS_GUI(p: player,t: text,l: location):
 					else:
 						cancel event
 						MFFS_GUI({_p},{_t},{_l})
+				else if cursor slot of {_p} is observer named "&3Shock Module":
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Aucun boosteur":
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} to "Shock Module"
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::shock::2} to "&aON"
+						delete cursor slot of {_p}
+						MFFS_GUI({_p},{_t},{_l})
+					else:
+						cancel event
+						MFFS_GUI({_p},{_t},{_l})
 				else:
 					if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Glow Module":
 						drop 1 observer named "&3%{MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2}%"
@@ -526,6 +607,11 @@ function MFFS_GUI(p: player,t: text,l: location):
 					else if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Sponge Module":
 						drop 1 observer named "&3%{MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2}%"
 						set {MFFS::block::%{MFFS::referent::%{_l}%}%::sponge::2} to "&cOFF"
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} to "Aucun boosteur"
+						MFFS_GUI({_p},{_t},{_l})
+					else if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Shock Module":
+						drop 1 observer named "&3%{MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2}%"
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::shock::2} to "&cOFF"
 						set {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} to "Aucun boosteur"
 						MFFS_GUI({_p},{_t},{_l})
 					else:
@@ -754,21 +840,18 @@ function MFFS_GUI(p: player,t: text,l: location):
 					if {MFFS::block::%location of loop-block%::fortronIn} is higher than 250:
 						if {MFFS::block::%{_l}%::fortronIn} is less than {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}:
 							if {_loopVerifCoercion} is not higher than {@maxCoercion}:
-								add 250 to {MFFS::block::%{_l}%::fortronIn}
-								remove 250 from {MFFS::block::%location of loop-block%::fortronIn}
+								add 1000 to {MFFS::block::%{_l}%::fortronIn}
+								remove 1000 from {MFFS::block::%location of loop-block%::fortronIn}
 								add 1 to {_loopVerifCoercion}
 							else:
 								exit loop
-						else:
-							exit loop
-				
 		if {MFFS::block::%{_l}%::online} is true:
 			make a gui slot 51 of {_p} with 1 green glazed terracotta named "&aON" with lore "||   &e- &7Fortron demandée: &c%({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}*20)% &7par seconde||   &e- &7Fortron actuelle: &a%{MFFS::block::%{_l}%::fortronIn}%&7/&6%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%||&f||   &e- &7Coercion Deriver detectés: &6%{_CoercionDeriverDetect}%&7/{@maxCoercion}" to run:
 				set {MFFS::block::%{_l}%::online} to false
 				set {MFFS::block::%{_l}%::generating} to false
 				MFFS_GUI({_p},{_t},{_l})
 		else:
-			make a gui slot 51 of {_p} with 1 red glazed terracotta named "&cOFF" with lore "||   &e- &7Fortron demandée: &c%({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}*20)% &7par seconde||   &e- &7Fortron actuelle: &a%{MFFS::block::%{_l}%::fortronIn}%&7/&6%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%||&f||   &e- &7Coercion Deriver detectés: &6%{_CoercionDeriverDetect}%&7/{@maxCoercion}||&f||   &e- &7Capacité du projecteur: &6%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%||   &e- &7Chance d'attente du projecteur: &6%{@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}%%%||   &e- &7Camouflage: &cBasique||   &e- &7Désintégration: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::desintegration::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::desintegration::2}%||   &e- &7Choque electrique: &cOFF||   &e- &7Eponge: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::sponge::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::sponge::2}%||   &e- &7Surbrillance: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::surbrillance::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::surbrillance::2}%" to run:
+			make a gui slot 51 of {_p} with 1 red glazed terracotta named "&cOFF" with lore "||   &e- &7Fortron demandée: &c%({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}*20)% &7par seconde||   &e- &7Fortron actuelle: &a%{MFFS::block::%{_l}%::fortronIn}%&7/&6%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%||&f||   &e- &7Coercion Deriver detectés: &6%{_CoercionDeriverDetect}%&7/{@maxCoercion}||&f||   &e- &7Capacité du projecteur: &6%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%||   &e- &7Chance d'attente du projecteur: &6%{@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}%%%||   &e- &7Camouflage: &cBasique||   &e- &7Désintégration: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::desintegration::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::desintegration::2}%||   &e- &7Choque electrique: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::shock::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::shock::2}%||   &e- &7Eponge: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::sponge::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::sponge::2}%||   &e- &7Surbrillance: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::surbrillance::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::surbrillance::2}%" to run:
 				if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
 					message "&cForcefield en cours d'utilisation. Action impossible ! &7(&e%{MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}%&7)" to {_p}
 				else:
@@ -821,7 +904,6 @@ function MFFS_GUI(p: player,t: text,l: location):
 		make a gui slot 16 of {_p} with light gray stained glass pane named "&7&oAucun upgrade" to do nothing
 		make a gui slot 25 of {_p} with light gray stained glass pane named "&7&oAucun upgrade" to do nothing
 		make a gui slot 34 of {_p} with light gray stained glass pane named "&7&oAucun upgrade" to do nothing
-		
 		if {MFFS::block::%{_l}%::online} is true:
 			make a gui slot 23 of {_p} with 1 green glazed terracotta named "&aON" with lore "||   &e- &7Energie demandée: &c0 {@energyType}||   &e- &7Energie actuelle: &aInfini {@energyType}||   &e- &7Fortron actuelle: &6%{MFFS::block::%{_l}%::fortronIn}%" to run:
 				set {MFFS::block::%{_l}%::online} to false
@@ -874,7 +956,7 @@ function MFFS_LOAD(t: text,l: location,p: player):
 										delete {MFFS::block::%position of loop-value%::shield}
 										remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
 										add 1 to {_count}
-							chance of 6%:
+							chance of 3%:
 								wait 1 ticks
 						message "&aDégénération du forcefield terminée !" to {_p}
 						delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
@@ -903,7 +985,7 @@ function MFFS_LOAD(t: text,l: location,p: player):
 										delete {MFFS::block::%position of loop-value%::shield}
 										remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
 										add 1 to {_count}
-							chance of 6%:
+							chance of 3%:
 								wait 1 ticks
 						message "&aDégénération du forcefield terminée !" to {_p}
 						delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
@@ -976,9 +1058,9 @@ function MFFS_LOAD(t: text,l: location,p: player):
 										remove ({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/7) from {MFFS::block::%{_l}%::fortronIn}
 										chance of ({@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration})%:
 											wait 1 tick
-											message "%{MFFS::block::%{_l}%::fortronIn}%" to {_p}
-											message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%" to {_p}
-											message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/7%" to {_p}
+											#message "%{MFFS::block::%{_l}%::fortronIn}%" to {_p}
+											#message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%" to {_p}
+											#message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/7%" to {_p}
 									else:
 										if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} or {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Sponge Module":
 											if loop-block is water or lava:
@@ -987,9 +1069,9 @@ function MFFS_LOAD(t: text,l: location,p: player):
 														set block at loop-value-2 to air
 											chance of ({@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration})%:
 												wait 1 tick
-												message "%{MFFS::block::%{_l}%::fortronIn}%" to {_p}
-												message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%" to {_p}
-												message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/7%" to {_p}
+												#message "%{MFFS::block::%{_l}%::fortronIn}%" to {_p}
+												#message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%" to {_p}
+												#message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/7%" to {_p}
 							else:
 								set {MFFS::block::%{_l}%::fortronPower} to {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}
 								loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
@@ -1044,9 +1126,9 @@ function MFFS_LOAD(t: text,l: location,p: player):
 										remove ({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/3.5) from {MFFS::block::%{_l}%::fortronIn}
 										chance of ({@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration})%:
 											wait 1 tick
-											message "%{MFFS::block::%{_l}%::fortronIn}%" to {_p}
-											message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%" to {_p}
-											message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/3.5%" to {_p}
+											#message "%{MFFS::block::%{_l}%::fortronIn}%" to {_p}
+											#message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%" to {_p}
+											#message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/3.5%" to {_p}
 									else:
 										if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} or {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Sponge Module":
 											if loop-block is water or lava:
@@ -1055,9 +1137,9 @@ function MFFS_LOAD(t: text,l: location,p: player):
 														set block at loop-value-2 to air
 											chance of ({@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration})%:
 												wait 1 tick
-												message "%{MFFS::block::%{_l}%::fortronIn}%" to {_p}
-												message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%" to {_p}
-												message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/3.5%" to {_p}
+												#message "%{MFFS::block::%{_l}%::fortronIn}%" to {_p}
+												#message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%" to {_p}
+												#message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/3.5%" to {_p}
 							wait 1 ticks
 						else:
 							set {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} to "Arret en cours..."
@@ -1076,7 +1158,8 @@ function MFFS_LOAD(t: text,l: location,p: player):
 											delete {MFFS::block::%{MFFS::referent::%{_distNow::%{_l}%}%}%::shield}
 											remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
 											add 1 to {_count}
-								wait 1 ticks
+								chance of 3%:
+									wait 1 ticks
 							delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
 						wait 1 ticks
 	if {_t} is "Coercion Deriver":
