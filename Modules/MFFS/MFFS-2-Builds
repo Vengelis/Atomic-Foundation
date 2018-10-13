@@ -36,9 +36,7 @@ options:
 	maxCoercion: 64																							#	Maximum de coercion detecté par le projecteur
 	capacityInitialFortronProjector: 5000000																#	Capacité initial du projecteur
 	
-	projectorWatingChanceInitial: 1.5																		#	Chance initial de faire une attente entre 1 check de bloc
-	
-	coefCirculation: (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*3.125)
+	projectorWatingChanceInitial: 1.1																		#	Chance initial de faire une attente entre 1 check de bloc
 	
 #===========================================================================================================================================================================================================#
 	
@@ -73,6 +71,53 @@ options:
 #	Dépendant de CraftCore et de MEC !
 #===========================================================================================================================================================================================================#							  
 
+function coefCirculationShieldMFFS(l: location, p:player):
+	if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 3:
+		message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Etendeur inferieur à 3)" to {_p}
+		set {_ok} to false
+		set {MFFS::block::%{_l}%::generating} to false
+		set {MFFS::block::%{_l}%::fortronPower} to 0
+		set {MFFS::block::%{_l}%::online} to false
+		set {_count} to 0
+		delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
+	if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} > 3:
+		if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 4:
+			set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*80)
+		if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} = 5:
+			set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*50)
+		if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} > 5:
+			if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 10:
+				set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*49)
+			if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} = 10:
+				set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*25)
+			if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} > 10:
+				if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 20:
+					set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*24)
+				if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} = 20:
+					set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*12.5)
+				if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} > 20:
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 40:
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*12.3)
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} = 40:
+						set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*6.25)
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} > 40:
+						if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 60:
+							set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*6.10)
+						if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} = 60:
+							set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*3.5)
+						if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} > 60:
+							if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 80:
+								set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*3.4)
+							if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} = 80:
+								set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*3.125)
+							if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} > 80:
+								message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Etendeur superieur à 80)" to {_p}
+								set {_ok} to false
+								set {MFFS::block::%{_l}%::generating} to false
+								set {MFFS::block::%{_l}%::fortronPower} to 0
+								set {MFFS::block::%{_l}%::online} to false
+								set {_count} to 0
+								delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
 effect check mffs block [of] shield position %string%:
 	set {_pos} to expression-1
 	if {MFFS::block::%{_pos}%::shield} is set:
@@ -923,6 +968,13 @@ function MFFS_LOAD(t: text,l: location,p: player):
 			set {_pos::%{_l}%} to position of {_l}
 			message "&c[&6M.F.F.S.&c] &3Démarrage du forcefield..." to {_p}
 			if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} or {MFFS::block::%{MFFS::referent::%{_l}%}%::forceStop} is not set:
+				coefCirculationShieldMFFS({_l}, {_p})
+				if {MFFS::block::%{_l}%::dontStart} is true:
+					message "&cForcefield en cours d'utilisation. Action impossible ! &7(&eAnti-démarrage: %{MFFS::block::%{_l}%::dontStart}%&7)" to {_p}
+					set {MFFS::block::%{_l}%::online} to false
+					set {_ok} to false
+					stop
+				set {_cubeoutline::*} to sphere with radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} and density 5
 				while {_ok} is true:
 					set {_loopVerifCoercion} to 0
 					loop blocks in radius 3 of position of {_l}:
@@ -943,18 +995,16 @@ function MFFS_LOAD(t: text,l: location,p: player):
 						set {_ok} to false
 						set {MFFS::block::%{_l}%::generating} to false
 						set {MFFS::block::%{_l}%::online} to false
+						set {MFFS::block::%{_l}%::dontStart} to true
 						set {_count} to 0
 						set {_number} to 1
-						set {_cubeoutline::*} to sphere with radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} and density 5
-						loop {@coefCirculation} times:
+						loop {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} times:
 							set {_x} to ({_l} offset by {_cubeoutline::%{_number}%})'s x-location
 							set {_y} to ({_l} offset by {_cubeoutline::%{_number}%})'s y-location
 							set {_z} to ({_l} offset by {_cubeoutline::%{_number}%})'s z-location
 							set {_loopedLocation} to location {_x}, {_y}, {_z} in world of {_p}
 							set {_loopedBlock} to block at {_loopedLocation}
 							if {_loopedBlock} is 95:11 or 95:3 or sea lantern:
-								if {MFFS::block::%{_l}%::online} is true:
-									exit loop
 								set block at {_loopedLocation} to air
 								delete {MFFS::block::%{_loopedLocation}%::shield}
 								remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
@@ -964,6 +1014,7 @@ function MFFS_LOAD(t: text,l: location,p: player):
 								wait 1 ticks
 						message "&aDégénération du forcefield terminée !" to {_p}
 						delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
+						delete {MFFS::block::%{_l}%::dontStart}
 					else if {MFFS::block::%{_l}%::load} is false:
 						message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Chuncks déchargés)" to {_p}
 						set {_ok} to false
@@ -974,18 +1025,17 @@ function MFFS_LOAD(t: text,l: location,p: player):
 						set {MFFS::block::%{_l}%::generating} to false
 						set {MFFS::block::%{_l}%::fortronPower} to 0
 						set {MFFS::block::%{_l}%::online} to false
+						set {MFFS::block::%{_l}%::dontStart} to true
 						set {_count} to 0
 						set {_number} to 1
 						set {_cubeoutline::*} to sphere with radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} and density 5
-						loop {@coefCirculation} times:
+						loop {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} times:
 							set {_x} to ({_l} offset by {_cubeoutline::%{_number}%})'s x-location
 							set {_y} to ({_l} offset by {_cubeoutline::%{_number}%})'s y-location
 							set {_z} to ({_l} offset by {_cubeoutline::%{_number}%})'s z-location
 							set {_loopedLocation} to location {_x}, {_y}, {_z} in world of {_p}
 							set {_loopedBlock} to block at {_loopedLocation}
 							if {_loopedBlock} is 95:11 or 95:3 or sea lantern:
-								if {MFFS::block::%{_l}%::online} is true:
-									exit loop
 								set block at {_loopedLocation} to air
 								delete {MFFS::block::%{_loopedLocation}%::shield}
 								remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
@@ -995,6 +1045,7 @@ function MFFS_LOAD(t: text,l: location,p: player):
 								wait 1 ticks
 						message "&aDégénération du forcefield terminée !" to {_p}
 						delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
+						delete {MFFS::block::%{_l}%::dontStart}
 					else if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} is less than 3:
 						message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Etendeur inferieur à 3)" to {_p}
 						set {_ok} to false
@@ -1004,174 +1055,174 @@ function MFFS_LOAD(t: text,l: location,p: player):
 						set {_count} to 0
 						delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
 					else:
-						set {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} to "Génération activée..."
-						set {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount} to 0
-						if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronIn} is not less than 0:
-							if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronIn} is not higher than ({MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}-500):
-								add 1 to {MFFS::block::%{_l}%::fortronPower}
-								set {_count} to 0
-								set {_loopVerifCoercion} to 0
-								loop blocks in radius 3 of position of {_l}:
-									if {MFFS::block::%{MFFS::referent::%location of loop-block%}%::type} is "Coercion Deriver" or "Coercion Deriver Creative":
-										if {MFFS::block::%location of loop-block%::fortronIn} is not less than 0:
-											if {MFFS::block::%location of loop-block%::fortronIn} is higher than 1000:
-												if {MFFS::block::%{_l}%::fortronIn} is less than {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}:
-													if {_loopVerifCoercion} is not higher than {@maxCoercion}:
-														add 1000 to {MFFS::block::%{_l}%::fortronIn}
-														remove 1000 from {MFFS::block::%location of loop-block%::fortronIn}
-														add 1 to {_loopVerifCoercion}
-													else:
-														exit loop
-								set {_number} to 1
-								set {_cubeoutline::*} to sphere with radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} and density 5
-								loop {@coefCirculation} times:
-									if {MFFS::block::%{_l}%::fortronIn} is not less than 0:
-										set {_x} to ({_l} offset by {_cubeoutline::%{_number}%})'s x-location
-										set {_y} to ({_l} offset by {_cubeoutline::%{_number}%})'s y-location
-										set {_z} to ({_l} offset by {_cubeoutline::%{_number}%})'s z-location
-										set {_loopedLocation} to location {_x}, {_y}, {_z} in world of {_p}
-										set {_loopedBlock} to block at {_loopedLocation}
-										if {_loopedBlock} is {@ignoreBlocks} or air:
-											if {MFFS::block::%{_l}%::online} is false:
-												exit loop
-											chance of 50%:
-												set block at {_loopedLocation} to 95:11
-											else:
-												set block at {_loopedLocation} to 95:3
-											set {MFFS::block::%{_loopedLocation}%::shield} to "%{MFFS::referent::%{_l}%}%"
-											if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} or {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Glow Module":
-												chance of {@pourcentageGlow}%:
-													set block at {_loopedLocation} to sea lantern
-											add 1 to {_count}
-											add 1 to {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
-											add 1 to {_number}
-										#else:
-											
-											#if {MFFS::block::%{_l}%::online} is false:
-											#	exit loop
-											#chance of 50%:
-											#	set block at {_loopedLocation} to 95:11
-											#else:
-											#	set block at {_loopedLocation} to 95:3
-											#set {MFFS::block::%{_loopedLocation}%::shield} to "%{MFFS::referent::%{_l}%}%"
-											#if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} or {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Glow Module":
-											#	chance of {@pourcentageGlow}%:
-											#		set block at {_loopedLocation} to sea lantern
-											#add 1 to {_count}
-											#add 1 to {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
-											#add 1 to {_number}
-										chance of ({@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration})%:
-											wait 1 tick
-									else:
-										exit loop
-								remove ({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/7) from {MFFS::block::%{_l}%::fortronIn}
-								
-								
-								#loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
-								#	if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} or {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Sponge Module":
-								#		if loop-block is water or lava:
-								#			loop blocks in radius 10 of position of loop-value:
-								#				if loop-block-2 is {@fluidSponge}:
-								#					set block at loop-value-2 to air
-								#		chance of ({@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration})%:
-								#			wait 1 tick
-											#message "%{MFFS::block::%{_l}%::fortronIn}%" to {_p}
-											#message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%" to {_p}
-											#message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/7%" to {_p}
-							else:
-								add 1 to {MFFS::block::%{_l}%::fortronPower}
-								set {_count} to 0
-								set {_loopVerifCoercion} to 0
-								loop blocks in radius 3 of position of {_l}:
-									if {MFFS::block::%{MFFS::referent::%location of loop-block%}%::type} is "Coercion Deriver" or "Coercion Deriver Creative":
-										if {MFFS::block::%location of loop-block%::fortronIn} is not less than 0:
-											if {MFFS::block::%location of loop-block%::fortronIn} is higher than 1000:
-												if {MFFS::block::%{_l}%::fortronIn} is less than {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}:
-													if {_loopVerifCoercion} is not higher than {@maxCoercion}:
-														add 1000 to {MFFS::block::%{_l}%::fortronIn}
-														remove 1000 from {MFFS::block::%location of loop-block%::fortronIn}
-														add 1 to {_loopVerifCoercion}
-													else:
-														exit loop
-								set {_number} to 1
-								set {_cubeoutline::*} to sphere with radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} and density 5
-								loop {@coefCirculation} times:
-									if {MFFS::block::%{_l}%::fortronIn} is not less than 0:
-										set {_x} to ({_l} offset by {_cubeoutline::%{_number}%})'s x-location
-										set {_y} to ({_l} offset by {_cubeoutline::%{_number}%})'s y-location
-										set {_z} to ({_l} offset by {_cubeoutline::%{_number}%})'s z-location
-										set {_loopedLocation} to location {_x}, {_y}, {_z} in world of {_p}
-										set {_loopedBlock} to block at {_loopedLocation}
-										if {_loopedBlock} is {@ignoreBlocks} or air:
-											if {MFFS::block::%{_l}%::online} is false:
-												exit loop
-											chance of 50%:
-												set block at {_loopedLocation} to 95:11
-											else:
-												set block at {_loopedLocation} to 95:3
-											set {MFFS::block::%{_loopedLocation}%::shield} to "%{MFFS::referent::%{_l}%}%"
-											if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} or {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Glow Module":
-												chance of {@pourcentageGlow}%:
-													set block at {_loopedLocation} to sea lantern
-											add 1 to {_count}
-											add 1 to {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
-											add 1 to {_number}
-										#else :
-											#if {MFFS::block::%{_l}%::online} is false:
-											#	exit loop
-											#chance of 50%:
-											#	set block at {_loopedLocation} to 95:11
-											#else:
-											#	set block at {_loopedLocation} to 95:3
-											#set {MFFS::block::%{_loopedLocation}%::shield} to "%{MFFS::referent::%{_l}%}%"
-											#if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} or {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Glow Module":
-											#	chance of {@pourcentageGlow}%:
-											#		set block at {_loopedLocation} to sea lantern
-											#add 1 to {_count}
-											#add 1 to {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
-											#add 1 to {_number}
-										chance of ({@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration})%:
-											wait 1 tick
-									else:
-										exit loop
-								remove ({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/7) from {MFFS::block::%{_l}%::fortronIn}
-								
-								
-								#loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
-								#	if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} or {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Sponge Module":
-								#		if loop-block is water or lava:
-								#			loop blocks in radius 10 of position of loop-value:
-								#				if loop-block-2 is {@fluidSponge}:
-								#					set block at loop-value-2 to air
-								#		chance of ({@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration})%:
-								#			wait 1 tick
-											#message "%{MFFS::block::%{_l}%::fortronIn}%" to {_p}
-											#message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%" to {_p}
-											#message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/7%" to {_p}
+						if {MFFS::block::%{_l}%::dontStart} is true:
+							message "&cForcefield en cours d'utilisation. Action impossible ! &7(&eEn cours de désactivation...&7)" to {_p}
+							set {_ok} to false
+							exit loop
+							stop
 						else:
-							set {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} to "Arret en cours..."
-							message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Manque de fortron) &8-Etat antérieur: &cActif !" to {_p}
-							set {_cubeoutline::*} to sphere with radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} and density 5
-						set {_number} to 1
-						set {_cubeoutline::*} to sphere with radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} and density 5
-						loop (({_radius}^3)*9) times:
-							set {_x} to ({_l} offset by {_cubeoutline::%{_number}%})'s x-location
-							set {_y} to ({_l} offset by {_cubeoutline::%{_number}%})'s y-location
-							set {_z} to ({_l} offset by {_cubeoutline::%{_number}%})'s z-location
-							set {_loopedLocation} to location {_x}, {_y}, {_z} in world of {_p}
-							set {_loopedBlock} to block at {_loopedLocation}
-							if {_loopedBlock} is 95:11 or 95:3 or sea lantern:
-								if {MFFS::block::%{_l}%::online} is true:
-									exit loop
-								set block at {_loopedLocation} to air
-								delete {MFFS::block::%{_loopedLocation}%::shield}
-								remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
-								add 1 to {_count}
-							add 1 to {_number}
-							chance of 3%:
-								wait 1 ticks
-							delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
-						wait 1 ticks
+							set {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} to "Génération activée..."
+							set {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount} to 0
+							if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronIn} is not less than 0:
+								if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronIn} is not higher than ({MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}-500):
+									add 1 to {MFFS::block::%{_l}%::fortronPower}
+									set {_count} to 0
+									set {_loopVerifCoercion} to 0
+									loop blocks in radius 3 of position of {_l}:
+										if {MFFS::block::%{MFFS::referent::%location of loop-block%}%::type} is "Coercion Deriver" or "Coercion Deriver Creative":
+											if {MFFS::block::%location of loop-block%::fortronIn} is not less than 0:
+												if {MFFS::block::%location of loop-block%::fortronIn} is higher than 1000:
+													if {MFFS::block::%{_l}%::fortronIn} is less than {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}:
+														if {_loopVerifCoercion} is not higher than {@maxCoercion}:
+															add 1000 to {MFFS::block::%{_l}%::fortronIn}
+															remove 1000 from {MFFS::block::%location of loop-block%::fortronIn}
+															add 1 to {_loopVerifCoercion}
+														else:
+															exit loop
+									set {_number} to 1
+									loop {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} times:
+										if {MFFS::block::%{_l}%::fortronIn} is not less than 0:
+											set {_x} to ({_l} offset by {_cubeoutline::%{_number}%})'s x-location
+											set {_y} to ({_l} offset by {_cubeoutline::%{_number}%})'s y-location
+											set {_z} to ({_l} offset by {_cubeoutline::%{_number}%})'s z-location
+											set {_loopedLocation} to location {_x}, {_y}, {_z} in world of {_p}
+											set {_loopedBlock} to block at {_loopedLocation}
+											if {_loopedBlock} is {@ignoreBlocks} or air:
+												if {MFFS::block::%{_l}%::online} is false:
+													exit loop
+												chance of 50%:
+													set block at {_loopedLocation} to 95:11
+												else:
+													set block at {_loopedLocation} to 95:3
+												set {MFFS::block::%{_loopedLocation}%::shield} to "%{MFFS::referent::%{_l}%}%"
+												if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} or {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Glow Module":
+													chance of {@pourcentageGlow}%:
+														set block at {_loopedLocation} to sea lantern
+												add 1 to {_count}
+												add 1 to {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
+											else if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} or {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Desintegration Module":
+												if {MFFS::block::%{_l}%::online} is false:
+													exit loop
+												chance of 50%:
+													set block at {_loopedLocation} to 95:11
+												else:
+													set block at {_loopedLocation} to 95:3
+												set {MFFS::block::%{_loopedLocation}%::shield} to "%{MFFS::referent::%{_l}%}%"
+												if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} or {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Glow Module":
+													chance of {@pourcentageGlow}%:
+														set block at {_loopedLocation} to sea lantern
+												add 1 to {_count}
+												add 1 to {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
+											add 1 to {_number}
+											chance of ({@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration})%:
+												wait 1 tick
+										else:
+											exit loop
+									remove ({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/7) from {MFFS::block::%{_l}%::fortronIn}
+									if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} or {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Sponge Module":
+										loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
+											if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} or {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Sponge Module":
+												if loop-block is water or lava:
+													loop blocks in radius 10 of position of loop-value:
+														if loop-block-2 is {@fluidSponge}:
+															set block at loop-value-2 to air
+												chance of ({@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration})%:
+													chance of ({@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration})%:
+														wait 1 tick
+													#message "%{MFFS::block::%{_l}%::fortronIn}%" to {_p}
+													#message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%" to {_p}
+													#message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/7%" to {_p}
+								else:
+									add 1 to {MFFS::block::%{_l}%::fortronPower}
+									set {_count} to 0
+									set {_loopVerifCoercion} to 0
+									loop blocks in radius 3 of position of {_l}:
+										if {MFFS::block::%{MFFS::referent::%location of loop-block%}%::type} is "Coercion Deriver" or "Coercion Deriver Creative":
+											if {MFFS::block::%location of loop-block%::fortronIn} is not less than 0:
+												if {MFFS::block::%location of loop-block%::fortronIn} is higher than 1000:
+													if {MFFS::block::%{_l}%::fortronIn} is less than {MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}:
+														if {_loopVerifCoercion} is not higher than {@maxCoercion}:
+															add 1000 to {MFFS::block::%{_l}%::fortronIn}
+															remove 1000 from {MFFS::block::%location of loop-block%::fortronIn}
+															add 1 to {_loopVerifCoercion}
+														else:
+															exit loop
+									set {_number} to 1
+									loop {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} times:
+										if {MFFS::block::%{_l}%::fortronIn} is not less than 0:
+											set {_x} to ({_l} offset by {_cubeoutline::%{_number}%})'s x-location
+											set {_y} to ({_l} offset by {_cubeoutline::%{_number}%})'s y-location
+											set {_z} to ({_l} offset by {_cubeoutline::%{_number}%})'s z-location
+											set {_loopedLocation} to location {_x}, {_y}, {_z} in world of {_p}
+											set {_loopedBlock} to block at {_loopedLocation}
+											if {_loopedBlock} is {@ignoreBlocks} or air:
+												if {MFFS::block::%{_l}%::online} is false:
+													exit loop
+												chance of 50%:
+													set block at {_loopedLocation} to 95:11
+												else:
+													set block at {_loopedLocation} to 95:3
+												set {MFFS::block::%{_loopedLocation}%::shield} to "%{MFFS::referent::%{_l}%}%"
+												if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} or {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Glow Module":
+													chance of {@pourcentageGlow}%:
+														set block at {_loopedLocation} to sea lantern
+												add 1 to {_count}
+												add 1 to {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
+											else if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} or {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Desintegration Module":
+												if {MFFS::block::%{_l}%::online} is false:
+													exit loop
+												chance of 50%:
+													set block at {_loopedLocation} to 95:11
+												else:
+													set block at {_loopedLocation} to 95:3
+												set {MFFS::block::%{_loopedLocation}%::shield} to "%{MFFS::referent::%{_l}%}%"
+												if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} or {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Glow Module":
+													chance of {@pourcentageGlow}%:
+														set block at {_loopedLocation} to sea lantern
+												add 1 to {_count}
+												add 1 to {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
+											add 1 to {_number}
+											chance of ({@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration})%:
+												wait 1 tick
+										else:
+											exit loop
+									remove ({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/7) from {MFFS::block::%{_l}%::fortronIn}
+									if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} or {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Sponge Module":
+										loop blocks in radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} of {_l}:
+											if {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::1} or {MFFS::block::%{MFFS::referent::%{_l}%}%::boosteur::2} is "Sponge Module":
+												if loop-block is water or lava:
+													loop blocks in radius 10 of position of loop-value:
+														if loop-block-2 is {@fluidSponge}:
+															set block at loop-value-2 to air
+												chance of ({@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration})%:
+													chance of ({@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration})%:
+														wait 1 tick
+													#message "%{MFFS::block::%{_l}%::fortronIn}%" to {_p}
+													#message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%" to {_p}
+													#message "%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}/7%" to {_p}
+							else:
+								set {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} to "Arret en cours..."
+								message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Manque de fortron) &8-Etat antérieur: &cActif !" to {_p}
+								set {_cubeoutline::*} to sphere with radius {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} and density 5
+							set {_number} to 1
+							loop (({_radius}^3)*9) times:
+								set {_x} to ({_l} offset by {_cubeoutline::%{_number}%})'s x-location
+								set {_y} to ({_l} offset by {_cubeoutline::%{_number}%})'s y-location
+								set {_z} to ({_l} offset by {_cubeoutline::%{_number}%})'s z-location
+								set {_loopedLocation} to location {_x}, {_y}, {_z} in world of {_p}
+								set {_loopedBlock} to block at {_loopedLocation}
+								if {_loopedBlock} is 95:11 or 95:3 or sea lantern:
+									if {MFFS::block::%{_l}%::online} is true:
+										exit loop
+									set block at {_loopedLocation} to air
+									delete {MFFS::block::%{_loopedLocation}%::shield}
+									remove 1 from {MFFS::block::%{MFFS::referent::%{_l}%}%::shieldCount}
+									add 1 to {_count}
+								add 1 to {_number}
+								chance of 3%:
+									wait 1 ticks
+								delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
+							wait 1 ticks
 	if {_t} is "Coercion Deriver":
 		if {MFFS::block::%{_l}%::generating} is false:
 			set {MFFS::block::%{_l}%::generating} to true
