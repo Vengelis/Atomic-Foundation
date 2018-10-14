@@ -11,7 +11,7 @@
 
 options:
 
-	version: 1.1a-alpha
+	version: 1.2a-alpha
 
 on load:
 	log "&9[%now% INFO] &7Chargement du fichier de configuration 'AtomicFoundation-Config.yml'..."
@@ -59,7 +59,6 @@ command /AtomicFoundation [<text>] [<text>] [<text>] [<text>]:
 		if player has permission "%{_AS::CoreLoad::AdminPerm::permission}%":
 			if arg-1 is not set:
 				make player execute command "/af help"
-
 			if arg-1 is "help":
 				message "&7---------- &8[ &6AtomicBalistic &8] &7----------"
 				message "   &9Page d'aide aux commandes admins"
@@ -83,8 +82,9 @@ command /AtomicFoundation [<text>] [<text>] [<text>] [<text>]:
 								stop
 							else:
 								set {AS::Core::Modules::%arg-3%} to "&7%arg-3%: &6En chargement... %nl%"
-								message "%{_AS::CoreLoad::Logo}% &7Téléchargement du module &6%arg-3%"
+								message "%{_AS::CoreLoad::Logo}% &7Téléchargement du module &6%arg-3% &7et des configurations..."
 								download from "https://raw.githubusercontent.com/Vengelis/Atomic-Foundation/master/Modules/%arg-3%/%arg-3%.sk" to "plugins/Skript/scripts/AtomicFoundation/%arg-3%.sk"
+								download from "https://raw.githubusercontent.com/Vengelis/Atomic-Foundation/master/Modules/%arg-3%/%arg-3%.yml" to "plugins/AtomicFoundation/%arg-3%.sk"
 								message "%{_AS::CoreLoad::Logo}% &7Téléchargement terminé ! Chargement du module..."
 								wait 1 seconds
 								make player execute command "sk reload AtomicFoundation/%arg-3%"
@@ -143,7 +143,6 @@ command /AtomicFoundation [<text>] [<text>] [<text>] [<text>]:
 						message "%{_AS::CoreLoad::Logo}% &7Rechargement du module..."
 						make player execute command "sk reload AtomicFoundation/%arg-3%"
 						message "%{_AS::CoreLoad::Logo}% &7Module &e%arg-3% &7rechargé !"
-
 						stop
 					else:
 						message "%{_AS::CoreLoad::Logo}% &4Erreur ! &cModule non trouvé !"
@@ -163,4 +162,3 @@ command /AtomicFoundation [<text>] [<text>] [<text>] [<text>]:
 					stop
 on load:
 	log "&a[%now% SUCESS] &7AtomicFoundation full chargé"
-
