@@ -11,7 +11,7 @@
 
 options:
 
-	version: 1.2a-alpha
+	version: 1.2b-alpha
 
 on load:
 	log "&9[%now% INFO] &7Chargement du fichier de configuration 'AtomicFoundation-Config.yml'..."
