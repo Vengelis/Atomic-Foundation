@@ -19,7 +19,7 @@
 	
 options:
 
-	version: 2.0.3-build
+	version: 2.0.4-build
 
 #===========================================================================================================================================================================================================#
 	
@@ -62,11 +62,13 @@ options:
 	
 #===========================================================================================================================================================================================================#
 	
-	#	Forcefield
+	#	Forcefield Shield
 	
 	ignoreBlocks: air or sapling or plants or water or stationary water or water source or flowing water or falling water or moving water or lava or stationary lava or lava source or flowing lava or falling lava or moving lava or 175:2
 	fluidSponge: water or stationary water or water source or flowing water or falling water or moving water or lava or stationary lava or lava source or flowing lava or falling lava or moving lava
 
+#===========================================================================================================================================================================================================#
+	
 #===========================================================================================================================================================================================================#
 #   Necessite AtomicBalisitc pour le chargement des configurations !
 #	Dépendant de CraftCore et de MEC !
@@ -306,13 +308,13 @@ on break:
 	set {_z2} to floor({_loopedLocation}'s z-location)
 	if {MFFS::block::%{_x2}%%{_y2}%%{_z2}%::shield} is set:
 		cancel event
-		remove 50 from {MFFS::block::%{MFFS::referent::%{MFFS::block::%position of event-block%::shield}%}%::fortronIn}
-		set {_tempVerif} to {MFFS::block::%position of event-block%::shield}
+		remove 50 from {MFFS::block::%{MFFS::referent::%{MFFS::block::%{_x2}%%{_y2}%%{_z2}%::shield}%}%::fortronIn}
+		set {_tempVerif} to {MFFS::block::%{_x2}%%{_y2}%%{_z2}%::shield}
 		replace all "x:" with "" in {_tempVerif}
 		replace all "y:" with "" in {_tempVerif}
 		replace all "z:" with "" in {_tempVerif}
 		replace all " " with "" in {_tempVerif}
-		message "&c[&6M.F.F.S.&c] &3Forcefield position: &9%{MFFS::block::%position of event-block%::shield}%"
+		message "&c[&6M.F.F.S.&c] &3Forcefield position: &9%{MFFS::block::%{_x2}%%{_y2}%%{_z2}%::shield}%"
 		if {MFFS::block::world:%{_tempVerif}%::shock::1} or {MFFS::block::world:%{_tempVerif}%::shock::2} is "&aON":
 			push the entity backwards at speed {@powerShockPush}
 			damage entity by {@powerShockDamage} hearts
@@ -902,12 +904,12 @@ function MFFS_GUI(p: player,t: text,l: location):
 							else:
 								exit loop
 		if {MFFS::block::%{_l}%::online} is true:
-			make a gui slot 51 of {_p} with 1 green glazed terracotta named "&aON" with lore "||   &e- &7Fortron demandée: &c%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}% &7par block posé||   &e- &7Fortron actuelle: &a%{MFFS::block::%{_l}%::fortronIn}%&7/&6%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%||&f||   &e- &7Coercion Deriver detectés: &6%{_CoercionDeriverDetect}%&7/{@maxCoercion}||&f||   &e- &7Capacité du projecteur: &6%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%||   &e- &7Ratio d'attente du projecteur: &6%{@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}+1.1%&7/&c%{@projectorWatingChanceInitial}+0.1%||   &e- &7Camouflage: &cBasique||   &e- &7Désintégration: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::desintegration::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::desintegration::2}%||   &e- &7Choque electrique: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::shock::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::shock::2}%||   &e- &7Eponge: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::sponge::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::sponge::2}%||   &e- &7Surbrillance: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::surbrillance::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::surbrillance::2}%" to run:
+			make a gui slot 51 of {_p} with 1 green glazed terracotta named "&aON" with lore "||   &e- &7Fortron demandée: &c%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}% &7par block posé||   &e- &7Fortron actuelle: &a%{MFFS::block::%{_l}%::fortronIn}%&7/&6%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%||&f||   &e- &7Coercion Deriver detectés: &6%{_CoercionDeriverDetect}%&7/{@maxCoercion}||&e   - &7Nombre d'étendeurs: &a%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}%&7/80||&f||   &e- &7Capacité du projecteur: &6%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%||   &e- &7Ratio d'attente du projecteur: &6%{@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}+1.1%&7/&c%{@projectorWatingChanceInitial}+0.1%||   &e- &7Camouflage: &cBasique||   &e- &7Désintégration: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::desintegration::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::desintegration::2}%||   &e- &7Choque electrique: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::shock::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::shock::2}%||   &e- &7Eponge: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::sponge::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::sponge::2}%||   &e- &7Surbrillance: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::surbrillance::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::surbrillance::2}%" to run:
 				set {MFFS::block::%{_l}%::online} to false
 				set {MFFS::block::%{_l}%::generating} to false
 				MFFS_GUI({_p},{_t},{_l})
 		else:
-			make a gui slot 51 of {_p} with 1 red glazed terracotta named "&cOFF" with lore "||   &e- &7Fortron demandée: &c%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}% &7par block posé||   &e- &7Fortron actuelle: &a%{MFFS::block::%{_l}%::fortronIn}%&7/&6%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%||&f||   &e- &7Coercion Deriver detectés: &6%{_CoercionDeriverDetect}%&7/{@maxCoercion}||&f||   &e- &7Capacité du projecteur: &6%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%||   &e- &7Ratio d'attente du projecteur: &6%{@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}+1.1%&7/&c%{@projectorWatingChanceInitial}+0.1%||   &e- &7Camouflage: &cBasique||   &e- &7Désintégration: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::desintegration::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::desintegration::2}%||   &e- &7Choque electrique: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::shock::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::shock::2}%||   &e- &7Eponge: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::sponge::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::sponge::2}%||   &e- &7Surbrillance: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::surbrillance::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::surbrillance::2}%" to run:
+			make a gui slot 51 of {_p} with 1 red glazed terracotta named "&cOFF" with lore "||   &e- &7Fortron demandée: &c%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaire}% &7par block posé||   &e- &7Fortron actuelle: &a%{MFFS::block::%{_l}%::fortronIn}%&7/&6%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%||&f||   &e- &7Coercion Deriver detectés: &6%{_CoercionDeriverDetect}%&7/{@maxCoercion}||&e   - &7Nombre d'étendeurs: &a%{MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}%&7/80||&f||   &e- &7Capacité du projecteur: &6%{MFFS::block::%{MFFS::referent::%{_l}%}%::module::capacity}%||   &e- &7Ratio d'attente du projecteur: &6%{@projectorWatingChanceInitial}-{MFFS::block::%{MFFS::referent::%{_l}%}%::module::speedGeneration}+1.1%&7/&c%{@projectorWatingChanceInitial}+0.1%||   &e- &7Camouflage: &cBasique||   &e- &7Désintégration: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::desintegration::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::desintegration::2}%||   &e- &7Choque electrique: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::shock::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::shock::2}%||   &e- &7Eponge: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::sponge::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::sponge::2}%||   &e- &7Surbrillance: &3Boosteur 1: %{MFFS::block::%{MFFS::referent::%{_l}%}%::surbrillance::1}% &7- &3Boosteur 2: %{MFFS::block::%{MFFS::referent::%{_l}%}%::surbrillance::2}%" to run:
 				if {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} is set:
 					message "&cForcefield en cours d'utilisation. Action impossible ! &7(&e%{MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}%&7)" to {_p}
 				else:
