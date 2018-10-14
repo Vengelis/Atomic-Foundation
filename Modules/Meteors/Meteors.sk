@@ -1,0 +1,39 @@
+on load:
+	if file "plugins/AtomicFoundation/meteor/config.yml" doesn't exist:
+		create file "plugins/AtomicFoundation/meteor/config.yml"
+	load yaml "plugins/AtomicFoundation/meteor/config.yml"
+	
+	
+function spanwMeteor(l: location, type: text)
+		set {_l} to location {_l}'s x-coordinate, 255, {_l}'s z-coordinate of world of {_l}
+		spawn falling bedrock at {_l}
+		push last spawned falling bedrock new vector random number from -0.5 to 0.5, random number from -0.5 to 0, random number from -0.5 to 0.5
+		wait 5 tick
+		set {_loc} to location of spawned falling bedrock
+		send title from "&6⚠ &cUne météorite approche !" with subtitle "&7Mettez vous à l'abris !" to player for 3 seconds with 0.5 seconds fade in and 1 seconds fade out
+		loop 20 times:
+			if {_exit} is set:
+				exit loop
+			wait 5 tick
+			create an explosion of force 10 at {_loc}
+			loop all blocks in radius 2 around {_loc}:
+				set loop-block to coal block
+				chance of 10%:
+					set loop-block to magma block
+			wait 0.3 second
+			loop all blocks in radius 2 around {_loc}:
+				set loop-block to air
+			loop all blocks in radius 3 around {_loc}:
+				if loop-block is not air:
+					loop all blocks in radius 3 around {_loc}:
+						set loop-block-2 to air
+						create explosion with force 50 at loop-value-2
+					loop 8 times:
+						set {_num} to loop-value-3
+						if mod({_num}, 2) is 1:
+							loop blocks in radius {_num} of {_loc}:
+								if distance between loop-value-4 and {_loc} is greater than {_num} - 0.5:
+									if y-coord of loop-value-4 is less than or equal to {_loc}'s y-coord:
+										create explosion with force 10 at loop-value-4
+					set {_exit} to true
+			set {_loc} to location of spawned falling bedrock
