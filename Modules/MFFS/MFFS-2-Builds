@@ -19,7 +19,7 @@
 	
 options:
 
-	version: 2.0.4-build
+	version: 2.0.5-build
 
 #===========================================================================================================================================================================================================#
 	
@@ -75,52 +75,37 @@ options:
 #===========================================================================================================================================================================================================#							  
 
 function coefCirculationShieldMFFS(l: location, p:player):
-	if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 3:
-		message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Etendeur inferieur à 3)" to {_p}
+	if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 5:
+		message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Etendeur inferieur à 5)" to {_p}
 		set {_ok} to false
 		set {MFFS::block::%{_l}%::generating} to false
 		set {MFFS::block::%{_l}%::fortronPower} to 0
 		set {MFFS::block::%{_l}%::online} to false
 		set {_count} to 0
 		delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
-	if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} > 3:
-		if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 4:
-			set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*80)
-		if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} = 5:
-			set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*50)
-		if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} > 5:
-			if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 10:
-				set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*49)
-			if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} = 10:
-				set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*25)
+	if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} > 4:
+		if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 11:
+			set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*(100*exp({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}*(ln(0.5)/5))))
+		else:
 			if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} > 10:
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 20:
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*24)
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} = 20:
-					set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*12.5)
-				if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} > 20:
-					if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 40:
-						set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*13)
-					if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} = 40:
-						set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*6.25)
-					if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} > 40:
-						if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 60:
-							set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*6.10)
-						if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} = 60:
-							set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*3.5)
-						if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} > 60:
-							if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 80:
-								set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*3.4)
-							if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} = 80:
-								set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*3.125)
-							if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} > 80:
-								message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Etendeur superieur à 80)" to {_p}
-								set {_ok} to false
-								set {MFFS::block::%{_l}%::generating} to false
-								set {MFFS::block::%{_l}%::fortronPower} to 0
-								set {MFFS::block::%{_l}%::online} to false
-								set {_count} to 0
-								delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
+				if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 21:
+					set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*(50*exp({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}*(ln(0.5)/10))))
+				else:
+					if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} > 20:
+						if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 41:
+							set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*(25*exp({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}*(ln(0.5)/20))))
+						else:
+							if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} > 40:
+								if {MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt} < 81:
+									set {MFFS::block::%{MFFS::referent::%{_l}%}%::coefCirculation} to (({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}^3)*(6.25*exp({MFFS::block::%{MFFS::referent::%{_l}%}%::fortronNecessaireEtt}*(ln(0.5)/40))))
+								else:
+									message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Etendeur superieur à 80)" to {_p}
+									set {_ok} to false
+									set {MFFS::block::%{_l}%::generating} to false
+									set {MFFS::block::%{_l}%::fortronPower} to 0
+									set {MFFS::block::%{_l}%::online} to false
+									set {_count} to 0
+									delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
 effect check mffs block [of] shield position %string%:
 	set {_pos} to expression-1
 	if {MFFS::block::%{_pos}%::shield} is set:
@@ -293,7 +278,6 @@ on place:
 	
 
 on explosion:
-	cancel event
 	loop exploded blocks:
 		set {_loopedLocation} to location of loop-block
 		set {_x2} to floor({_loopedLocation}'s x-location)
@@ -318,6 +302,7 @@ on break:
 		if {MFFS::block::world:%{_tempVerif}%::shock::1} or {MFFS::block::world:%{_tempVerif}%::shock::2} is "&aON":
 			push the entity backwards at speed {@powerShockPush}
 			damage entity by {@powerShockDamage} hearts
+			strike lightning at the player
 	if {MFFS::referent::%location of event-block%} is set:
 		if {MFFS::block::%{MFFS::referent::%location of event-block%}%::type} is "Force Field Projector":
 			delete {MFFS::block::%{MFFS::referent::%location of event-block%}%::*}
@@ -1025,8 +1010,7 @@ function MFFS_LOAD(t: text,l: location,p: player):
 								add 1 to {_count}
 							add 1 to {_number}
 							chance of 0.1%:
-								chance of 0.1%:
-									wait 1 ticks
+								wait 1 ticks
 						message "&7&oDégénération du forcefield terminée !" to {_p}
 						delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
 						delete {MFFS::block::%{_l}%::dontStart}
@@ -1223,7 +1207,7 @@ function MFFS_LOAD(t: text,l: location,p: player):
 							else:
 								delete {_stop}
 								set {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated} to "Arret en cours..."
-								message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Manque de fortron) &8-Etat antérieur: &cActif !" to {_p}
+								message "&c[&6M.F.F.S.&c] &3Arret du forcefield &7(Manque de fortron) &8- Etat antérieur: &cActif !" to {_p}
 								set {_number} to 1
 								set {_ok} to false
 								set {MFFS::block::%{_l}%::generating} to false
@@ -1250,8 +1234,7 @@ function MFFS_LOAD(t: text,l: location,p: player):
 										add 1 to {_count}
 									add 1 to {_number}
 									chance of 0.1%:
-										chance of 0.1%:
-											wait 1 ticks
+										wait 1 ticks
 								message "&7&oDégénération du forcefield terminée !" to {_p}
 								delete {MFFS::block::%{MFFS::referent::%{_l}%}%::genrationActivated}
 								delete {MFFS::block::%{_l}%::dontStart}
