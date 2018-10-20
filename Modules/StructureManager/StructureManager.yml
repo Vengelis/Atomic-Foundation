@@ -1,3 +1,7 @@
+Debugger:
+    debugMode: false
+    debugPoseBlock: false
+    
 base:
   Direction: Nord
   nbBlocks: 6
