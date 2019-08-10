@@ -2,7 +2,7 @@
 #
 #           Configuration des messages en Francais.
 #
-#                   By Vengelis_ - Version 2.0.1.1
+#                   By Vengelis_ - Version 2.0.1.2
 #
 #============================================================================================================================================================================#
 AFR:
@@ -13,12 +13,12 @@ AFR:
         ReloadedManualyConfiguration: Configurations rechargées.
         GenerateManualyConfiguration: Génération des configurations...
         GenerateManualyConfigurationEnded: Génération terminée.
-        SecurityAvert1: &4[&6Security Mode&4] &7Mise en sécurité de la RAM du serveur (RAM disponible &c< 5%%&7). Par sécurité du plugin, %{AFR::Core::Visuel::Prefix}% c'est arrété temporairement le temps que de la RAM se libère. Il reprendra automatiquement toute les actions en cours.
-        SecurityAvert1Ended: &4[&6Security Mode&4] &aReprise ! &c%{AFR::Core::Visuel::Prefix}% a retiré la mise en sécurité.
-        SecurityAvert2: &4[&6Security Mode&4] &7Mise en sécurité de la RAM du serveur (RAM disponible &c< 15%%&7). Par sécurité du plugin, %{AFR::Core::Visuel::Prefix}% c'est arrété temporairement le temps que de la RAM se libère. Il reprendra automatiquement toute les actions en cours.
-        SecurityAvert2Ended: &4[&6Security Mode&4] &aReprise ! &c%{AFR::Core::Visuel::Prefix}% a retiré la mise en sécurité.
-        SecurityAvert3: &4[&6Security Mode&4] &7Mise en sécurité de la RAM du serveur (RAM disponible &c< 30%%&7). Par sécurité du plugin, %{AFR::Core::Visuel::Prefix}% c'est arrété temporairement le temps que de la RAM se libère. Il reprendra automatiquement toute les actions en cours.
-        SecurityAvert3Ended: &4[&6Security Mode&4] &aReprise ! &c%{AFR::Core::Visuel::Prefix}% a retiré la mise en sécurité.
+        SecurityAvert1: §4[§6Security Mode§4] §7Mise en sécurité de la RAM du serveur (RAM disponible §c< 5%%§7). Par sécurité du plugin, %{AFR::Core::Visuel::Prefix}% c'est arrété temporairement le temps que de la RAM se libère. Il reprendra automatiquement toute les actions en cours.
+        SecurityAvert1Ended: §4[§6Security Mode§4] §aReprise ! §c%{AFR::Core::Visuel::Prefix}% a retiré la mise en sécurité.
+        SecurityAvert2: §4[§6Security Mode§4] §7Mise en sécurité de la RAM du serveur (RAM disponible §c< 15%%§7). Par sécurité du plugin, %{AFR::Core::Visuel::Prefix}% c'est arrété temporairement le temps que de la RAM se libère. Il reprendra automatiquement toute les actions en cours.
+        SecurityAvert2Ended: §4[§6Security Mode§4] §aReprise ! §c%{AFR::Core::Visuel::Prefix}% a retiré la mise en sécurité.
+        SecurityAvert3: §4[§6Security Mode§4] §7Mise en sécurité de la RAM du serveur (RAM disponible §c< 30%%§7). Par sécurité du plugin, %{AFR::Core::Visuel::Prefix}% c'est arrété temporairement le temps que de la RAM se libère. Il reprendra automatiquement toute les actions en cours.
+        SecurityAvert3Ended: §4[§6Security Mode§4] §aReprise ! §c%{AFR::Core::Visuel::Prefix}% a retiré la mise en sécurité.
         LGCCFstartMessage: Application des paramètres...
         LGCCFendMessage: Paramètres chargés.
     ICBM:
@@ -30,7 +30,7 @@ AFR:
         Category: Catégorie
         Skiped: Ignoré (Duplication).
         Added: Implémenté.
-        PermissionError: &cVous n'avez pas la permission d'utiliser cette commande.
+        PermissionError: §cVous n'avez pas la permission d'utiliser cette commande.
         ResetAllVars: Toute les variables de %{AFR::Core::Visuel::Prefix}% ont été remises à 0 !
         ManualyAutoReloadMissileConfiguration: Rechargement des configurations de missiles...
         LaunchMissileMessage: Lancement du protocole de lancement...
@@ -39,7 +39,7 @@ AFR:
         MissileHaveMaxHeightMessage: Le missile a ateint sa hauteur maximum.
         StratosphericMessage: Lancement du protocole de voyage statosphèrique ...
         StartCloakingMessage: Lancement du protocole de furtivité ...
-        DetectedMissileMessage: Missile &6détecté &7par un radar en
+        DetectedMissileMessage: Missile §6détecté §7par un radar en
         CloakActivatedMessage: Furtivité activée.
         StartPositionMissileMessage: Missile en position...
         StartDownMissileMessage: Protocole de descente engagé ...
@@ -64,7 +64,7 @@ AFR:
         PreventionIntrusion: Prévention Intrusion
         PreventionIntrusionLoreA: Activer la prévention d'intrusion (75 blocs de radius)
         PreventionIntrusionA: Activation de la détection d'intrusion.
-        PreventionIntrusionDetect: Joueur(s) &e%loop-player% &6détecté(s) &7par un radar en
+        PreventionIntrusionDetect: Joueur(s) §e%loop-player% §6détecté(s) §7par un radar en
         PreventionIntrusionLoreD: Désactiver la prévention d'intrusion (75 blocs de radius)
         PreventionIntrusionD: Désactivation de la détection d'intrusion.
         SetMissileInSilo: Vous avez mit un missile
