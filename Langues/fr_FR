@@ -1,1 +1,68 @@
-test
+AFR:
+    Core:
+        LoadedConfiguration: Configurations chargées.
+        SecurityProtocolLoop: Protocole de sécurité de serveur terminé
+        ReloadManualyConfiguration: Rechargement des configurations Core.
+        ReloadedManualyConfiguration: Configurations rechargées.
+        GenerateManualyConfiguration: Génération des configurations...
+        GenerateManualyConfigurationEnded: Génération terminée.
+        SecurityAvert1: &4[&6Security Mode&4] &7Mise en sécurité de la RAM du serveur (RAM disponible &c< 5%%&7). Par sécurité du plugin, %{AFR::Core::Visuel::Prefix}% c'est arrété temporairement le temps que de la RAM se libère. Il reprendra automatiquement toute les actions en cours.
+        SecurityAvert1Ended: &4[&6Security Mode&4] &aReprise ! &c%{AFR::Core::Visuel::Prefix}% a retiré la mise en sécurité.
+        SecurityAvert2: &4[&6Security Mode&4] &7Mise en sécurité de la RAM du serveur (RAM disponible &c< 15%%&7). Par sécurité du plugin, %{AFR::Core::Visuel::Prefix}% c'est arrété temporairement le temps que de la RAM se libère. Il reprendra automatiquement toute les actions en cours.
+        SecurityAvert2Ended: &4[&6Security Mode&4] &aReprise ! &c%{AFR::Core::Visuel::Prefix}% a retiré la mise en sécurité.
+        SecurityAvert3: &4[&6Security Mode&4] &7Mise en sécurité de la RAM du serveur (RAM disponible &c< 30%%&7). Par sécurité du plugin, %{AFR::Core::Visuel::Prefix}% c'est arrété temporairement le temps que de la RAM se libère. Il reprendra automatiquement toute les actions en cours.
+        SecurityAvert3Ended: &4[&6Security Mode&4] &aReprise ! &c%{AFR::Core::Visuel::Prefix}% a retiré la mise en sécurité.
+        LGCCFstartMessage: Application des paramètres...
+        LGCCFendMessage: Paramètres chargés.
+    ICBM:
+        LoadingMissileConfiguration: Chargement des configurations de missiles...
+        LCFstartMessage: Chargement de la configuration
+        Missile: Missile
+        Tier: Tier
+        Category: Catégorie
+        Skiped: Ignoré (Duplication).
+        Added: Implémenté.
+        ResetAllVars: Toute les variables de %{AFR::Core::Visuel::Prefix}% ont été remises à 0 !
+        ManualyAutoReloadMissileConfiguration: Rechargement des configurations de missiles...
+        LaunchMissileMessage: Lancement du protocole de lancement...
+        ObstructedLauncher: Le silo est bouché ! Il faut faire un passage pour le missile.
+        UpingMissile: Missile en cours d'ascention ...
+        MissileHaveMaxHeightMessage: Le missile a ateint sa hauteur maximum.
+        StratosphericMessage: Lancement du protocole de voyage statosphèrique ...
+        StartCloakingMessage: Lancement du protocole de furtivité ...
+        DetectedMissileMessage: Missile &6détecté &7par un radar en
+        CloakActivatedMessage: Furtivité activée.
+        StartPositionMissileMessage: Missile en position...
+        StartDownMissileMessage: Protocole de descente engagé ...
+        ImpactMessage: Impacte imminent !
+        EmptyLauncher: Aucun missile n'est détecté dans le silo !
+        Launcher: Silo à Missile
+        RemoveMissile: Retirer le missile
+        EmptyRemoveMissileInLauncher: Il n'y a aucun missile dans le silo !
+        LauncherInformation: Information du silo
+        GiveMarker: Cliquer pour avoir le marqueur de position
+        Marker: Marqueur de position
+        SetPosMarker: Position d'explosion situé à
+        LaunchMissileGui: Confirmer le tir
+        LaunchMissileGuiLore: Action irréversible !
+        EmptyLocation: Aucune position d'explosion n'a été désignée !
+        MissileAlreadyLaunch: Un missile est déjà en cours de lancement !
+        PreventionMissileRadar: Prévention Missile
+        PreventionMissileRadarLoreA: Activer la prévention de missile (150 blocs de radius)
+        ActivatePreventionMissileRadarA: Activation de la détection de missile.
+        PreventionMissileRadarLoreD: Désactiver la prévention de missile (150 blocs de radius)
+        ActivatePreventionMissileRadarD: Désactivation de la détection de missile.
+        PreventionIntrusion: Prévention Intrusion
+        PreventionIntrusionLoreA: Activer la prévention d'intrusion (75 blocs de radius)
+        PreventionIntrusionA: Activation de la détection d'intrusion.
+        PreventionIntrusionDetect: Joueur(s) &e%loop-player% &6détecté(s) &7par un radar en
+        PreventionIntrusionLoreD: Désactiver la prévention d'intrusion (75 blocs de radius)
+        PreventionIntrusionD: Désactivation de la détection d'intrusion.
+        SetMissileInSilo: Vous avez mit un missile
+        MissileAlreadySet: Il y a déjà un missile dans le silo !
+        ObjectNotMissile: Cet objet n'est pas un missile !
+        DestroyLauncher: Silo détruit
+    MFFS:
+        WIP: En cours de création
+    TURRETS:
+        WIP: En cours de création
