@@ -1,1 +1,433 @@
-AFR-Core
+#============================================================================================================================================================================#
+#     _      _                         _          _____                               _           _     _                     ____           _                            
+#    / \    | |_    ___    _ __ ___   (_)   ___  |  ___|   ___    _   _   _ __     __| |   __ _  | |_  (_)   ___    _ __     |  _ \    ___  | |__     ___    _ __   _ __  
+#   / _ \   | __|  / _ \  | '_ ` _ \  | |  / __| | |_     / _ \  | | | | | '_ \   / _` |  / _` | | __| | |  / _ \  | '_ \    | |_) |  / _ \ | '_ \   / _ \  | '__| | '_ \ 
+#  / ___ \  | |_  | (_) | | | | | | | | | | (__  |  _|   | (_) | | |_| | | | | | | (_| | | (_| | | |_  | | | (_) | | | | |   |  _ <  |  __/ | |_) | | (_) | | |    | | | |
+# /_/   \_\  \__|  \___/  |_| |_| |_| |_|  \___| |_|      \___/   \__,_| |_| |_|  \__,_|  \__,_|  \__| |_|  \___/  |_| |_|   |_| \_\  \___| |_.__/   \___/  |_|    |_| |_|
+#                                                                                                                                                                         
+#																									Core
+#																														By Vengelis !
+#																														Version: 2.0.1.0 (Majeur.Mineur.Build.Revue)
+#============================================================================================================================================================================#
+
+#	GGCF : Generate Geneal Core Config
+#	LGC : Load General Config
+#	LCCF : Load Core Config Files
+#	LGCCF : Load General Core Config Files
+#	VVICF : Verify Value In Config File
+#	LMCF : Download Language
+
+options:
+	logo: &7&l[ &6AF&4R &7&l] &8>> &7
+	version: 2.0.1.0
+	
+on load:
+	broadcast "{@logo} Chargement des configurations Core..."
+	AFR_GGCF("Core_Config")
+	AFR_CORE_LGC("plugins/AtomicFoundationReborn/")
+	set {_logoS} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.General.Visuel.Success")
+	AFR_LGCCF()
+	AFR_ALOF("plugins/AtomicFoundationReborn/", {AFR::Core::Language::Selected})
+	if ({AFR::Core::Language::auto_download} parsed as boolean) is true:
+		AFR_LMCF("plugins/AtomicFoundationReborn/", {AFR::Core::Language::Selected})
+	if {AFR::Language::Core:LoadedConf} is set:
+		broadcast "%{_logoS}% %{AFR::Language::Core:LoadedConf}%"
+	else:
+		broadcast "%{_logoS}% Configurations chargées."
+
+every 10 seconds:
+	if ({AFR::Core::Security::Safe_Coefficient} parsed as integer) > 0:
+		if {AFR::Core::Security::AlertSafeMode} is not set:
+			AFR_Secure_Server()
+			loop all players:
+				set {_AFR::Secure::Ressource::MaxRam} to max ram
+				set {_AFR::Secure::Ressource::TotalRam} to total ram
+				send action bar "%{AFR::Core::Visuel::Logo}% &7%{AFR::Language::Core:SecurityProtocolLoop}% &8(&6%100-(({_AFR::Secure::Ressource::TotalRam}*100)/{_AFR::Secure::Ressource::MaxRam})%%%&8)" to loop-player
+
+
+
+command /AFR-Core [<text>] [<text>] [<text>] [<text>]:
+	permission: afr.use
+	permission message: {@logo} &cVous n'avez pas la permission d'utiliser cette commande.
+	trigger:
+		if arg-1 is "reload":
+			if arg-2 is "all_config":
+				set {_logoW} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.General.Visuel.Warning")
+				set {_logoS} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.General.Visuel.Success")
+				message "%{_logoW}% Rechargement des configurations Core."
+				AFR_CORE_LGC("plugins/AtomicFoundationReborn/")
+				AFR_LGCCF()
+				if {AFR::Language::Core:ReloadManualyConfiguration} is set:
+					message "%{_logoS}% %{AFR::Language::Core:ReloadManualyConfiguration}%"
+				else:
+					message "%{_logoS}% Configurations rechargées."
+		if arg-1 is "generate":
+			if arg-2 is "Core_Config":
+				set {_logoW} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.General.Visuel.Warning")
+				set {_logoS} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.General.Visuel.Success")
+				message "%{_logoW}% %{AFR::Language::Core:GenerateManualyConfiguration}%"
+				AFR_GGCF("Core_Config")
+				AFR_CORE_LGC("plugins/AtomicFoundationReborn/")
+				AFR_LGCCF()
+				message "%{_logoS}% %{AFR::Language::Core:GenerateManualyConfigurationEnded}%"
+		if arg-1 is "reset_all":
+			delete {AFR::*}
+			message "{@logo} AFR reset !"
+		if arg-1 is "testmess":
+			set {_test} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","fr_FR","AFR.Core.LoadedConfiguration")
+			message "%{_test}%"
+		if arg-1 is "test_ram":
+			set {_free} to free ram
+			set {_total} to total ram
+			set {_max} to max ram
+			message "F:%{_free}% T:%{_total}% M:%{_max}%"
+			message "%100-(((arg-2 parsed as number)*100)/{_max})%"
+		
+function AFR_Secure_Server():
+	set {_AFR::Secure::Ressource::MaxRam} to max ram
+	set {_AFR::Secure::Ressource::TotalRam} to total ram
+	
+	if ({AFR::Core::Security::Safe_Coefficient} parsed as integer) is 0:
+		stop
+	else if ({AFR::Core::Security::Safe_Coefficient} parsed as integer) is 1:
+		if 100-(({_AFR::Secure::Ressource::TotalRam}*100)/{_AFR::Secure::Ressource::MaxRam}) < 5:
+			set {AFR::Core::Security::AlertSafeMode} to true
+			loop all players:
+				if loop-player is op:
+					message "" to loop-player
+					message "" to loop-player
+					message "" to loop-player
+					message "%{AFR::Core::Visuel::Warning}% %{AFR::Language::Core:SecurityAvert1}%" to loop-player
+					message "" to loop-player
+					message "" to loop-player
+					message "" to loop-player
+			while {AFR::Core::Security::AlertSafeMode} is true:
+				set {_AFR::Secure::Ressource::TotalRam} to total ram
+				if 100-(({_AFR::Secure::Ressource::TotalRam}*100)/{_AFR::Secure::Ressource::MaxRam}) > 5:
+					delete {AFR::Core::Security::AlertSafeMode}
+					loop all players:
+						if loop-player is op:
+							message "%{AFR::Core::Visuel::Warning}% %{AFR::Language::Core:SecurityAvert1Ended}%" to loop-player
+				wait 1 second
+	else if ({AFR::Core::Security::Safe_Coefficient} parsed as integer) is 2:
+		if 100-(({_AFR::Secure::Ressource::TotalRam}*100)/{_AFR::Secure::Ressource::MaxRam}) < 15:
+			set {AFR::Core::Security::AlertSafeMode} to true
+			loop all players:
+				if loop-player is op:
+					message "" to loop-player
+					message "" to loop-player
+					message "" to loop-player
+					message "%{AFR::Core::Visuel::Warning}% %{AFR::Language::Core:SecurityAvert2}%" to loop-player
+					message "" to loop-player
+					message "" to loop-player
+					message "" to loop-player
+			while {AFR::Core::Security::AlertSafeMode} is true:
+				set {_AFR::Secure::Ressource::TotalRam} to total ram
+				if 100-(({_AFR::Secure::Ressource::TotalRam}*100)/{_AFR::Secure::Ressource::MaxRam}) > 15:
+					delete {AFR::Core::Security::AlertSafeMode}
+					loop all players:
+						if loop-player is op:
+							message "%{AFR::Core::Visuel::Warning}% %{AFR::Language::Core:SecurityAvert2Ended}%" to loop-player
+				wait 1 second
+	else if ({AFR::Core::Security::Safe_Coefficient} parsed as integer) is 3:
+		if 100-(({_AFR::Secure::Ressource::TotalRam}*100)/{_AFR::Secure::Ressource::MaxRam}) < 30:
+			set {AFR::Core::Security::AlertSafeMode} to true
+			loop all players:
+				if loop-player is op:
+					message "" to loop-player
+					message "" to loop-player
+					message "" to loop-player
+					message "%{AFR::Core::Visuel::Warning}% %{AFR::Language::Core:SecurityAvert3}%" to loop-player
+					message "" to loop-player
+					message "" to loop-player
+					message "" to loop-player
+			while {AFR::Core::Security::AlertSafeMode} is true:
+				set {_AFR::Secure::Ressource::TotalRam} to total ram
+				if 100-(({_AFR::Secure::Ressource::TotalRam}*100)/{_AFR::Secure::Ressource::MaxRam}) > 30:
+					delete {AFR::Core::Security::AlertSafeMode}
+					loop all players:
+						if loop-player is op:
+							message "%{AFR::Core::Visuel::Warning}% %{AFR::Language::Core:SecurityAvert3Ended}%" to loop-player
+				wait 1 second
+	else:
+		stop
+		
+function checkUpdate(file: text):
+	set {_afrNewVersionCore} to text from "https://raw.githubusercontent.com/Vengelis/Atomic-Foundation/AFR/AtomicFoundationReborn/Versions/Core"
+	if {_afrNewVersionCore} is not "{@version}":
+		loop all players:
+			if loop-player is op:
+				message "%{AFR::Core::Visuel::Logo}% &7Actual version: &c{@version}" to loop-player
+				message "%{AFR::Core::Visuel::Logo}% &7New version: &c%{_afrNewVersionCore}%" to loop-player
+				message "%{AFR::Core::Visuel::Logo}% &7Downloading new version ..." to loop-player
+		download file from "https://raw.githubusercontent.com/Vengelis/Atomic-Foundation/AFR/AtomicFoundationReborn/Skripts/Core" to file "plugins/Skript/scripts/AFR-Core.sk"
+		loop all players:
+			if loop-player is op:
+				make console execute command "sk reload AFR-Core"
+				message "%{AFR::Core::Visuel::Success}% &7New version loaded !" to loop-player
+	else:
+		loop all players:
+			if loop-player is op:
+				message "%{AFR::Core::Visuel::Logo}% &7AFR-Core version: &e{@version} &7- &7Nothing update detected."
+
+function AFR_GGCF(file: text):
+	if {_file} is "Core_Config":
+		if file "plugins/AtomicFoundationReborn/%{_file}%.yml" exists:
+			stop
+		else:
+			create file "plugins/AtomicFoundationReborn/%{_file}%.yml"
+			#	set yml value "" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to ""
+			set yml value "AFR.General.Visuel.Logo" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "&7&l[ &6AF&4R &7&l] &8>> &7"
+			set yml value "AFR.General.Visuel.Prefix" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "Atomic Foundation Reborn"
+			set yml value "AFR.General.Visuel.Error" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "&7&l[ &6AF&4R &7&l] &c[ERROR] &8>> &7"
+			set yml value "AFR.General.Visuel.Warning" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "&7&l[ &6AF&4R &7&l] &6[WARNING] &8>> &7"
+			set yml value "AFR.General.Visuel.Success" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "&7&l[ &6AF&4R &7&l] &a[SUCCESS] &8>> &7"
+			
+			set yml value "AFR.Core.auto_update.enabled_script" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+			set yml value "AFR.Core.auto_update.enabled_config" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+			set yml value "AFR.Core.auto_update.view_content_update" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+			set yml value "AFR.Core.auto_update.view_version_addons" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+			
+			set yml value "AFR.Core.Helping.Configuration.enabled" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+			
+			set yml value "AFR.Core.Language.Selected" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "fr_FR"
+			set yml value "AFR.Core.Language.auto_download" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+			
+			set yml value "AFR.Core.Security.Safe_Coefficient" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "2"
+			
+			# /// ICBM
+			
+			set yml value "AFR.ICBM.Core.enabled" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+			set yml value "AFR.ICBM.Core.auto_download" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+			set yml value "AFR.ICBM.Core.auto_update" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+			
+			set yml value "AFR.ICBM.Config.Internal_Config.auto_load" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+			set yml value "AFR.ICBM.Config.Internal_Config.auto_download_base" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+			set yml value "AFR.ICBM.Config.Internal_Config.create_backup" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+			set yml value "AFR.ICBM.Config.Internal_Config.default_missile_config" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+			
+			set yml value "AFR.ICBM.Config.Debug.enabled" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "false"
+			set yml value "AFR.ICBM.Config.Debug.configuration_type" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "Files"
+			
+			set yml value "AFR.ICBM.Config.Missiles.Powers.Tier1" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "1"
+			set yml value "AFR.ICBM.Config.Missiles.Powers.Tier2" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "3"
+			set yml value "AFR.ICBM.Config.Missiles.Powers.Tier3" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "5"
+			set yml value "AFR.ICBM.Config.Missiles.Powers.Tier4" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "7"
+			
+			# /// MFFS
+			
+			set yml value "AFR.MFFS.Core.enabled" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+			set yml value "AFR.MFFS.Core.auto_download" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+			set yml value "AFR.MFFS.Core.auto_update" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+			
+			# /// Turrets
+			
+			set yml value "AFR.TURRETS.Core.enabled" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+			set yml value "AFR.TURRETS.Core.auto_download" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+			set yml value "AFR.TURRETS.Core.auto_update" from file "plugins/AtomicFoundationReborn/%{_file}%.yml" to "true"
+
+function AFR_CORE_VVICF(path: text, file: text, param: text) :: text:
+	if file "%{_path}%%{_file}%.yml" exists:
+		set {_rand} to random integer between 1 and 100000000
+		set {_AFR::Core::Return::%{_rand}%} to (yaml value "%{_param}%" of "%{_file}%")
+		if {_AFR::Core::Return::%{_rand}%} is not set:
+			return "ERROR:INVALID_PARAMETER"
+		else:
+			return {_AFR::Core::Return::%{_rand}%}
+
+function AFR_CORE_LGC(path: text):
+	delete {AFR::Core::Config::*}
+	loop directory "%{_path}%"'s files:
+		AFR_LCCF("%name of file loop-value%", {_path})
+		
+function AFR_LCCF(name: text, path: text):
+	broadcast "{@logo} &7Détecté: %{_name}%"
+	if {_name} contains "M-":
+		broadcast "{@logo} &cIgnoré: %{_name}%"
+		stop
+	else if {_name} contains "fr_FR":
+		broadcast "{@logo} &aChargé: %{_name}%"
+		load yaml "%{_path}%%{_name}%.yml" as {_name}
+	else if {_name} contains "en_US":
+		broadcast "{@logo} &aChargé: %{_name}%"
+		load yaml "%{_path}%%{_name}%.yml" as {_name}
+	else:
+		broadcast "{@logo} &aChargé: %{_name}%"
+		load yaml "%{_path}%%{_name}%.yml" as {_name}
+		
+function AFR_LMCF(path: text, lng: text):
+	if file "%{_path}%%{_lng}%.yml" exists:
+		broadcast "{@logo} &7Application du la &a%{_lng}%&7..."
+		AFR_ALOF({_path}, {_lng})
+	else:
+		if {_lng} is "fr_FR":
+			broadcast "{@logo} &7Téléchargement de la langue &a%{_lng}%&7..."
+			download file from "https://raw.githubusercontent.com/Vengelis/Atomic-Foundation/master/Langues/fr_FR" to file "%{_path}%%{_lng}%.yml"
+			AFR_ALOF({_path}, {_lng})
+			broadcast "{@logo} &7Langue &a%{_lng}%&7 téléchargée"
+		if {_lng} is "en_US":
+			broadcast "{@logo} &7Downloading language &a%{_lng}%&7..."
+			download file from "https://raw.githubusercontent.com/Vengelis/Atomic-Foundation/master/Langues/en_US" to file "%{_path}%%{_lng}%.yml"
+			AFR_ALOF({_path}, {_lng})
+			broadcast "{@logo} &7Downloaded &a%{_lng}%&7 language."
+	
+function AFR_LGCCF():
+	broadcast "{@logo} %{AFR::Language::Core:LGCCFstartMessage}%"
+	
+	set {AFR::Core::Visuel::Logo} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.General.Visuel.Logo") 
+	set {AFR::Core::Visuel::Prefix} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.General.Visuel.Prefix")
+	set {AFR::Core::Visuel::Error} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.General.Visuel.Error")
+	set {AFR::Core::Visuel::Warning} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.General.Visuel.Warning")
+	set {AFR::Core::Visuel::Success} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.General.Visuel.Success")
+	
+	set {AFR::Core::auto_update::enabled_script} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.Core.auto_update.enabled_script")
+	set {AFR::Core::auto_update::enabled_config} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.Core.auto_update.enabled_config")
+	set {AFR::Core::auto_update::view_content_update} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.Core.auto_update.view_content_update")
+	set {AFR::Core::auto_update::view_version_addons} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.Core.auto_update.view_version_addons")
+	
+	set {AFR::Core::Helping::Configuration::enabled} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.Core.Helping.Configuration.enabled")
+	
+	set {AFR::Core::Language::Selected} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.Core.Language.Selected")
+	set {AFR::Core::Language::auto_download} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.Core.Language.auto_download")
+	
+	set {AFR::Core::Security::Safe_Coefficient} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.Core.Security.Safe_Coefficient")
+	
+	# /// ICBM
+	
+	set {AFR::ICBM::Core::enabled} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.ICBM.Core.enabled")
+	set {AFR::ICBM::Core::auto_download} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.ICBM.Core.auto_download")
+	set {AFR::ICBM::Core::auto_update} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.ICBM.Core.auto_update")
+	
+	set {AFR::ICBM::Config::Internal_Config::auto_load} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.ICBM.Config.Internal_Config.auto_load")
+	set {AFR::ICBM::Config::Internal_Config::auto_download_base} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.ICBM.Config.Internal_Config.auto_download_base")
+	set {AFR::ICBM::Config::Internal_Config::create_backup} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.ICBM.Config.Internal_Config.create_backup")
+	set {AFR::ICBM::Config::Internal_Config::default_missile_config} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.ICBM.Config.Internal_Config.default_missile_config")
+	
+	set {AFR::ICBM::Config::Debug::enabled} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.ICBM.Config.Debug.enabled")
+	set {AFR::ICBM::Config::Debug::configuration_type} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.ICBM.Config.Debug.configuration_type")
+	
+	set {AFR::ICBM::Config::Missiles::Powers::Tier1} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.ICBM.Config.Missiles.Powers.Tier1")
+	set {AFR::ICBM::Config::Missiles::Powers::Tier2} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.ICBM.Config.Missiles.Powers.Tier2")
+	set {AFR::ICBM::Config::Missiles::Powers::Tier3} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.ICBM.Config.Missiles.Powers.Tier3")
+	set {AFR::ICBM::Config::Missiles::Powers::Tier4} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.ICBM.Config.Missiles.Powers.Tier4")
+	
+	# /// MFFS
+	
+	set {AFR::MFFS::Core::enabled} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.MFFS.Core.enabled")
+	set {AFR::MFFS::Core::auto_download} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.MFFS.Core.auto_download")
+	set {AFR::MFFS::Core::auto_update} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.MFFS.Core.auto_update")
+	
+	# /// TURRETS
+	
+	set {AFR::TURRETS::Core::enabled} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.TURRETS.Core.enabled")
+	set {AFR::TURRETS::Core::auto_download} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.TURRETS.Core.auto_download")
+	set {AFR::TURRETS::Core::auto_update} to AFR_CORE_VVICF("plugins/AtomicFoundationReborn/","Core_Config","AFR.TURRETS.Core.auto_update")
+	
+	if {AFR::ICBM::Config::Debug::enabled} is "true":
+	
+		broadcast "%{AFR::Core::Visuel::Logo}%"
+		broadcast "%{AFR::Core::Visuel::Prefix}%"
+		broadcast "%{AFR::Core::Visuel::Error}%"
+		broadcast "%{AFR::Core::Visuel::Warning}%"
+		broadcast "%{AFR::Core::Visuel::Success}%"
+		broadcast "%{AFR::Core::auto_update::enabled_script}%"
+		broadcast "%{AFR::Core::auto_update::enabled_config}%"
+		broadcast "%{AFR::Core::auto_update::view_content_update}%"
+		broadcast "%{AFR::Core::auto_update::view_version_addons}%"
+		broadcast "%{AFR::Core::Helping::Configuration::enabled}%"
+		broadcast "%{AFR::Core::Language::Selected}%"
+		broadcast "%{AFR::Core::Language::auto_download}%"
+		broadcast "%{AFR::Core::Security::Safe_Coefficient}%"
+		broadcast "%{AFR::ICBM::Core::enabled}%"
+		broadcast "%{AFR::ICBM::Core::auto_download}%"
+		broadcast "%{AFR::ICBM::Core::auto_update}%"
+		broadcast "%{AFR::ICBM::Config::Internal_Config::auto_load}%"
+		broadcast "%{AFR::ICBM::Config::Internal_Config::auto_download_base}%"
+		broadcast "%{AFR::ICBM::Config::Internal_Config::create_backup}%"
+		broadcast "%{AFR::ICBM::Config::Internal_Config::default_missile_config}%"
+		broadcast "%{AFR::ICBM::Config::Debug::enabled}%"
+		broadcast "%{AFR::ICBM::Config::Debug::configuration_type}%"
+		broadcast "%{AFR::ICBM::Config::Missiles::Powers::Tier1}%"
+		broadcast "%{AFR::ICBM::Config::Missiles::Powers::Tier2}%"
+		broadcast "%{AFR::ICBM::Config::Missiles::Powers::Tier3}%"
+		broadcast "%{AFR::ICBM::Config::Missiles::Powers::Tier4}%"
+		broadcast "%{AFR::MFFS::Core::enabled}%"
+		broadcast "%{AFR::MFFS::Core::auto_download}%"
+		broadcast "%{AFR::MFFS::Core::auto_update}%"
+		broadcast "%{AFR::TURRETS::Core::enabled}%"
+		broadcast "%{AFR::TURRETS::Core::auto_download}%"
+		broadcast "%{AFR::TURRETS::Core::auto_update}%"
+	broadcast "%{AFR::Core::Visuel::Success}% %{AFR::Language::Core:LGCCFendMessage}%"
+	
+function AFR_ALOF(path: text, lng: text):
+	
+	# /// Core
+	
+	set {AFR::Language::Core:LoadedConf} to AFR_CORE_VVICF({_path},{_lng},"AFR.Core.LoadedConfiguration")
+	set {AFR::Language::Core:SecurityProtocolLoop} to AFR_CORE_VVICF({_path},{_lng},"AFR.Core.SecurityProtocolLoop")
+	set {AFR::Language::Core:ReloadManualyConfiguration} to AFR_CORE_VVICF({_path},{_lng},"AFR.Core.ReloadManualyConfiguration")
+	set {AFR::Language::Core:ReloadedManualyConfiguration} to AFR_CORE_VVICF({_path},{_lng},"AFR.Core.ReloadedManualyConfiguration")
+	set {AFR::Language::Core:GenerateManualyConfiguration} to AFR_CORE_VVICF({_path},{_lng},"AFR.Core.GenerateManualyConfiguration")
+	set {AFR::Language::Core:GenerateManualyConfigurationEnded} to AFR_CORE_VVICF({_path},{_lng},"AFR.Core.GenerateManualyConfigurationEnded")
+	set {AFR::Language::Core:SecurityAvert1} to AFR_CORE_VVICF({_path},{_lng},"AFR.Core.SecurityAvert1")
+	set {AFR::Language::Core:SecurityAvert1Ended} to AFR_CORE_VVICF({_path},{_lng},"AFR.Core.SecurityAvert1Ended")
+	set {AFR::Language::Core:SecurityAvert2} to AFR_CORE_VVICF({_path},{_lng},"AFR.Core.SecurityAvert2")
+	set {AFR::Language::Core:SecurityAvert2Ended} to AFR_CORE_VVICF({_path},{_lng},"AFR.Core.SecurityAvert2Ended")
+	set {AFR::Language::Core:SecurityAvert3} to AFR_CORE_VVICF({_path},{_lng},"AFR.Core.SecurityAvert3")
+	set {AFR::Language::Core:SecurityAvert3Ended} to AFR_CORE_VVICF({_path},{_lng},"AFR.Core.SecurityAvert3Ended")
+	set {AFR::Language::Core:LGCCFstartMessage} to AFR_CORE_VVICF({_path},{_lng},"AFR.Core.LGCCFstartMessage")
+	set {AFR::Language::Core:LGCCFendMessage} to AFR_CORE_VVICF({_path},{_lng},"AFR.Core.LGCCFendMessage")
+	
+	# /// ICBM
+	
+	set {AFR::Language::ICBM:LoadingMissileConfiguration} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.LoadingMissileConfiguration")
+	set {AFR::Language::ICBM:LCFstartMessage} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.LCFstartMessage")
+	set {AFR::Language::ICBM:Missile} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.Missile")
+	set {AFR::Language::ICBM:Name} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.Name")
+	set {AFR::Language::ICBM:Tier} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.Tier")
+	set {AFR::Language::ICBM:Category} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.Category")
+	set {AFR::Language::ICBM:Skiped} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.Skiped")
+	set {AFR::Language::ICBM:Added} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.Added")
+	set {AFR::Language::ICBM:PermissionError} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.PermissionError")
+	set {AFR::Language::ICBM:ResetAllVars} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.ResetAllVars")
+	set {AFR::Language::ICBM:ManualyAutoReloadMissileConfiguration} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.ManualyAutoReloadMissileConfiguration")
+	set {AFR::Language::ICBM:LaunchMissileMessage} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.LaunchMissileMessage")
+	set {AFR::Language::ICBM:ObstructedLauncher} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.ObstructedLauncher")
+	set {AFR::Language::ICBM:UpingMissile} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.UpingMissile")
+	set {AFR::Language::ICBM:MissileHaveMaxHeightMessage} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.MissileHaveMaxHeightMessage")
+	set {AFR::Language::ICBM:StratosphericMessage} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.StratosphericMessage")
+	set {AFR::Language::ICBM:StartCloakingMessage} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.StartCloakingMessage")
+	set {AFR::Language::ICBM:DetectedMissileMessage} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.DetectedMissileMessage")
+	set {AFR::Language::ICBM:CloakActivatedMessage} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.CloakActivatedMessage")
+	set {AFR::Language::ICBM:StartPositionMissileMessage} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.StartPositionMissileMessage")
+	set {AFR::Language::ICBM:StartDownMissileMessage} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.StartDownMissileMessage")
+	set {AFR::Language::ICBM:ImpactMessage} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.ImpactMessage")
+	set {AFR::Language::ICBM:EmptyLauncher} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.EmptyLauncher")
+	set {AFR::Language::ICBM:Launcher} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.Launcher")
+	set {AFR::Language::ICBM:RemoveMissile} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.RemoveMissile")
+	set {AFR::Language::ICBM:EmptyRemoveMissileInLauncher} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.EmptyRemoveMissileInLauncher")
+	set {AFR::Language::ICBM:LauncherInformation} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.LauncherInformation")
+	set {AFR::Language::ICBM:GiveMarker} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.GiveMarker")
+	set {AFR::Language::ICBM:Marker} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.Marker")
+	set {AFR::Language::ICBM:SetPosMarker} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.SetPosMarker")
+	set {AFR::Language::ICBM:LaunchMissileGui} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.LaunchMissileGui")
+	set {AFR::Language::ICBM:LaunchMissileGuiLore} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.LaunchMissileGuiLore")
+	set {AFR::Language::ICBM:EmptyLocation} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.EmptyLocation")
+	set {AFR::Language::ICBM:MissileAlreadyLaunch} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.MissileAlreadyLaunch")
+	set {AFR::Language::ICBM:PreventionMissileRadar} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.PreventionMissileRadar")
+	set {AFR::Language::ICBM:PreventionMissileRadarLoreA} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.PreventionMissileRadarLoreA")
+	set {AFR::Language::ICBM:ActivatePreventionMissileRadarA} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.ActivatePreventionMissileRadarA")
+	set {AFR::Language::ICBM:PreventionMissileRadarLoreD} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.PreventionMissileRadarLoreD")
+	set {AFR::Language::ICBM:ActivatePreventionMissileRadarD} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.ActivatePreventionMissileRadarD")
+	set {AFR::Language::ICBM:PreventionIntrusion} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.PreventionIntrusion")
+	set {AFR::Language::ICBM:PreventionIntrusionLoreA} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.PreventionIntrusionLoreA")
+	set {AFR::Language::ICBM:PreventionIntrusionA} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.PreventionIntrusionA")
+	set {AFR::Language::ICBM:PreventionIntrusionDetect} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.PreventionIntrusionDetect")
+	set {AFR::Language::ICBM:PreventionIntrusionLoreD} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.PreventionIntrusionLoreD")
+	set {AFR::Language::ICBM:PreventionIntrusionD} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.PreventionIntrusionD")
+	set {AFR::Language::ICBM:SetMissileInSilo} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.SetMissileInSilo")
+	set {AFR::Language::ICBM:MissileAlreadySet} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.MissileAlreadySet")
+	set {AFR::Language::ICBM:ObjectNotMissile} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.ObjectNotMissile")
+	set {AFR::Language::ICBM:DestroyLauncher} to AFR_CORE_VVICF({_path},{_lng},"AFR.ICBM.DestroyLauncher")
+	
+	
