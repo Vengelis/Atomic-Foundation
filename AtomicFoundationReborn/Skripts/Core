@@ -82,6 +82,8 @@ command /AFR-Core [<text>] [<text>] [<text>] [<text>]:
 			set {_max} to max ram
 			message "F:%{_free}% T:%{_total}% M:%{_max}%"
 			message "%100-(((arg-2 parsed as number)*100)/{_max})%"
+		if arg-1 is "update":
+			checkUpdate()
 		
 function AFR_Secure_Server():
 	set {_AFR::Secure::Ressource::MaxRam} to max ram
@@ -152,9 +154,11 @@ function AFR_Secure_Server():
 	else:
 		stop
 		
-function checkUpdate(file: text):
+function checkUpdate():
 	set {_afrNewVersionCore} to text from "https://raw.githubusercontent.com/Vengelis/Atomic-Foundation/AFR/AtomicFoundationReborn/Versions/Core"
 	if {_afrNewVersionCore} is not "{@version}":
+		delete file "plugins/Skript/scripts/AFR-Core.sk"
+		create file "plugins/Skript/scripts/AFR-Core.sk"
 		loop all players:
 			if loop-player is op:
 				message "%{AFR::Core::Visuel::Logo}% &7Actual version: &c{@version}" to loop-player
@@ -168,7 +172,7 @@ function checkUpdate(file: text):
 	else:
 		loop all players:
 			if loop-player is op:
-				message "%{AFR::Core::Visuel::Logo}% &7AFR-Core version: &e{@version} &7- &7Nothing update detected."
+				message "%{AFR::Core::Visuel::Logo}% &7AFR-Core version: &e{@version} &7- &7Nothing update detected." to loop-player
 
 function AFR_GGCF(file: text):
 	if {_file} is "Core_Config":
